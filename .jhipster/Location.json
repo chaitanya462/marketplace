@@ -1,0 +1,48 @@
+{
+  "name": "Location",
+  "fields": [
+    {
+      "fieldName": "pincode",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["min", "max"],
+      "fieldValidateRulesMin": "10000",
+      "fieldValidateRulesMax": "99999"
+    },
+    {
+      "fieldName": "country",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "state",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "city",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "locationPrefrence",
+      "otherEntityRelationshipName": "location",
+      "relationshipName": "locationPrefrence"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "employment",
+      "otherEntityRelationshipName": "location",
+      "relationshipName": "employment"
+    }
+  ],
+  "entityTableName": "location",
+  "dto": "mapstruct",
+  "pagination": "infinite-scroll",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["SimplifyMarketplace"],
+  "changelogDate": "20210809071240"
+}

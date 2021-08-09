@@ -1,0 +1,104 @@
+{
+  "name": "JobPreference",
+  "fields": [
+    {
+      "fieldName": "hourlyRate",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "dailyRate",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "monthlyRate",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "hourPerDay",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "hourPerWeek",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "engagementType",
+      "fieldType": "EngagementType",
+      "fieldValues": "FullTime,PartTime"
+    },
+    {
+      "fieldName": "employmentType",
+      "fieldType": "EmploymentType",
+      "fieldValues": "Permanent,Contractual"
+    },
+    {
+      "fieldName": "locationType",
+      "fieldType": "LocationType",
+      "fieldValues": "WorkFromOffice,WorkFromHome,Both"
+    },
+    {
+      "fieldName": "availableFrom",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "availableTo",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "isActive",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "createdBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "updatedBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "updatedAt",
+      "fieldType": "LocalDate"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "locationPrefrence",
+      "otherEntityRelationshipName": "worker",
+      "relationshipName": "locationPrefrence"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "fieldValue",
+      "otherEntityRelationshipName": "jobpreference",
+      "relationshipName": "fieldValue"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "category",
+      "otherEntityRelationshipName": "jobPreference",
+      "relationshipName": "subCategory"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "worker",
+      "otherEntityRelationshipName": "jobPreference",
+      "relationshipName": "worker"
+    }
+  ],
+  "entityTableName": "job_preference",
+  "dto": "mapstruct",
+  "pagination": "infinite-scroll",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["SimplifyMarketplace"],
+  "changelogDate": "20210809071251"
+}

@@ -1,0 +1,62 @@
+{
+  "name": "Field",
+  "fields": [
+    {
+      "fieldName": "fieldName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "fieldLabel",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "fieldType",
+      "fieldType": "FieldType",
+      "fieldValues": "Text,Date,Number,Rate,Email"
+    },
+    {
+      "fieldName": "isActive",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "createdBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "updatedBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "updatedAt",
+      "fieldType": "LocalDate"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "fieldValue",
+      "otherEntityRelationshipName": "field",
+      "relationshipName": "fieldValue"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "category",
+      "otherEntityRelationshipName": "field",
+      "relationshipName": "category"
+    }
+  ],
+  "entityTableName": "field",
+  "dto": "mapstruct",
+  "pagination": "infinite-scroll",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["SimplifyMarketplace"],
+  "changelogDate": "20210809071254"
+}

@@ -1,0 +1,10 @@
+{
+  "simplifyMarketplaceApp": {
+    "MarksType": {
+      "null": "",
+      "PERCENTAGE": "PERCENTAGE",
+      "CGPA": "CGPA",
+      "GPA": "GPA"
+    }
+  }
+}

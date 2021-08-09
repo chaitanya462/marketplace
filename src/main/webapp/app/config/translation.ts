@@ -6,14 +6,7 @@ TranslatorContext.setDefaultLocale('en');
 TranslatorContext.setRenderInnerTextForMissingKeys(false);
 
 export const languages: any = {
-  bn: { name: 'বাংলা' },
-  nl: { name: 'Nederlands' },
   en: { name: 'English' },
-  hi: { name: 'हिंदी' },
-  mr: { name: 'मराठी' },
-  es: { name: 'Español' },
-  ta: { name: 'தமிழ்' },
-  te: { name: 'తెలుగు' },
   // jhipster-needle-i18n-language-key-pipe - JHipster will add/remove languages in this object
 };
 

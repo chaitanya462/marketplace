@@ -1,0 +1,34 @@
+{
+  "name": "CustomUser",
+  "fields": [],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "userEmail",
+      "otherEntityRelationshipName": "customUser",
+      "relationshipName": "userEmail"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "userPhone",
+      "otherEntityRelationshipName": "customUser",
+      "relationshipName": "userPhone"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "address",
+      "otherEntityRelationshipName": "customUser",
+      "relationshipName": "address"
+    }
+  ],
+  "entityTableName": "custom_user",
+  "dto": "mapstruct",
+  "pagination": "infinite-scroll",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["SimplifyMarketplace"],
+  "changelogDate": "20210809071236"
+}

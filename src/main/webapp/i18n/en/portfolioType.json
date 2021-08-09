@@ -1,0 +1,14 @@
+{
+  "simplifyMarketplaceApp": {
+    "PortfolioType": {
+      "null": "",
+      "GIT": "GIT",
+      "Linkedin": "Linkedin",
+      "Twitter": "Twitter",
+      "Kaggle": "Kaggle",
+      "Medium": "Medium",
+      "SOF": "SOF",
+      "Other": "Other"
+    }
+  }
+}

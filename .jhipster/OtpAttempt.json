@@ -1,0 +1,45 @@
+{
+  "name": "OtpAttempt",
+  "fields": [
+    {
+      "fieldName": "contextId",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "otp",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "OtpStatus",
+      "fieldValues": "Pending,Failed,Expired,Approved"
+    },
+    {
+      "fieldName": "ip",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "coookie",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "LocalDate"
+    }
+  ],
+  "relationships": [],
+  "entityTableName": "otp_attempt",
+  "dto": "mapstruct",
+  "pagination": "infinite-scroll",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["SimplifyMarketplace"],
+  "changelogDate": "20210809071235"
+}

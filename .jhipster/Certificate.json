@@ -1,0 +1,59 @@
+{
+  "name": "Certificate",
+  "fields": [
+    {
+      "fieldName": "certificateName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "issuer",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "issueYear",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "expiryYear",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "updatedBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "updatedAt",
+      "fieldType": "LocalDate"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "worker",
+      "otherEntityRelationshipName": "certificate",
+      "relationshipName": "worker"
+    }
+  ],
+  "entityTableName": "certificate",
+  "dto": "mapstruct",
+  "pagination": "infinite-scroll",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["SimplifyMarketplace"],
+  "changelogDate": "20210809071246"
+}

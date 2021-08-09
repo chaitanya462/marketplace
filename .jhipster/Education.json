@@ -1,0 +1,98 @@
+{
+  "name": "Education",
+  "fields": [
+    {
+      "fieldName": "degreeName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "institute",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "yearOfPassing",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "marks",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "marksType",
+      "fieldType": "MarksType",
+      "fieldValues": "PERCENTAGE,CGPA,GPA"
+    },
+    {
+      "fieldName": "grade",
+      "fieldType": "EducationGrade",
+      "fieldValues": "FIRST,SECOND,THIRD"
+    },
+    {
+      "fieldName": "startDate",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "endDate",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "isComplete",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "degreeType",
+      "fieldType": "DegreeType",
+      "fieldValues": "HSC,Graduate,PostGraduate,Associate,Doctrol,Diploma"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "updatedBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "updatedAt",
+      "fieldType": "LocalDate"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "subjectMaster",
+      "otherEntityRelationshipName": "education",
+      "relationshipName": "majorSubject"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "subjectMaster",
+      "otherEntityRelationshipName": "education",
+      "relationshipName": "minorSubject"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "worker",
+      "otherEntityRelationshipName": "education",
+      "relationshipName": "worker"
+    }
+  ],
+  "entityTableName": "education",
+  "dto": "mapstruct",
+  "pagination": "infinite-scroll",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["SimplifyMarketplace"],
+  "changelogDate": "20210809071244"
+}

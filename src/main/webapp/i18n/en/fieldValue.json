@@ -1,0 +1,26 @@
+{
+  "simplifyMarketplaceApp": {
+    "fieldValue": {
+      "home": {
+        "title": "Field Values",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Field Value",
+        "createOrEditLabel": "Create or edit a Field Value",
+        "notFound": "No Field Values found"
+      },
+      "created": "A new Field Value is created with identifier {{ param }}",
+      "updated": "A Field Value is updated with identifier {{ param }}",
+      "deleted": "A Field Value is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Field Value {{ id }}?"
+      },
+      "detail": {
+        "title": "Field Value"
+      },
+      "id": "ID",
+      "value": "Value",
+      "jobpreference": "Jobpreference",
+      "field": "Field"
+    }
+  }
+}

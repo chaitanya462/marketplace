@@ -1,0 +1,9 @@
+{
+  "simplifyMarketplaceApp": {
+    "EngagementType": {
+      "null": "",
+      "FullTime": "FullTime",
+      "PartTime": "PartTime"
+    }
+  }
+}

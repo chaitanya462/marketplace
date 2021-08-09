@@ -1,0 +1,10 @@
+{
+  "simplifyMarketplaceApp": {
+    "LocationType": {
+      "null": "",
+      "WorkFromOffice": "WorkFromOffice",
+      "WorkFromHome": "WorkFromHome",
+      "Both": "Both"
+    }
+  }
+}

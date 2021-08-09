@@ -1,0 +1,118 @@
+{
+  "name": "Worker",
+  "fields": [
+    {
+      "fieldName": "firstName",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "middleName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "lastName",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "primaryPhone",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required", "min", "max"],
+      "fieldValidateRulesMin": "1000000000",
+      "fieldValidateRulesMax": "9999999999"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "dateOfBirth",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "createdBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "updatedBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "updatedAt",
+      "fieldType": "LocalDate"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-one",
+      "otherEntityName": "customUser",
+      "otherEntityRelationshipName": "worker",
+      "relationshipName": "customUser",
+      "ownerSide": true
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "file",
+      "otherEntityRelationshipName": "worker",
+      "relationshipName": "file"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "education",
+      "otherEntityRelationshipName": "worker",
+      "relationshipName": "education"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "certificate",
+      "otherEntityRelationshipName": "worker",
+      "relationshipName": "certificate"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "employment",
+      "otherEntityRelationshipName": "worker",
+      "relationshipName": "employment"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "portfolio",
+      "otherEntityRelationshipName": "worker",
+      "relationshipName": "portfolio"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "refereces",
+      "otherEntityRelationshipName": "worker",
+      "relationshipName": "refereces"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "jobPreference",
+      "otherEntityRelationshipName": "worker",
+      "relationshipName": "jobPreference"
+    },
+    {
+      "relationshipType": "many-to-many",
+      "otherEntityName": "skillsMaster",
+      "otherEntityRelationshipName": "worker",
+      "relationshipName": "skill",
+      "ownerSide": true
+    }
+  ],
+  "entityTableName": "worker",
+  "dto": "mapstruct",
+  "pagination": "infinite-scroll",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["SimplifyMarketplace"],
+  "changelogDate": "20210809071242"
+}

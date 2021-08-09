@@ -1,0 +1,42 @@
+{
+  "simplifyMarketplaceApp": {
+    "worker": {
+      "home": {
+        "title": "Workers",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Worker",
+        "createOrEditLabel": "Create or edit a Worker",
+        "notFound": "No Workers found"
+      },
+      "created": "A new Worker is created with identifier {{ param }}",
+      "updated": "A Worker is updated with identifier {{ param }}",
+      "deleted": "A Worker is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Worker {{ id }}?"
+      },
+      "detail": {
+        "title": "Worker"
+      },
+      "id": "ID",
+      "firstName": "First Name",
+      "middleName": "Middle Name",
+      "lastName": "Last Name",
+      "primaryPhone": "Primary Phone",
+      "description": "Description",
+      "dateOfBirth": "Date Of Birth",
+      "createdBy": "Created By",
+      "createdAt": "Created At",
+      "updatedBy": "Updated By",
+      "updatedAt": "Updated At",
+      "customUser": "Custom User",
+      "file": "File",
+      "education": "Education",
+      "certificate": "Certificate",
+      "employment": "Employment",
+      "portfolio": "Portfolio",
+      "refereces": "Refereces",
+      "jobPreference": "Job Preference",
+      "skill": "Skill"
+    }
+  }
+}

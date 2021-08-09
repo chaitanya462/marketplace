@@ -1,0 +1,69 @@
+{
+  "name": "File",
+  "fields": [
+    {
+      "fieldName": "path",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "fileformat",
+      "fieldType": "FileFormat",
+      "fieldValues": "PDF,DOC,PPT"
+    },
+    {
+      "fieldName": "filetype",
+      "fieldType": "FileType",
+      "fieldValues": "Resume,Profile_Pic,Other_Pic,Cover_Letter,Other"
+    },
+    {
+      "fieldName": "tag",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "isDefault",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "isResume",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "isProfilePic",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "createdBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdAt",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "updatedBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "updatedAt",
+      "fieldType": "LocalDate"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "worker",
+      "otherEntityRelationshipName": "file",
+      "relationshipName": "worker"
+    }
+  ],
+  "entityTableName": "file",
+  "dto": "mapstruct",
+  "pagination": "infinite-scroll",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["SimplifyMarketplace"],
+  "changelogDate": "20210809071243"
+}
