@@ -1,0 +1,426 @@
+
+entity Otp {
+	contextId String,
+    otp Integer,
+    email String,
+    phone Integer,
+    type OtpType,
+    expiryTime LocalDate,
+    status OtpStatus,
+    createdBy String,
+    createdAt LocalDate,
+    updatedBy String,
+    updatedAt LocalDate
+}
+
+enum OtpType {
+	Email,
+    Phone
+}
+
+enum OtpStatus {
+	Pending,
+    Failed,
+    Expired,
+    Approved
+}
+
+entity OtpAttempt {
+	contextId String,
+    otp Integer,
+    status OtpStatus,
+    ip String,
+    coookie String,
+    createdBy String,
+    createdAt LocalDate
+}
+
+
+entity CustomUser {
+}
+
+
+entity UserEmail {
+	email String required pattern(/^[^@\s]+@[^@\s]+\.[^@\s]+$/),
+    isActive Boolean,
+    isPrimary Boolean,
+    tag String,
+    createdBy String,
+    createdAt LocalDate,
+    updatedBy String,
+    updatedAt LocalDate
+}
+
+entity UserPhone {
+	phone Integer required min(1000000000) max (9999999999),
+    isActive Boolean,
+    isPrimary Boolean,
+    tag String,
+    createdBy String,
+    createdAt LocalDate,
+    updatedBy String,
+    updatedAt LocalDate
+}
+
+relationship OneToMany {
+	CustomUser to UserEmail{customUser},
+    CustomUser to UserPhone{customUser}
+}
+
+entity Address {
+	line1 String,
+    line2 String,
+    tag String
+}
+
+entity Location {
+	pincode Integer min(10000) max (99999),
+	country String,
+    state String,
+    city String
+}
+
+relationship ManyToOne {
+	Address{location} to Location
+}
+
+relationship OneToMany {
+	CustomUser to Address{customUser}
+}
+
+entity Client {
+    companyName String,
+    companyWebsite String,
+    companyType CompanyType,
+    primaryPhone Integer required min(1000000000) max (9999999999),
+    description String,
+    startDate LocalDate,
+    createdBy String,
+    createdAt LocalDate,
+    updatedBy String,
+    updatedAt LocalDate
+
+}
+
+enum CompanyType {
+	IT,
+    Consultant,
+    Hospital,
+    MediaHouse
+}
+
+entity Worker {
+    firstName String required,
+    middleName String,
+    lastName String required,
+    primaryPhone Integer required min(1000000000) max (9999999999),
+    description String,
+	dateOfBirth LocalDate,
+    createdBy String,
+    createdAt LocalDate,
+    updatedBy String,
+    updatedAt LocalDate
+}
+
+relationship OneToOne {
+	Worker{customUser} to CustomUser
+}
+
+relationship OneToOne {
+	Client{customUser} to CustomUser
+}
+
+
+entity File {
+    path String,
+    fileformat FileFormat,
+    filetype FileType,
+    tag String,
+    isDefault Boolean,
+    isResume Boolean,
+    isProfilePic Boolean,
+    createdBy String,
+    createdAt LocalDate,
+    updatedBy String,
+    updatedAt LocalDate
+}
+
+enum FileFormat {
+	PDF,
+    DOC,
+    PPT
+}
+
+enum FileType {
+	Resume,
+    Profile_Pic,
+    Other_Pic,
+    Cover_Letter,
+    Other
+}
+
+relationship OneToMany {
+    Worker to File{worker}
+}
+
+entity Education {
+    degreeName String,
+    institute String,
+    yearOfPassing Integer,
+    marks Float,
+    marksType MarksType,
+    grade EducationGrade,
+    startDate LocalDate,
+    endDate LocalDate,
+    isComplete Boolean,
+    degreeType DegreeType,
+    description String,
+    createdBy String,
+    createdAt LocalDate,
+    updatedBy String,
+    updatedAt LocalDate
+}
+
+enum EducationGrade {
+	FIRST,
+    SECOND,
+    THIRD
+}
+
+enum MarksType {
+	PERCENTAGE,
+    CGPA,
+    GPA
+}
+
+enum DegreeType {
+	HSC,
+    Graduate,
+    PostGraduate,
+    Associate,
+    Doctrol,
+    Diploma
+}
+
+entity SubjectMaster {
+	subjectName String
+}
+
+relationship ManyToOne {
+	Education{majorSubject} to SubjectMaster,
+    Education{minorSubject} to SubjectMaster
+}
+
+entity Certificate {
+    certificateName String,
+    issuer String,
+    issueYear Integer,
+    expiryYear Integer,
+    description String,
+    createdBy String,
+    createdAt LocalDate,
+    updatedBy String,
+    updatedAt LocalDate
+}
+
+relationship OneToMany {
+    Worker to Education {worker}
+}
+
+relationship OneToMany {
+    Worker to Certificate {worker}
+}
+
+entity Employment {
+    jobTitle String,
+    companyName String,
+    startDate LocalDate,
+    endDate LocalDate,
+    isCurrent Boolean,
+    lastSalary Integer,
+    description String,
+    createdBy String,
+    createdAt LocalDate,
+    updatedBy String,
+    updatedAt LocalDate
+}
+
+relationship OneToMany {
+    Worker to Employment {worker}
+}
+
+relationship OneToMany {
+    Employment to Location {employment}
+}
+
+relationship ManyToOne {
+    Employment{company} to Client
+}
+
+entity SkillsMaster {
+	skillName String
+}
+
+relationship ManyToMany {
+    Worker{skill} to SkillsMaster{worker}
+}
+
+entity Portfolio {
+	portfolioURL String,
+    type PortfolioType
+}
+
+enum PortfolioType {
+	GIT,
+    Linkedin,
+    Twitter,
+    Kaggle,
+    Medium,
+    SOF,
+    Other
+}
+
+relationship OneToMany {
+    Worker to Portfolio{worker}
+}
+
+entity Refereces {
+	name String,
+    email String pattern(/^[^@\s]+@[^@\s]+\.[^@\s]+$/),
+    phone Integer min(1000000000) max (9999999999),
+    profileLink String,
+    relationType RelationType
+}
+
+enum RelationType {
+	Supervisor,
+    Peer,
+    Other
+}
+
+relationship OneToMany {
+    Worker to Refereces {worker}
+}
+
+
+entity JobPreference {
+    hourlyRate Integer,
+    dailyRate Integer,
+    monthlyRate Integer,
+    hourPerDay Integer,
+    hourPerWeek Integer,
+    engagementType EngagementType,
+    employmentType EmploymentType,
+    locationType LocationType,
+    availableFrom LocalDate,
+    availableTo LocalDate,
+    isActive Boolean,
+    createdBy String,
+    createdAt LocalDate,
+    updatedBy String,
+    updatedAt LocalDate
+}
+
+enum EngagementType {
+	FullTime,
+    PartTime
+}
+
+enum EmploymentType {
+	Permanent,
+    Contractual
+}
+
+enum LocationType {
+	WorkFromOffice,
+    WorkFromHome,
+    Both
+}
+
+entity Category {
+	name String,
+    isParent Boolean,
+    isActive Boolean
+    createdBy String,
+    createdAt LocalDate,
+    updatedBy String,
+    updatedAt LocalDate
+}
+
+relationship OneToMany {
+    Category to Category{parent}
+}
+
+relationship ManyToOne {
+    JobPreference{subCategory} to Category
+}
+
+relationship OneToMany {
+    Worker to JobPreference{worker}
+}
+
+entity LocationPrefrence {
+	prefrenceOrder Integer
+}
+
+relationship OneToMany {
+    JobPreference to LocationPrefrence{worker}
+}
+
+relationship OneToMany {
+    Location to LocationPrefrence{location}
+}
+
+
+
+entity Field {
+    fieldName String,
+    fieldLabel String,
+    fieldType FieldType,
+    isActive Boolean,
+    createdBy String,
+    createdAt LocalDate,
+    updatedBy String,
+    updatedAt LocalDate
+}
+
+enum FieldType {
+	Text,
+    Date,
+    Number,
+    Rate,
+    Email
+}
+
+relationship OneToMany {
+    Category to Field{category}
+}
+
+entity FieldValue {
+	value String
+}
+
+relationship OneToMany {
+    JobPreference to FieldValue {jobpreference},
+    Field to FieldValue{field}
+}
+
+application {
+  config {
+    baseName SimplifyMarketplace
+    applicationType monolith
+    serverPort 9001
+    devDatabaseType mysql
+    prodDatabaseType mysql
+    clientFramework react
+    clientPackageManager npm
+    authenticationType jwt
+    buildTool maven
+    enableSwaggerCodegen true
+    packageName com.simplify.marketplace
+  }
+  entities *
+  dto * with mapstruct
+  paginate * with infinite-scroll
+  service all with serviceImpl
+}
