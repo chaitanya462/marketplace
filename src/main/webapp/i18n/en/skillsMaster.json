@@ -1,0 +1,25 @@
+{
+  "simplifyMarketplaceApp": {
+    "skillsMaster": {
+      "home": {
+        "title": "Skills Masters",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Skills Master",
+        "createOrEditLabel": "Create or edit a Skills Master",
+        "notFound": "No Skills Masters found"
+      },
+      "created": "A new Skills Master is created with identifier {{ param }}",
+      "updated": "A Skills Master is updated with identifier {{ param }}",
+      "deleted": "A Skills Master is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Skills Master {{ id }}?"
+      },
+      "detail": {
+        "title": "Skills Master"
+      },
+      "id": "ID",
+      "skillName": "Skill Name",
+      "worker": "Worker"
+    }
+  }
+}

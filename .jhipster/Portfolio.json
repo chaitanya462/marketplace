@@ -1,0 +1,32 @@
+{
+  "name": "Portfolio",
+  "fields": [
+    {
+      "fieldName": "portfolioURL",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "type",
+      "fieldType": "PortfolioType",
+      "fieldValues": "GIT,Linkedin,Twitter,Kaggle,Medium,SOF,Other"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "worker",
+      "otherEntityRelationshipName": "portfolio",
+      "relationshipName": "worker"
+    }
+  ],
+  "entityTableName": "portfolio",
+  "dto": "mapstruct",
+  "pagination": "infinite-scroll",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["SimplifyMarketplace"],
+  "changelogDate": "20210809071249"
+}

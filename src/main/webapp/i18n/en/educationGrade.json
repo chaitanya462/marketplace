@@ -1,0 +1,10 @@
+{
+  "simplifyMarketplaceApp": {
+    "EducationGrade": {
+      "null": "",
+      "FIRST": "FIRST",
+      "SECOND": "SECOND",
+      "THIRD": "THIRD"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "simplifyMarketplaceApp": {
+    "refereces": {
+      "home": {
+        "title": "Refereces",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Refereces",
+        "createOrEditLabel": "Create or edit a Refereces",
+        "notFound": "No Refereces found"
+      },
+      "created": "A new Refereces is created with identifier {{ param }}",
+      "updated": "A Refereces is updated with identifier {{ param }}",
+      "deleted": "A Refereces is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Refereces {{ id }}?"
+      },
+      "detail": {
+        "title": "Refereces"
+      },
+      "id": "ID",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "profileLink": "Profile Link",
+      "relationType": "Relation Type",
+      "worker": "Worker"
+    }
+  }
+}

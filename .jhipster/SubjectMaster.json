@@ -1,0 +1,20 @@
+{
+  "name": "SubjectMaster",
+  "fields": [
+    {
+      "fieldName": "subjectName",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [],
+  "entityTableName": "subject_master",
+  "dto": "mapstruct",
+  "pagination": "infinite-scroll",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["SimplifyMarketplace"],
+  "changelogDate": "20210809071245"
+}

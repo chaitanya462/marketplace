@@ -1,0 +1,33 @@
+{
+  "name": "LocationPrefrence",
+  "fields": [
+    {
+      "fieldName": "prefrenceOrder",
+      "fieldType": "Integer"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "jobPreference",
+      "otherEntityRelationshipName": "locationPrefrence",
+      "relationshipName": "worker"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "location",
+      "otherEntityRelationshipName": "locationPrefrence",
+      "relationshipName": "location"
+    }
+  ],
+  "entityTableName": "location_prefrence",
+  "dto": "mapstruct",
+  "pagination": "infinite-scroll",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["SimplifyMarketplace"],
+  "changelogDate": "20210809071253"
+}

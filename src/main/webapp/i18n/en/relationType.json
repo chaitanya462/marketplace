@@ -1,0 +1,10 @@
+{
+  "simplifyMarketplaceApp": {
+    "RelationType": {
+      "null": "",
+      "Supervisor": "Supervisor",
+      "Peer": "Peer",
+      "Other": "Other"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "simplifyMarketplaceApp": {
+    "userEmail": {
+      "home": {
+        "title": "User Emails",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new User Email",
+        "createOrEditLabel": "Create or edit a User Email",
+        "notFound": "No User Emails found"
+      },
+      "created": "A new User Email is created with identifier {{ param }}",
+      "updated": "A User Email is updated with identifier {{ param }}",
+      "deleted": "A User Email is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete User Email {{ id }}?"
+      },
+      "detail": {
+        "title": "User Email"
+      },
+      "id": "ID",
+      "email": "Email",
+      "isActive": "Is Active",
+      "isPrimary": "Is Primary",
+      "tag": "Tag",
+      "createdBy": "Created By",
+      "createdAt": "Created At",
+      "updatedBy": "Updated By",
+      "updatedAt": "Updated At",
+      "customUser": "Custom User"
+    }
+  }
+}

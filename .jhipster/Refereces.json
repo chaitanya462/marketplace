@@ -1,0 +1,49 @@
+{
+  "name": "Refereces",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "email",
+      "fieldType": "String",
+      "fieldValidateRules": ["pattern"],
+      "fieldValidateRulesPattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"
+    },
+    {
+      "fieldName": "phone",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["min", "max"],
+      "fieldValidateRulesMin": "1000000000",
+      "fieldValidateRulesMax": "9999999999"
+    },
+    {
+      "fieldName": "profileLink",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "relationType",
+      "fieldType": "RelationType",
+      "fieldValues": "Supervisor,Peer,Other"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "worker",
+      "otherEntityRelationshipName": "refereces",
+      "relationshipName": "worker"
+    }
+  ],
+  "entityTableName": "refereces",
+  "dto": "mapstruct",
+  "pagination": "infinite-scroll",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["SimplifyMarketplace"],
+  "changelogDate": "20210809071250"
+}

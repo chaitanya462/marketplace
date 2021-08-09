@@ -1,0 +1,34 @@
+{
+  "simplifyMarketplaceApp": {
+    "otp": {
+      "home": {
+        "title": "Otps",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Otp",
+        "createOrEditLabel": "Create or edit a Otp",
+        "notFound": "No Otps found"
+      },
+      "created": "A new Otp is created with identifier {{ param }}",
+      "updated": "A Otp is updated with identifier {{ param }}",
+      "deleted": "A Otp is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Otp {{ id }}?"
+      },
+      "detail": {
+        "title": "Otp"
+      },
+      "id": "ID",
+      "contextId": "Context Id",
+      "otp": "Otp",
+      "email": "Email",
+      "phone": "Phone",
+      "type": "Type",
+      "expiryTime": "Expiry Time",
+      "status": "Status",
+      "createdBy": "Created By",
+      "createdAt": "Created At",
+      "updatedBy": "Updated By",
+      "updatedAt": "Updated At"
+    }
+  }
+}

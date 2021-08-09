@@ -1,0 +1,33 @@
+{
+  "name": "FieldValue",
+  "fields": [
+    {
+      "fieldName": "value",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "jobPreference",
+      "otherEntityRelationshipName": "fieldValue",
+      "relationshipName": "jobpreference"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "field",
+      "otherEntityRelationshipName": "fieldValue",
+      "relationshipName": "field"
+    }
+  ],
+  "entityTableName": "field_value",
+  "dto": "mapstruct",
+  "pagination": "infinite-scroll",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": ["SimplifyMarketplace"],
+  "changelogDate": "20210809071255"
+}

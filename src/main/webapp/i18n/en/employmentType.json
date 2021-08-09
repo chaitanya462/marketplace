@@ -1,0 +1,9 @@
+{
+  "simplifyMarketplaceApp": {
+    "EmploymentType": {
+      "null": "",
+      "Permanent": "Permanent",
+      "Contractual": "Contractual"
+    }
+  }
+}
