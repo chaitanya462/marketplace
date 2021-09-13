@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Row, Col } from 'reactstrap';
-import { Translate, TextFormat } from 'react-jhipster';
+import { Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { getEntity } from './category.reducer';
@@ -47,34 +47,6 @@ export const CategoryDetail = (props: RouteComponentProps<{ id: string }>) => {
             </span>
           </dt>
           <dd>{categoryEntity.isActive ? 'true' : 'false'}</dd>
-          <dt>
-            <span id="createdBy">
-              <Translate contentKey="simplifyMarketplaceApp.category.createdBy">Created By</Translate>
-            </span>
-          </dt>
-          <dd>{categoryEntity.createdBy}</dd>
-          <dt>
-            <span id="createdAt">
-              <Translate contentKey="simplifyMarketplaceApp.category.createdAt">Created At</Translate>
-            </span>
-          </dt>
-          <dd>
-            {categoryEntity.createdAt ? <TextFormat value={categoryEntity.createdAt} type="date" format={APP_LOCAL_DATE_FORMAT} /> : null}
-          </dd>
-          <dt>
-            <span id="updatedBy">
-              <Translate contentKey="simplifyMarketplaceApp.category.updatedBy">Updated By</Translate>
-            </span>
-          </dt>
-          <dd>{categoryEntity.updatedBy}</dd>
-          <dt>
-            <span id="updatedAt">
-              <Translate contentKey="simplifyMarketplaceApp.category.updatedAt">Updated At</Translate>
-            </span>
-          </dt>
-          <dd>
-            {categoryEntity.updatedAt ? <TextFormat value={categoryEntity.updatedAt} type="date" format={APP_LOCAL_DATE_FORMAT} /> : null}
-          </dd>
           <dt>
             <Translate contentKey="simplifyMarketplaceApp.category.parent">Parent</Translate>
           </dt>

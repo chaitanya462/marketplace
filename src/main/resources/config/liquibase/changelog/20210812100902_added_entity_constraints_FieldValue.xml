@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <!--
+        Added the constraints for entity FieldValue.
+    -->
+    <changeSet id="20210812100902-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="jobpreference_id"
+                                 baseTableName="field_value"
+                                 constraintName="fk_field_value__jobpreference_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="job_preference"/>
+
+        <addForeignKeyConstraint baseColumnNames="field_id"
+                                 baseTableName="field_value"
+                                 constraintName="fk_field_value__field_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="field"/>
+    </changeSet>
+</databaseChangeLog>

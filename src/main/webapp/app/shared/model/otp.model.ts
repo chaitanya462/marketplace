@@ -7,14 +7,13 @@ export interface IOtp {
   contextId?: string | null;
   otp?: number | null;
   email?: string | null;
+  isActive?: boolean | null;
   phone?: number | null;
   type?: OtpType | null;
   expiryTime?: string | null;
   status?: OtpStatus | null;
-  createdBy?: string | null;
-  createdAt?: string | null;
-  updatedBy?: string | null;
-  updatedAt?: string | null;
 }
 
-export const defaultValue: Readonly<IOtp> = {};
+export const defaultValue: Readonly<IOtp> = {
+  isActive: false,
+};

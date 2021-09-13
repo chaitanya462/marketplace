@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { ICustomUser } from 'app/shared/model/custom-user.model';
+import { IUser } from 'app/shared/model/user.model';
 import { IFile } from 'app/shared/model/file.model';
 import { IEducation } from 'app/shared/model/education.model';
 import { ICertificate } from 'app/shared/model/certificate.model';
@@ -14,14 +14,11 @@ export interface IWorker {
   firstName?: string;
   middleName?: string | null;
   lastName?: string;
-  primaryPhone?: number;
+  primaryPhone?: string | null;
   description?: string | null;
   dateOfBirth?: string | null;
-  createdBy?: string | null;
-  createdAt?: string | null;
-  updatedBy?: string | null;
-  updatedAt?: string | null;
-  customUser?: ICustomUser | null;
+  isActive?: boolean | null;
+  user?: IUser | null;
   files?: IFile[] | null;
   educations?: IEducation[] | null;
   certificates?: ICertificate[] | null;
@@ -32,4 +29,6 @@ export interface IWorker {
   skills?: ISkillsMaster[] | null;
 }
 
-export const defaultValue: Readonly<IWorker> = {};
+export const defaultValue: Readonly<IWorker> = {
+  isActive: false,
+};

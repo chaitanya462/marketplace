@@ -138,8 +138,7 @@ export const Address = (props: RouteComponentProps<{ url: string }>) => {
                     <Translate contentKey="simplifyMarketplaceApp.address.location">Location</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
                   <th>
-                    <Translate contentKey="simplifyMarketplaceApp.address.customUser">Custom User</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
+                    <Translate contentKey="simplifyMarketplaceApp.address.user">User</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
                   <th />
                 </tr>
@@ -156,7 +155,7 @@ export const Address = (props: RouteComponentProps<{ url: string }>) => {
                     <td>{address.line2}</td>
                     <td>{address.tag}</td>
                     <td>{address.location ? <Link to={`location/${address.location.id}`}>{address.location.id}</Link> : ''}</td>
-                    <td>{address.customUser ? <Link to={`custom-user/${address.customUser.id}`}>{address.customUser.id}</Link> : ''}</td>
+                    <td>{address.user ? address.user.id : ''}</td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">
                         <Button tag={Link} to={`${match.url}/${address.id}`} color="info" size="sm" data-cy="entityDetailsButton">

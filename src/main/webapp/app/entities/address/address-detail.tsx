@@ -52,9 +52,9 @@ export const AddressDetail = (props: RouteComponentProps<{ id: string }>) => {
           </dt>
           <dd>{addressEntity.location ? addressEntity.location.id : ''}</dd>
           <dt>
-            <Translate contentKey="simplifyMarketplaceApp.address.customUser">Custom User</Translate>
+            <Translate contentKey="simplifyMarketplaceApp.address.user">User</Translate>
           </dt>
-          <dd>{addressEntity.customUser ? addressEntity.customUser.id : ''}</dd>
+          <dd>{addressEntity.user ? addressEntity.user.id : ''}</dd>
         </dl>
         <Button tag={Link} to="/address" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

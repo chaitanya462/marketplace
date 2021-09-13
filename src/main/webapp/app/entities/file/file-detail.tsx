@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Row, Col } from 'reactstrap';
-import { Translate, TextFormat } from 'react-jhipster';
+import { Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { getEntity } from './file.reducer';
@@ -71,30 +71,6 @@ export const FileDetail = (props: RouteComponentProps<{ id: string }>) => {
             </span>
           </dt>
           <dd>{fileEntity.isProfilePic ? 'true' : 'false'}</dd>
-          <dt>
-            <span id="createdBy">
-              <Translate contentKey="simplifyMarketplaceApp.file.createdBy">Created By</Translate>
-            </span>
-          </dt>
-          <dd>{fileEntity.createdBy}</dd>
-          <dt>
-            <span id="createdAt">
-              <Translate contentKey="simplifyMarketplaceApp.file.createdAt">Created At</Translate>
-            </span>
-          </dt>
-          <dd>{fileEntity.createdAt ? <TextFormat value={fileEntity.createdAt} type="date" format={APP_LOCAL_DATE_FORMAT} /> : null}</dd>
-          <dt>
-            <span id="updatedBy">
-              <Translate contentKey="simplifyMarketplaceApp.file.updatedBy">Updated By</Translate>
-            </span>
-          </dt>
-          <dd>{fileEntity.updatedBy}</dd>
-          <dt>
-            <span id="updatedAt">
-              <Translate contentKey="simplifyMarketplaceApp.file.updatedAt">Updated At</Translate>
-            </span>
-          </dt>
-          <dd>{fileEntity.updatedAt ? <TextFormat value={fileEntity.updatedAt} type="date" format={APP_LOCAL_DATE_FORMAT} /> : null}</dd>
           <dt>
             <Translate contentKey="simplifyMarketplaceApp.file.worker">Worker</Translate>
           </dt>

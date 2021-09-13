@@ -186,34 +186,6 @@ export const JobPreferenceUpdate = (props: RouteComponentProps<{ id: string }>) 
                 type="checkbox"
               />
               <ValidatedField
-                label={translate('simplifyMarketplaceApp.jobPreference.createdBy')}
-                id="job-preference-createdBy"
-                name="createdBy"
-                data-cy="createdBy"
-                type="text"
-              />
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.jobPreference.createdAt')}
-                id="job-preference-createdAt"
-                name="createdAt"
-                data-cy="createdAt"
-                type="date"
-              />
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.jobPreference.updatedBy')}
-                id="job-preference-updatedBy"
-                name="updatedBy"
-                data-cy="updatedBy"
-                type="text"
-              />
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.jobPreference.updatedAt')}
-                id="job-preference-updatedAt"
-                name="updatedAt"
-                data-cy="updatedAt"
-                type="date"
-              />
-              <ValidatedField
                 id="job-preference-subCategory"
                 name="subCategoryId"
                 data-cy="subCategory"

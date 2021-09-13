@@ -2,15 +2,15 @@ package com.simplify.marketplace.web.rest;
 
 import com.simplify.marketplace.repository.ClientRepository;
 import com.simplify.marketplace.service.ClientService;
+import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.dto.ClientDTO;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +32,8 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class ClientResource {
 
+    private UserService userService;
+
     private final Logger log = LoggerFactory.getLogger(ClientResource.class);
 
     private static final String ENTITY_NAME = "client";
@@ -43,9 +45,10 @@ public class ClientResource {
 
     private final ClientRepository clientRepository;
 
-    public ClientResource(ClientService clientService, ClientRepository clientRepository) {
+    public ClientResource(ClientService clientService, ClientRepository clientRepository, UserService userService) {
         this.clientService = clientService;
         this.clientRepository = clientRepository;
+        this.userService = userService;
     }
 
     /**
@@ -56,11 +59,15 @@ public class ClientResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/clients")
-    public ResponseEntity<ClientDTO> createClient(@Valid @RequestBody ClientDTO clientDTO) throws URISyntaxException {
+    public ResponseEntity<ClientDTO> createClient(@RequestBody ClientDTO clientDTO) throws URISyntaxException {
         log.debug("REST request to save Client : {}", clientDTO);
         if (clientDTO.getId() != null) {
             throw new BadRequestAlertException("A new client cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        clientDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        clientDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        clientDTO.setUpdatedAt(LocalDate.now());
+        clientDTO.setCreatedAt(LocalDate.now());
         ClientDTO result = clientService.save(clientDTO);
         return ResponseEntity
             .created(new URI("/api/clients/" + result.getId()))
@@ -81,7 +88,7 @@ public class ClientResource {
     @PutMapping("/clients/{id}")
     public ResponseEntity<ClientDTO> updateClient(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody ClientDTO clientDTO
+        @RequestBody ClientDTO clientDTO
     ) throws URISyntaxException {
         log.debug("REST request to update Client : {}, {}", id, clientDTO);
         if (clientDTO.getId() == null) {
@@ -94,7 +101,8 @@ public class ClientResource {
         if (!clientRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-
+        clientDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        clientDTO.setUpdatedAt(LocalDate.now());
         ClientDTO result = clientService.save(clientDTO);
         return ResponseEntity
             .ok()
@@ -116,7 +124,7 @@ public class ClientResource {
     @PatchMapping(value = "/clients/{id}", consumes = "application/merge-patch+json")
     public ResponseEntity<ClientDTO> partialUpdateClient(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody ClientDTO clientDTO
+        @RequestBody ClientDTO clientDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update Client partially : {}, {}", id, clientDTO);
         if (clientDTO.getId() == null) {
@@ -129,6 +137,8 @@ public class ClientResource {
         if (!clientRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        clientDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        clientDTO.setUpdatedAt(LocalDate.now());
 
         Optional<ClientDTO> result = clientService.partialUpdate(clientDTO);
 

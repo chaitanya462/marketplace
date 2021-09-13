@@ -1,11 +1,11 @@
-id;company_name;company_website;company_type;primary_phone;description;start_date;created_by;created_at;updated_by;updated_at
-1;reciprocal withdrawal;synthesize compressing;Hospital;8006614029;parse compressing;2021-08-08;Functionality strategy;2021-08-08;Market Integration;2021-08-08
-2;capacitor hard;iterate;MediaHouse;8071013817;Kids compressing;2021-08-08;Account superstructure Security;2021-08-08;morph index;2021-08-08
-3;Corporate Wooden;Metal Wooden back-end;Consultant;5486414921;Licensed;2021-08-09;index;2021-08-08;Customer;2021-08-08
-4;Hryvnia context-sensitive Plastic;regional;IT;1041799262;Division Corporate;2021-08-09;bandwidth Wisconsin;2021-08-08;Up-sized payment global;2021-08-09
-5;Kwanza;Fantastic;IT;3552198890;client-driven;2021-08-08;Market Gorgeous;2021-08-08;Nicaragua Executive;2021-08-08
-6;Director SCSI Executive;Strategist Nauru;Hospital;9408566757;Keyboard Fish;2021-08-08;Central cutting-edge Account;2021-08-08;bricks-and-clicks magnetic invoice;2021-08-08
-7;Bedfordshire Director reinvent;Japan Fresh;MediaHouse;9228484679;index;2021-08-08;Mouse calculate;2021-08-09;SAS Chips Dinar;2021-08-08
-8;Soft Intelligent;payment Ergonomic FTP;Hospital;6243755611;Mexico Granite reintermediate;2021-08-08;Islands Loan Officer;2021-08-08;next;2021-08-09
-9;vortals;bandwidth Korean Berkshire;MediaHouse;3295950223;Locks;2021-08-08;Directives Multi-channelled payment;2021-08-08;Clothing fresh-thinking;2021-08-08
-10;eyeballs Supervisor;24/7 GB;Hospital;1127043999;Sausages Buckinghamshire;2021-08-08;Leu implement;2021-08-09;models;2021-08-08
+id;company_name;company_website;company_type;primary_phone;is_active;description;start_date
+1;reciprocal withdrawal;synthesize compressing;Hospital;Island applications paradigm;true;envisioneer;2021-08-11
+2;engage invoice Grocery;Program Arkansas iterate;MediaHouse;Avon neural vortals;true;virtual;2021-08-11
+3;Ergonomic Maine Legacy;Account Concrete;IT;Associate Taiwan;false;grey;2021-08-11
+4;Avon online;index;Hospital;Customer;false;Hryvnia context-sensitive Plastic;2021-08-12
+5;haptic;Via;MediaHouse;Bike payment Borders;true;overriding migration Plastic;2021-08-12
+6;magenta;Music leverage Pants;Consultant;sexy Reduced;false;withdrawal Wooden;2021-08-11
+7;wireless COM Licensed;Supervisor Account Branding;IT;Fish Cambridgeshire;false;cutting-edge Account;2021-08-11
+8;bricks-and-clicks magnetic invoice;Central silver;Hospital;gold Japan;false;Sausages Cheese withdrawal;2021-08-12
+9;Loan;Shoes;MediaHouse;Chips Dinar withdrawal;true;Intelligent Kina;2021-08-12
+10;Handmade;Rubber;Hospital;Granite reintermediate networks;false;Loan Officer Money;2021-08-11

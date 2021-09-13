@@ -18,10 +18,6 @@ export interface IEducation {
   isComplete?: boolean | null;
   degreeType?: DegreeType | null;
   description?: string | null;
-  createdBy?: string | null;
-  createdAt?: string | null;
-  updatedBy?: string | null;
-  updatedAt?: string | null;
   majorSubject?: ISubjectMaster | null;
   minorSubject?: ISubjectMaster | null;
   worker?: IWorker | null;

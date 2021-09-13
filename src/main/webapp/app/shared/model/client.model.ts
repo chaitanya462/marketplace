@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { ICustomUser } from 'app/shared/model/custom-user.model';
+import { IUser } from 'app/shared/model/user.model';
 import { CompanyType } from 'app/shared/model/enumerations/company-type.model';
 
 export interface IClient {
@@ -7,14 +7,13 @@ export interface IClient {
   companyName?: string | null;
   companyWebsite?: string | null;
   companyType?: CompanyType | null;
-  primaryPhone?: number;
+  primaryPhone?: string | null;
+  isActive?: boolean | null;
   description?: string | null;
   startDate?: string | null;
-  createdBy?: string | null;
-  createdAt?: string | null;
-  updatedBy?: string | null;
-  updatedAt?: string | null;
-  customUser?: ICustomUser | null;
+  user?: IUser | null;
 }
 
-export const defaultValue: Readonly<IClient> = {};
+export const defaultValue: Readonly<IClient> = {
+  isActive: false,
+};

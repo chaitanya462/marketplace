@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <!--
+        Added the constraints for entity Worker.
+    -->
+    <changeSet id="20210812095602-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="worker"
+                                 constraintName="fk_worker__user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"/>
+
+        <addForeignKeyConstraint baseColumnNames="worker_id"
+                                 baseTableName="rel_worker__skill"
+                                 constraintName="fk_rel_worker__skill__worker_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="worker"/>
+
+        <addForeignKeyConstraint baseColumnNames="skill_id"
+                                 baseTableName="rel_worker__skill"
+                                 constraintName="fk_rel_worker__skill__skill_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="skills_master"/>
+    </changeSet>
+</databaseChangeLog>

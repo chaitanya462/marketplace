@@ -1,18 +1,31 @@
 package com.simplify.marketplace.web.rest;
 
+import com.simplify.marketplace.domain.ElasticWorker;
+import com.simplify.marketplace.domain.Employment;
+import com.simplify.marketplace.domain.Location;
+import com.simplify.marketplace.repository.ESearchWorkerRepository;
+import com.simplify.marketplace.repository.EmploymentRepository;
 import com.simplify.marketplace.repository.LocationRepository;
+import com.simplify.marketplace.service.EmploymentService;
 import com.simplify.marketplace.service.LocationService;
+import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.dto.LocationDTO;
+import com.simplify.marketplace.service.mapper.EmploymentMapper;
+import com.simplify.marketplace.service.mapper.LocationMapper;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +45,26 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class LocationResource {
 
+    private UserService userService;
+
+    @Autowired
+    ESearchWorkerRepository elasticworkerRepo;
+
+    @Autowired
+    EmploymentService employmentService;
+
+    @Autowired
+    EmploymentMapper employmentMapper;
+
+    @Autowired
+    LocationMapper locationMapper;
+
+    @Autowired
+    RabbitTemplate rabbit_msg;
+
+    @Autowired
+    EmploymentRepository employmentrepo;
+
     private final Logger log = LoggerFactory.getLogger(LocationResource.class);
 
     private static final String ENTITY_NAME = "location";
@@ -43,9 +76,10 @@ public class LocationResource {
 
     private final LocationRepository locationRepository;
 
-    public LocationResource(LocationService locationService, LocationRepository locationRepository) {
+    public LocationResource(LocationService locationService, LocationRepository locationRepository, UserService userService) {
         this.locationService = locationService;
         this.locationRepository = locationRepository;
+        this.userService = userService;
     }
 
     /**
@@ -61,7 +95,35 @@ public class LocationResource {
         if (locationDTO.getId() != null) {
             throw new BadRequestAlertException("A new location cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        LocationDTO result = locationService.save(locationDTO);
+        locationDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        locationDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        locationDTO.setUpdatedAt(LocalDate.now());
+        locationDTO.setCreatedAt(LocalDate.now());
+
+        LocationDTO result = null;
+
+        if (locationDTO.getEmployment() != null) {
+            Employment prevemp = employmentService.getEmploymentById(locationDTO.getEmployment().getId());
+            Set<Location> emplocation = locationService.fineONEEMP(locationDTO.getEmployment().getId());
+            prevemp.setLocations(emplocation);
+
+            result = locationService.save(locationDTO);
+
+            Long workerid = locationDTO.getEmployment().getWorker().getId();
+            ElasticWorker elasticworker = elasticworkerRepo.findById(workerid.toString()).get();
+            prevemp.setWorker(null);
+
+            elasticworker.removeEmployment(prevemp);
+            locationDTO.setId(result.getId());
+            prevemp.addLocation(locationMapper.toEntity(locationDTO));
+
+            elasticworker.addEmployment(prevemp);
+
+            rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+        } else {
+            result = locationService.save(locationDTO);
+        }
+
         return ResponseEntity
             .created(new URI("/api/locations/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -94,8 +156,13 @@ public class LocationResource {
         if (!locationRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-
+        locationDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        locationDTO.setUpdatedAt(LocalDate.now());
         LocationDTO result = locationService.save(locationDTO);
+        //        Long Emp_id = locationDTO.getEmployment().getId();
+        //        Employment employment = employmentService.getEmploymentById(Emp_id);
+        //        Set<Location> emplocation = locationService.fineONEEMP(locationDTO.getEmployment().getId());
+
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, locationDTO.getId().toString()))
@@ -129,7 +196,8 @@ public class LocationResource {
         if (!locationRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-
+        locationDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        locationDTO.setUpdatedAt(LocalDate.now());
         Optional<LocationDTO> result = locationService.partialUpdate(locationDTO);
 
         return ResponseUtil.wrapOrNotFound(

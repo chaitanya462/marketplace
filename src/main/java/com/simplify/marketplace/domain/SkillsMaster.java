@@ -1,12 +1,21 @@
 package com.simplify.marketplace.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  * A SkillsMaster.
@@ -14,6 +23,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "skills_master")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Data
 public class SkillsMaster implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -25,45 +35,42 @@ public class SkillsMaster implements Serializable {
     @Column(name = "skill_name")
     private String skillName;
 
+    @Column(name = "created_by")
+    private String createdBy;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
+    @Column(name = "created_at")
+    private LocalDate createdAt;
+
+    @Column(name = "updated_by")
+    private String updatedBy;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
+    @Column(name = "updated_at")
+    private LocalDate updatedAt;
+
     @ManyToMany(mappedBy = "skills")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(
-        value = {
-            "customUser", "files", "educations", "certificates", "employments", "portfolios", "refereces", "jobPreferences", "skills",
-        },
+        value = { "user", "files", "educations", "certificates", "employments", "portfolios", "refereces", "jobPreferences", "skills" },
         allowSetters = true
     )
     private Set<Worker> workers = new HashSet<>();
-
-    // jhipster-needle-entity-add-field - JHipster will add fields here
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public SkillsMaster id(Long id) {
         this.id = id;
         return this;
     }
 
-    public String getSkillName() {
-        return this.skillName;
-    }
-
     public SkillsMaster skillName(String skillName) {
         this.skillName = skillName;
         return this;
-    }
-
-    public void setSkillName(String skillName) {
-        this.skillName = skillName;
-    }
-
-    public Set<Worker> getWorkers() {
-        return this.workers;
     }
 
     public SkillsMaster workers(Set<Worker> workers) {
@@ -83,41 +90,23 @@ public class SkillsMaster implements Serializable {
         return this;
     }
 
-    public void setWorkers(Set<Worker> workers) {
-        if (this.workers != null) {
-            this.workers.forEach(i -> i.removeSkill(this));
-        }
-        if (workers != null) {
-            workers.forEach(i -> i.addSkill(this));
-        }
-        this.workers = workers;
+    public SkillsMaster createdBy(String createdBy) {
+        this.createdBy = createdBy;
+        return this;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof SkillsMaster)) {
-            return false;
-        }
-        return id != null && id.equals(((SkillsMaster) o).id);
+    public SkillsMaster createdAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+        return this;
     }
 
-    @Override
-    public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
-        return getClass().hashCode();
+    public SkillsMaster updatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+        return this;
     }
 
-    // prettier-ignore
-    @Override
-    public String toString() {
-        return "SkillsMaster{" +
-            "id=" + getId() +
-            ", skillName='" + getSkillName() + "'" +
-            "}";
+    public SkillsMaster updatedAt(LocalDate updatedAt) {
+        this.updatedAt = updatedAt;
+        return this;
     }
 }

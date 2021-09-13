@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Col, Row, Table } from 'reactstrap';
-import { Translate, TextFormat, getSortState } from 'react-jhipster';
+import { Translate, getSortState } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { getEntities, reset } from './user-phone.reducer';
@@ -138,25 +138,8 @@ export const UserPhone = (props: RouteComponentProps<{ url: string }>) => {
                   <th className="hand" onClick={sort('tag')}>
                     <Translate contentKey="simplifyMarketplaceApp.userPhone.tag">Tag</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
-                  <th className="hand" onClick={sort('createdBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.userPhone.createdBy">Created By</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('createdAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.userPhone.createdAt">Created At</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('updatedBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.userPhone.updatedBy">Updated By</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('updatedAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.userPhone.updatedAt">Updated At</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
                   <th>
-                    <Translate contentKey="simplifyMarketplaceApp.userPhone.customUser">Custom User</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
+                    <Translate contentKey="simplifyMarketplaceApp.userPhone.user">User</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
                   <th />
                 </tr>
@@ -173,17 +156,7 @@ export const UserPhone = (props: RouteComponentProps<{ url: string }>) => {
                     <td>{userPhone.isActive ? 'true' : 'false'}</td>
                     <td>{userPhone.isPrimary ? 'true' : 'false'}</td>
                     <td>{userPhone.tag}</td>
-                    <td>{userPhone.createdBy}</td>
-                    <td>
-                      {userPhone.createdAt ? <TextFormat type="date" value={userPhone.createdAt} format={APP_LOCAL_DATE_FORMAT} /> : null}
-                    </td>
-                    <td>{userPhone.updatedBy}</td>
-                    <td>
-                      {userPhone.updatedAt ? <TextFormat type="date" value={userPhone.updatedAt} format={APP_LOCAL_DATE_FORMAT} /> : null}
-                    </td>
-                    <td>
-                      {userPhone.customUser ? <Link to={`custom-user/${userPhone.customUser.id}`}>{userPhone.customUser.id}</Link> : ''}
-                    </td>
+                    <td>{userPhone.user ? userPhone.user.id : ''}</td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">
                         <Button tag={Link} to={`${match.url}/${userPhone.id}`} color="info" size="sm" data-cy="entityDetailsButton">

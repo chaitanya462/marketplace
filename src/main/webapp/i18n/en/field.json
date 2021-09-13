@@ -22,10 +22,6 @@
       "fieldLabel": "Field Label",
       "fieldType": "Field Type",
       "isActive": "Is Active",
-      "createdBy": "Created By",
-      "createdAt": "Created At",
-      "updatedBy": "Updated By",
-      "updatedAt": "Updated At",
       "fieldValue": "Field Value",
       "category": "Category"
     }

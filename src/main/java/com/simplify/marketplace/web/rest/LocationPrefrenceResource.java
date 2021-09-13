@@ -2,10 +2,12 @@ package com.simplify.marketplace.web.rest;
 
 import com.simplify.marketplace.repository.LocationPrefrenceRepository;
 import com.simplify.marketplace.service.LocationPrefrenceService;
+import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.dto.LocationPrefrenceDTO;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,6 +32,8 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class LocationPrefrenceResource {
 
+    private UserService userService;
+
     private final Logger log = LoggerFactory.getLogger(LocationPrefrenceResource.class);
 
     private static final String ENTITY_NAME = "locationPrefrence";
@@ -43,10 +47,12 @@ public class LocationPrefrenceResource {
 
     public LocationPrefrenceResource(
         LocationPrefrenceService locationPrefrenceService,
-        LocationPrefrenceRepository locationPrefrenceRepository
+        LocationPrefrenceRepository locationPrefrenceRepository,
+        UserService userService
     ) {
         this.locationPrefrenceService = locationPrefrenceService;
         this.locationPrefrenceRepository = locationPrefrenceRepository;
+        this.userService = userService;
     }
 
     /**
@@ -63,6 +69,10 @@ public class LocationPrefrenceResource {
         if (locationPrefrenceDTO.getId() != null) {
             throw new BadRequestAlertException("A new locationPrefrence cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        locationPrefrenceDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        locationPrefrenceDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        locationPrefrenceDTO.setUpdatedAt(LocalDate.now());
+        locationPrefrenceDTO.setCreatedAt(LocalDate.now());
         LocationPrefrenceDTO result = locationPrefrenceService.save(locationPrefrenceDTO);
         return ResponseEntity
             .created(new URI("/api/location-prefrences/" + result.getId()))
@@ -96,7 +106,8 @@ public class LocationPrefrenceResource {
         if (!locationPrefrenceRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-
+        locationPrefrenceDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        locationPrefrenceDTO.setUpdatedAt(LocalDate.now());
         LocationPrefrenceDTO result = locationPrefrenceService.save(locationPrefrenceDTO);
         return ResponseEntity
             .ok()
@@ -131,7 +142,8 @@ public class LocationPrefrenceResource {
         if (!locationPrefrenceRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-
+        locationPrefrenceDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        locationPrefrenceDTO.setUpdatedAt(LocalDate.now());
         Optional<LocationPrefrenceDTO> result = locationPrefrenceService.partialUpdate(locationPrefrenceDTO);
 
         return ResponseUtil.wrapOrNotFound(

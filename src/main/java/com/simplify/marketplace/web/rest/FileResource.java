@@ -1,16 +1,24 @@
 package com.simplify.marketplace.web.rest;
 
+import com.simplify.marketplace.domain.ElasticWorker;
+import com.simplify.marketplace.domain.File;
+import com.simplify.marketplace.repository.ESearchWorkerRepository;
 import com.simplify.marketplace.repository.FileRepository;
 import com.simplify.marketplace.service.FileService;
+import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.dto.FileDTO;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +38,14 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class FileResource {
 
+    private UserService userService;
+
+    @Autowired
+    ESearchWorkerRepository rep1;
+
+    @Autowired
+    RabbitTemplate rabbit_msg;
+
     private final Logger log = LoggerFactory.getLogger(FileResource.class);
 
     private static final String ENTITY_NAME = "file";
@@ -41,9 +57,10 @@ public class FileResource {
 
     private final FileRepository fileRepository;
 
-    public FileResource(FileService fileService, FileRepository fileRepository) {
+    public FileResource(FileService fileService, FileRepository fileRepository, UserService userService) {
         this.fileService = fileService;
         this.fileRepository = fileRepository;
+        this.userService = userService;
     }
 
     /**
@@ -59,7 +76,21 @@ public class FileResource {
         if (fileDTO.getId() != null) {
             throw new BadRequestAlertException("A new file cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        fileDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        fileDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        fileDTO.setUpdatedAt(LocalDate.now());
+        fileDTO.setCreatedAt(LocalDate.now());
+
         FileDTO result = fileService.save(fileDTO);
+        String Workerid = fileDTO.getWorker().getId().toString();
+        File file = fileRepository.findById(result.getId()).get();
+        if (file.getWorker() != null) {
+            Long workerid = file.getWorker().getId();
+            ElasticWorker elasticworker = rep1.findById(workerid.toString()).get();
+            elasticworker.addFile(file);
+
+            rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+        }
         return ResponseEntity
             .created(new URI("/api/files/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -90,8 +121,28 @@ public class FileResource {
         if (!fileRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        fileDTO.setUpdatedAt(LocalDate.now());
+
+        //        FileDTO result = fileService.save(fileDTO);
+
+        File prevFile = fileRepository.findById(fileDTO.getId()).get();
 
         FileDTO result = fileService.save(fileDTO);
+        File updatedFile = fileRepository.findById(result.getId()).get();
+
+        if (prevFile.getWorker() != null && !Objects.equals(updatedFile.getWorker().getId(), prevFile.getWorker().getId())) {
+            ElasticWorker prevElasticWorker = rep1.findById(prevFile.getWorker().getId().toString()).get();
+            prevFile.setWorker(null);
+            prevElasticWorker = prevElasticWorker.removeFile(prevFile);
+            rabbit_msg.convertAndSend("topicExchange1", "routingKey", prevElasticWorker);
+        }
+
+        prevFile.setWorker(null);
+
+        ElasticWorker elasticworker = rep1.findById(updatedFile.getWorker().getId().toString()).get();
+        elasticworker.removeFile(prevFile);
+        elasticworker.addFile(updatedFile);
+        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, fileDTO.getId().toString()))
@@ -125,7 +176,8 @@ public class FileResource {
         if (!fileRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-
+        fileDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        fileDTO.setUpdatedAt(LocalDate.now());
         Optional<FileDTO> result = fileService.partialUpdate(fileDTO);
 
         return ResponseUtil.wrapOrNotFound(
@@ -146,6 +198,13 @@ public class FileResource {
         Page<FileDTO> page = fileService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @GetMapping("/files/worker/{workerid}")
+    public List<File> getworkerFile(@PathVariable Long workerid) {
+        log.debug("REST request to get Certificate : {}", workerid);
+        List<File> files = fileService.findOneWorker(workerid);
+        return files;
     }
 
     /**
@@ -170,7 +229,18 @@ public class FileResource {
     @DeleteMapping("/files/{id}")
     public ResponseEntity<Void> deleteFile(@PathVariable Long id) {
         log.debug("REST request to delete File : {}", id);
+
+        File file = fileRepository.findById(id).get();
         fileService.delete(id);
+
+        Long workerid = file.getWorker().getId();
+        file.setWorker(null);
+
+        ElasticWorker elasticworker = rep1.findById(workerid.toString()).get();
+        elasticworker.removeFile(file);
+
+        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

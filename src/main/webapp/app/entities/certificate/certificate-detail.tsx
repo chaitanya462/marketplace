@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Row, Col } from 'reactstrap';
-import { Translate, TextFormat } from 'react-jhipster';
+import { Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { getEntity } from './certificate.reducer';
@@ -59,38 +59,6 @@ export const CertificateDetail = (props: RouteComponentProps<{ id: string }>) =>
             </span>
           </dt>
           <dd>{certificateEntity.description}</dd>
-          <dt>
-            <span id="createdBy">
-              <Translate contentKey="simplifyMarketplaceApp.certificate.createdBy">Created By</Translate>
-            </span>
-          </dt>
-          <dd>{certificateEntity.createdBy}</dd>
-          <dt>
-            <span id="createdAt">
-              <Translate contentKey="simplifyMarketplaceApp.certificate.createdAt">Created At</Translate>
-            </span>
-          </dt>
-          <dd>
-            {certificateEntity.createdAt ? (
-              <TextFormat value={certificateEntity.createdAt} type="date" format={APP_LOCAL_DATE_FORMAT} />
-            ) : null}
-          </dd>
-          <dt>
-            <span id="updatedBy">
-              <Translate contentKey="simplifyMarketplaceApp.certificate.updatedBy">Updated By</Translate>
-            </span>
-          </dt>
-          <dd>{certificateEntity.updatedBy}</dd>
-          <dt>
-            <span id="updatedAt">
-              <Translate contentKey="simplifyMarketplaceApp.certificate.updatedAt">Updated At</Translate>
-            </span>
-          </dt>
-          <dd>
-            {certificateEntity.updatedAt ? (
-              <TextFormat value={certificateEntity.updatedAt} type="date" format={APP_LOCAL_DATE_FORMAT} />
-            ) : null}
-          </dd>
           <dt>
             <Translate contentKey="simplifyMarketplaceApp.certificate.worker">Worker</Translate>
           </dt>

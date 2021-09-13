@@ -169,22 +169,6 @@ export const JobPreference = (props: RouteComponentProps<{ url: string }>) => {
                     <Translate contentKey="simplifyMarketplaceApp.jobPreference.isActive">Is Active</Translate>{' '}
                     <FontAwesomeIcon icon="sort" />
                   </th>
-                  <th className="hand" onClick={sort('createdBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.jobPreference.createdBy">Created By</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('createdAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.jobPreference.createdAt">Created At</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('updatedBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.jobPreference.updatedBy">Updated By</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('updatedAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.jobPreference.updatedAt">Updated At</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
                   <th>
                     <Translate contentKey="simplifyMarketplaceApp.jobPreference.subCategory">Sub Category</Translate>{' '}
                     <FontAwesomeIcon icon="sort" />
@@ -228,18 +212,6 @@ export const JobPreference = (props: RouteComponentProps<{ url: string }>) => {
                       ) : null}
                     </td>
                     <td>{jobPreference.isActive ? 'true' : 'false'}</td>
-                    <td>{jobPreference.createdBy}</td>
-                    <td>
-                      {jobPreference.createdAt ? (
-                        <TextFormat type="date" value={jobPreference.createdAt} format={APP_LOCAL_DATE_FORMAT} />
-                      ) : null}
-                    </td>
-                    <td>{jobPreference.updatedBy}</td>
-                    <td>
-                      {jobPreference.updatedAt ? (
-                        <TextFormat type="date" value={jobPreference.updatedAt} format={APP_LOCAL_DATE_FORMAT} />
-                      ) : null}
-                    </td>
                     <td>
                       {jobPreference.subCategory ? (
                         <Link to={`category/${jobPreference.subCategory.id}`}>{jobPreference.subCategory.id}</Link>

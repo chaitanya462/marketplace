@@ -1,14 +1,19 @@
 package com.simplify.marketplace.web.rest;
 
-import com.simplify.marketplace.repository.SkillsMasterRepository;
-import com.simplify.marketplace.service.SkillsMasterService;
-import com.simplify.marketplace.service.dto.SkillsMasterDTO;
+import com.simplify.marketplace.domain.*;
+import com.simplify.marketplace.repository.*;
+import com.simplify.marketplace.service.*;
+import com.simplify.marketplace.service.UserService;
+import com.simplify.marketplace.service.dto.*;
+import com.simplify.marketplace.service.mapper.*;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +35,11 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class SkillsMasterResource {
 
+    private UserService userService;
+    private final WorkerMapper workerMapper;
+    private final WorkerService workerService;
+    private final WorkerRepository workerRepository;
+
     private final Logger log = LoggerFactory.getLogger(SkillsMasterResource.class);
 
     private static final String ENTITY_NAME = "skillsMaster";
@@ -38,12 +48,26 @@ public class SkillsMasterResource {
     private String applicationName;
 
     private final SkillsMasterService skillsMasterService;
+    private final SkillsMasterMapper skillsMasterMapper;
 
     private final SkillsMasterRepository skillsMasterRepository;
 
-    public SkillsMasterResource(SkillsMasterService skillsMasterService, SkillsMasterRepository skillsMasterRepository) {
+    public SkillsMasterResource(
+        SkillsMasterService skillsMasterService,
+        SkillsMasterRepository skillsMasterRepository,
+        UserService userService,
+        SkillsMasterMapper skillsMasterMapper,
+        WorkerService workerService,
+        WorkerRepository workerRepository,
+        WorkerMapper workerMapper
+    ) {
         this.skillsMasterService = skillsMasterService;
         this.skillsMasterRepository = skillsMasterRepository;
+        this.userService = userService;
+        this.skillsMasterMapper = skillsMasterMapper;
+        this.workerMapper = workerMapper;
+        this.workerRepository = workerRepository;
+        this.workerService = workerService;
     }
 
     /**
@@ -59,7 +83,14 @@ public class SkillsMasterResource {
         if (skillsMasterDTO.getId() != null) {
             throw new BadRequestAlertException("A new skillsMaster cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        SkillsMasterDTO result = skillsMasterService.save(skillsMasterDTO);
+        skillsMasterDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        skillsMasterDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        skillsMasterDTO.setUpdatedAt(LocalDate.now());
+        skillsMasterDTO.setCreatedAt(LocalDate.now());
+        SkillsMasterDTO result = null;
+        if (skillsMasterRepository.findBySkillName(skillsMasterDTO.getSkillName()) == null) result =
+            skillsMasterService.save(skillsMasterDTO); else result =
+            skillsMasterMapper.toDto(skillsMasterRepository.findBySkillName(skillsMasterDTO.getSkillName()));
         return ResponseEntity
             .created(new URI("/api/skills-masters/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -92,6 +123,8 @@ public class SkillsMasterResource {
         if (!skillsMasterRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        skillsMasterDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        skillsMasterDTO.setUpdatedAt(LocalDate.now());
 
         SkillsMasterDTO result = skillsMasterService.save(skillsMasterDTO);
         return ResponseEntity
@@ -127,6 +160,8 @@ public class SkillsMasterResource {
         if (!skillsMasterRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        skillsMasterDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        skillsMasterDTO.setUpdatedAt(LocalDate.now());
 
         Optional<SkillsMasterDTO> result = skillsMasterService.partialUpdate(skillsMasterDTO);
 
@@ -161,6 +196,14 @@ public class SkillsMasterResource {
         log.debug("REST request to get SkillsMaster : {}", id);
         Optional<SkillsMasterDTO> skillsMasterDTO = skillsMasterService.findOne(id);
         return ResponseUtil.wrapOrNotFound(skillsMasterDTO);
+    }
+
+    @GetMapping("/skills-masters/worker/{workerid}")
+    public List<SkillsMaster> getworkerSkills(@PathVariable Long workerid) {
+        log.debug("REST request to get skillids : {}", workerid);
+        List<SkillsMaster> skillids = skillsMasterRepository.findByWorkers_Id(workerid);
+        for (SkillsMaster skillid : skillids) System.out.println(skillid.getId());
+        return skillids;
     }
 
     /**

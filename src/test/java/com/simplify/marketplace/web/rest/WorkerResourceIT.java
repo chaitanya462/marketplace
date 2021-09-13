@@ -51,8 +51,8 @@ class WorkerResourceIT {
     private static final String DEFAULT_LAST_NAME = "AAAAAAAAAA";
     private static final String UPDATED_LAST_NAME = "BBBBBBBBBB";
 
-    private static final Integer DEFAULT_PRIMARY_PHONE = 1000000000;
-    private static final Integer UPDATED_PRIMARY_PHONE = 1000000001;
+    private static final String DEFAULT_PRIMARY_PHONE = "AAAAAAAAAA";
+    private static final String UPDATED_PRIMARY_PHONE = "BBBBBBBBBB";
 
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
@@ -60,17 +60,8 @@ class WorkerResourceIT {
     private static final LocalDate DEFAULT_DATE_OF_BIRTH = LocalDate.ofEpochDay(0L);
     private static final LocalDate UPDATED_DATE_OF_BIRTH = LocalDate.now(ZoneId.systemDefault());
 
-    private static final String DEFAULT_CREATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_CREATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_CREATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_CREATED_AT = LocalDate.now(ZoneId.systemDefault());
-
-    private static final String DEFAULT_UPDATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_UPDATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_UPDATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_UPDATED_AT = LocalDate.now(ZoneId.systemDefault());
+    private static final Boolean DEFAULT_IS_ACTIVE = false;
+    private static final Boolean UPDATED_IS_ACTIVE = true;
 
     private static final String ENTITY_API_URL = "/api/workers";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -112,10 +103,7 @@ class WorkerResourceIT {
             .primaryPhone(DEFAULT_PRIMARY_PHONE)
             .description(DEFAULT_DESCRIPTION)
             .dateOfBirth(DEFAULT_DATE_OF_BIRTH)
-            .createdBy(DEFAULT_CREATED_BY)
-            .createdAt(DEFAULT_CREATED_AT)
-            .updatedBy(DEFAULT_UPDATED_BY)
-            .updatedAt(DEFAULT_UPDATED_AT);
+            .isActive(DEFAULT_IS_ACTIVE);
         return worker;
     }
 
@@ -133,10 +121,7 @@ class WorkerResourceIT {
             .primaryPhone(UPDATED_PRIMARY_PHONE)
             .description(UPDATED_DESCRIPTION)
             .dateOfBirth(UPDATED_DATE_OF_BIRTH)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .isActive(UPDATED_IS_ACTIVE);
         return worker;
     }
 
@@ -165,10 +150,7 @@ class WorkerResourceIT {
         assertThat(testWorker.getPrimaryPhone()).isEqualTo(DEFAULT_PRIMARY_PHONE);
         assertThat(testWorker.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testWorker.getDateOfBirth()).isEqualTo(DEFAULT_DATE_OF_BIRTH);
-        assertThat(testWorker.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
-        assertThat(testWorker.getCreatedAt()).isEqualTo(DEFAULT_CREATED_AT);
-        assertThat(testWorker.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
-        assertThat(testWorker.getUpdatedAt()).isEqualTo(DEFAULT_UPDATED_AT);
+        assertThat(testWorker.getIsActive()).isEqualTo(DEFAULT_IS_ACTIVE);
     }
 
     @Test
@@ -228,24 +210,6 @@ class WorkerResourceIT {
 
     @Test
     @Transactional
-    void checkPrimaryPhoneIsRequired() throws Exception {
-        int databaseSizeBeforeTest = workerRepository.findAll().size();
-        // set the field null
-        worker.setPrimaryPhone(null);
-
-        // Create the Worker, which fails.
-        WorkerDTO workerDTO = workerMapper.toDto(worker);
-
-        restWorkerMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(workerDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<Worker> workerList = workerRepository.findAll();
-        assertThat(workerList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     void getAllWorkers() throws Exception {
         // Initialize the database
         workerRepository.saveAndFlush(worker);
@@ -262,10 +226,7 @@ class WorkerResourceIT {
             .andExpect(jsonPath("$.[*].primaryPhone").value(hasItem(DEFAULT_PRIMARY_PHONE)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
             .andExpect(jsonPath("$.[*].dateOfBirth").value(hasItem(DEFAULT_DATE_OF_BIRTH.toString())))
-            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
-            .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())))
-            .andExpect(jsonPath("$.[*].updatedBy").value(hasItem(DEFAULT_UPDATED_BY)))
-            .andExpect(jsonPath("$.[*].updatedAt").value(hasItem(DEFAULT_UPDATED_AT.toString())));
+            .andExpect(jsonPath("$.[*].isActive").value(hasItem(DEFAULT_IS_ACTIVE.booleanValue())));
     }
 
     @SuppressWarnings({ "unchecked" })
@@ -304,10 +265,7 @@ class WorkerResourceIT {
             .andExpect(jsonPath("$.primaryPhone").value(DEFAULT_PRIMARY_PHONE))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
             .andExpect(jsonPath("$.dateOfBirth").value(DEFAULT_DATE_OF_BIRTH.toString()))
-            .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY))
-            .andExpect(jsonPath("$.createdAt").value(DEFAULT_CREATED_AT.toString()))
-            .andExpect(jsonPath("$.updatedBy").value(DEFAULT_UPDATED_BY))
-            .andExpect(jsonPath("$.updatedAt").value(DEFAULT_UPDATED_AT.toString()));
+            .andExpect(jsonPath("$.isActive").value(DEFAULT_IS_ACTIVE.booleanValue()));
     }
 
     @Test
@@ -336,10 +294,7 @@ class WorkerResourceIT {
             .primaryPhone(UPDATED_PRIMARY_PHONE)
             .description(UPDATED_DESCRIPTION)
             .dateOfBirth(UPDATED_DATE_OF_BIRTH)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .isActive(UPDATED_IS_ACTIVE);
         WorkerDTO workerDTO = workerMapper.toDto(updatedWorker);
 
         restWorkerMockMvc
@@ -360,10 +315,7 @@ class WorkerResourceIT {
         assertThat(testWorker.getPrimaryPhone()).isEqualTo(UPDATED_PRIMARY_PHONE);
         assertThat(testWorker.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testWorker.getDateOfBirth()).isEqualTo(UPDATED_DATE_OF_BIRTH);
-        assertThat(testWorker.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testWorker.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testWorker.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testWorker.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
+        assertThat(testWorker.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);
     }
 
     @Test
@@ -448,9 +400,7 @@ class WorkerResourceIT {
             .lastName(UPDATED_LAST_NAME)
             .primaryPhone(UPDATED_PRIMARY_PHONE)
             .description(UPDATED_DESCRIPTION)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .isActive(UPDATED_IS_ACTIVE);
 
         restWorkerMockMvc
             .perform(
@@ -470,10 +420,7 @@ class WorkerResourceIT {
         assertThat(testWorker.getPrimaryPhone()).isEqualTo(UPDATED_PRIMARY_PHONE);
         assertThat(testWorker.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testWorker.getDateOfBirth()).isEqualTo(DEFAULT_DATE_OF_BIRTH);
-        assertThat(testWorker.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testWorker.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testWorker.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
-        assertThat(testWorker.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
+        assertThat(testWorker.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);
     }
 
     @Test
@@ -495,10 +442,7 @@ class WorkerResourceIT {
             .primaryPhone(UPDATED_PRIMARY_PHONE)
             .description(UPDATED_DESCRIPTION)
             .dateOfBirth(UPDATED_DATE_OF_BIRTH)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .isActive(UPDATED_IS_ACTIVE);
 
         restWorkerMockMvc
             .perform(
@@ -518,10 +462,7 @@ class WorkerResourceIT {
         assertThat(testWorker.getPrimaryPhone()).isEqualTo(UPDATED_PRIMARY_PHONE);
         assertThat(testWorker.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testWorker.getDateOfBirth()).isEqualTo(UPDATED_DATE_OF_BIRTH);
-        assertThat(testWorker.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testWorker.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testWorker.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testWorker.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
+        assertThat(testWorker.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);
     }
 
     @Test

@@ -1,7 +1,11 @@
 package com.simplify.marketplace.service;
 
+import com.simplify.marketplace.domain.Employment;
+import com.simplify.marketplace.domain.Location;
 import com.simplify.marketplace.service.dto.LocationDTO;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -47,4 +51,6 @@ public interface LocationService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    Set<Location> fineONEEMP(Long id);
 }

@@ -1,13 +1,23 @@
 package com.simplify.marketplace.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  * A Location.
@@ -15,7 +25,60 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "location")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Data
 public class Location implements Serializable {
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((city == null) ? 0 : city.hashCode());
+        result = prime * result + ((country == null) ? 0 : country.hashCode());
+        result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+        result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((pincode == null) ? 0 : pincode.hashCode());
+        result = prime * result + ((state == null) ? 0 : state.hashCode());
+        result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+        result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        Location other = (Location) obj;
+        if (city == null) {
+            if (other.city != null) return false;
+        } else if (!city.equals(other.city)) return false;
+        if (country == null) {
+            if (other.country != null) return false;
+        } else if (!country.equals(other.country)) return false;
+        if (createdAt == null) {
+            if (other.createdAt != null) return false;
+        } else if (!createdAt.equals(other.createdAt)) return false;
+        if (createdBy == null) {
+            if (other.createdBy != null) return false;
+        } else if (!createdBy.equals(other.createdBy)) return false;
+        if (id == null) {
+            if (other.id != null) return false;
+        } else if (!id.equals(other.id)) return false;
+        if (pincode == null) {
+            if (other.pincode != null) return false;
+        } else if (!pincode.equals(other.pincode)) return false;
+        if (state == null) {
+            if (other.state != null) return false;
+        } else if (!state.equals(other.state)) return false;
+        if (updatedAt == null) {
+            if (other.updatedAt != null) return false;
+        } else if (!updatedAt.equals(other.updatedAt)) return false;
+        if (updatedBy == null) {
+            if (other.updatedBy != null) return false;
+        } else if (!updatedBy.equals(other.updatedBy)) return false;
+        return true;
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -37,6 +100,26 @@ public class Location implements Serializable {
     @Column(name = "city")
     private String city;
 
+    @Column(name = "created_by")
+    private String createdBy;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
+    @Column(name = "created_at")
+    private LocalDate createdAt;
+
+    @Column(name = "updated_by")
+    private String updatedBy;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
+    @Column(name = "updated_at")
+    private LocalDate updatedAt;
+
     @OneToMany(mappedBy = "location")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "worker", "location" }, allowSetters = true)
@@ -46,22 +129,9 @@ public class Location implements Serializable {
     @JsonIgnoreProperties(value = { "locations", "company", "worker" }, allowSetters = true)
     private Employment employment;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Location id(Long id) {
         this.id = id;
         return this;
-    }
-
-    public Integer getPincode() {
-        return this.pincode;
     }
 
     public Location pincode(Integer pincode) {
@@ -69,25 +139,9 @@ public class Location implements Serializable {
         return this;
     }
 
-    public void setPincode(Integer pincode) {
-        this.pincode = pincode;
-    }
-
-    public String getCountry() {
-        return this.country;
-    }
-
     public Location country(String country) {
         this.country = country;
         return this;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getState() {
-        return this.state;
     }
 
     public Location state(String state) {
@@ -95,25 +149,9 @@ public class Location implements Serializable {
         return this;
     }
 
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getCity() {
-        return this.city;
-    }
-
     public Location city(String city) {
         this.city = city;
         return this;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public Set<LocationPrefrence> getLocationPrefrences() {
-        return this.locationPrefrences;
     }
 
     public Location locationPrefrences(Set<LocationPrefrence> locationPrefrences) {
@@ -133,57 +171,56 @@ public class Location implements Serializable {
         return this;
     }
 
-    public void setLocationPrefrences(Set<LocationPrefrence> locationPrefrences) {
-        if (this.locationPrefrences != null) {
-            this.locationPrefrences.forEach(i -> i.setLocation(null));
-        }
-        if (locationPrefrences != null) {
-            locationPrefrences.forEach(i -> i.setLocation(this));
-        }
-        this.locationPrefrences = locationPrefrences;
-    }
-
-    public Employment getEmployment() {
-        return this.employment;
-    }
-
     public Location employment(Employment employment) {
         this.setEmployment(employment);
         return this;
     }
 
-    public void setEmployment(Employment employment) {
-        this.employment = employment;
+    public Location createdBy(String createdBy) {
+        this.createdBy = createdBy;
+        return this;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Location)) {
-            return false;
-        }
-        return id != null && id.equals(((Location) o).id);
+    public Location createdAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+        return this;
     }
 
-    @Override
-    public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
-        return getClass().hashCode();
+    public Location updatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+        return this;
     }
 
-    // prettier-ignore
+    public Location updatedAt(LocalDate updatedAt) {
+        this.updatedAt = updatedAt;
+        return this;
+    }
+
     @Override
     public String toString() {
-        return "Location{" +
-            "id=" + getId() +
-            ", pincode=" + getPincode() +
-            ", country='" + getCountry() + "'" +
-            ", state='" + getState() + "'" +
-            ", city='" + getCity() + "'" +
-            "}";
+        return (
+            "Location [id=" +
+            id +
+            ", pincode=" +
+            pincode +
+            ", country=" +
+            country +
+            ", state=" +
+            state +
+            ", city=" +
+            city +
+            ", createdBy=" +
+            createdBy +
+            ", createdAt=" +
+            createdAt +
+            ", updatedBy=" +
+            updatedBy +
+            ", updatedAt=" +
+            updatedAt +
+            ", locationPrefrences=" +
+            locationPrefrences +
+            ", =" +
+            "]"
+        );
     }
 }

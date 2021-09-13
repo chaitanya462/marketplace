@@ -1,16 +1,23 @@
 package com.simplify.marketplace.web.rest;
 
+import com.simplify.marketplace.domain.*;
+import com.simplify.marketplace.repository.ESearchWorkerRepository;
 import com.simplify.marketplace.repository.EmploymentRepository;
+import com.simplify.marketplace.repository.WorkerRepository;
 import com.simplify.marketplace.service.EmploymentService;
+import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.dto.EmploymentDTO;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +37,17 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class EmploymentResource {
 
+    private UserService userService;
+
+    @Autowired
+    ESearchWorkerRepository rep1;
+
+    @Autowired
+    RabbitTemplate rabbit_msg;
+
+    @Autowired
+    WorkerRepository wrepo;
+
     private final Logger log = LoggerFactory.getLogger(EmploymentResource.class);
 
     private static final String ENTITY_NAME = "employment";
@@ -41,9 +59,10 @@ public class EmploymentResource {
 
     private final EmploymentRepository employmentRepository;
 
-    public EmploymentResource(EmploymentService employmentService, EmploymentRepository employmentRepository) {
+    public EmploymentResource(EmploymentService employmentService, EmploymentRepository employmentRepository, UserService userService) {
         this.employmentService = employmentService;
         this.employmentRepository = employmentRepository;
+        this.userService = userService;
     }
 
     /**
@@ -59,7 +78,23 @@ public class EmploymentResource {
         if (employmentDTO.getId() != null) {
             throw new BadRequestAlertException("A new employment cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        employmentDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        employmentDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        employmentDTO.setUpdatedAt(LocalDate.now());
+        employmentDTO.setCreatedAt(LocalDate.now());
+
         EmploymentDTO result = employmentService.save(employmentDTO);
+
+        Employment employment = employmentService.getEmploymentById(result.getId());
+
+        if (employment.getWorker() != null) {
+            Long workerid = employment.getWorker().getId();
+            ElasticWorker elasticworker = rep1.findById(workerid.toString()).get();
+            elasticworker.addEmployment(employment);
+
+            rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+        }
+
         return ResponseEntity
             .created(new URI("/api/employments/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -92,8 +127,29 @@ public class EmploymentResource {
         if (!employmentRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        employmentDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        employmentDTO.setUpdatedAt(LocalDate.now());
+
+        Employment prevEmployment = employmentRepository.findById(employmentDTO.getId()).get();
 
         EmploymentDTO result = employmentService.save(employmentDTO);
+        Employment updatedEmployment = employmentRepository.findById(result.getId()).get();
+
+        if (
+            prevEmployment.getWorker() != null && !Objects.equals(updatedEmployment.getWorker().getId(), prevEmployment.getWorker().getId())
+        ) {
+            ElasticWorker prevElasticWorker = rep1.findById(prevEmployment.getWorker().getId().toString()).get();
+            prevEmployment.setWorker(null);
+            prevElasticWorker = prevElasticWorker.removeEmployment(prevEmployment);
+            rabbit_msg.convertAndSend("topicExchange1", "routingKey", prevElasticWorker);
+        }
+
+        prevEmployment.setWorker(null);
+
+        ElasticWorker elasticworker = rep1.findById(updatedEmployment.getWorker().getId().toString()).get();
+        elasticworker.removeEmployment(prevEmployment);
+        elasticworker.addEmployment(updatedEmployment);
+        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, employmentDTO.getId().toString()))
@@ -127,6 +183,8 @@ public class EmploymentResource {
         if (!employmentRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        employmentDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        employmentDTO.setUpdatedAt(LocalDate.now());
 
         Optional<EmploymentDTO> result = employmentService.partialUpdate(employmentDTO);
 
@@ -163,6 +221,13 @@ public class EmploymentResource {
         return ResponseUtil.wrapOrNotFound(employmentDTO);
     }
 
+    @GetMapping("/employments/worker/{workerid}")
+    public List<Employment> getworkerEmployment(@PathVariable Long workerid) {
+        log.debug("REST request to get employment : {}", workerid);
+        List<Employment> employments = employmentService.findOneWorker(workerid);
+        return employments;
+    }
+
     /**
      * {@code DELETE  /employments/:id} : delete the "id" employment.
      *
@@ -172,7 +237,16 @@ public class EmploymentResource {
     @DeleteMapping("/employments/{id}")
     public ResponseEntity<Void> deleteEmployment(@PathVariable Long id) {
         log.debug("REST request to delete Employment : {}", id);
+        Employment emp = employmentRepository.findById(id).get();
         employmentService.delete(id);
+
+        Long elastic_id = emp.getWorker().getId();
+        emp.setWorker(null);
+
+        ElasticWorker e = rep1.findById(elastic_id.toString()).get();
+        e.removeEmployment(emp);
+
+        rabbit_msg.convertAndSend("topicExchange1", "routingKey", e);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

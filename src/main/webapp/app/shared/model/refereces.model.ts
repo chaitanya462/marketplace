@@ -5,7 +5,7 @@ export interface IRefereces {
   id?: number;
   name?: string | null;
   email?: string | null;
-  phone?: number | null;
+  phone?: string | null;
   profileLink?: string | null;
   relationType?: RelationType | null;
   worker?: IWorker | null;

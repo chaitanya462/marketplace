@@ -4,8 +4,8 @@ import { Button, Row, Col, FormText } from 'reactstrap';
 import { isNumber, Translate, translate, ValidatedField, ValidatedForm } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { ICustomUser } from 'app/shared/model/custom-user.model';
-import { getEntities as getCustomUsers } from 'app/entities/custom-user/custom-user.reducer';
+import { IUser } from 'app/shared/model/user.model';
+import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
 import { getEntity, updateEntity, createEntity, reset } from './user-email.reducer';
 import { IUserEmail } from 'app/shared/model/user-email.model';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
@@ -17,7 +17,7 @@ export const UserEmailUpdate = (props: RouteComponentProps<{ id: string }>) => {
 
   const [isNew] = useState(!props.match.params || !props.match.params.id);
 
-  const customUsers = useAppSelector(state => state.customUser.entities);
+  const users = useAppSelector(state => state.userManagement.users);
   const userEmailEntity = useAppSelector(state => state.userEmail.entity);
   const loading = useAppSelector(state => state.userEmail.loading);
   const updating = useAppSelector(state => state.userEmail.updating);
@@ -32,7 +32,7 @@ export const UserEmailUpdate = (props: RouteComponentProps<{ id: string }>) => {
       dispatch(getEntity(props.match.params.id));
     }
 
-    dispatch(getCustomUsers({}));
+    dispatch(getUsers({}));
   }, []);
 
   useEffect(() => {
@@ -45,7 +45,7 @@ export const UserEmailUpdate = (props: RouteComponentProps<{ id: string }>) => {
     const entity = {
       ...userEmailEntity,
       ...values,
-      customUser: customUsers.find(it => it.id.toString() === values.customUserId.toString()),
+      user: users.find(it => it.id.toString() === values.userId.toString()),
     };
 
     if (isNew) {
@@ -60,7 +60,7 @@ export const UserEmailUpdate = (props: RouteComponentProps<{ id: string }>) => {
       ? {}
       : {
           ...userEmailEntity,
-          customUserId: userEmailEntity?.customUser?.id,
+          userId: userEmailEntity?.user?.id,
         };
 
   return (
@@ -126,43 +126,15 @@ export const UserEmailUpdate = (props: RouteComponentProps<{ id: string }>) => {
                 type="text"
               />
               <ValidatedField
-                label={translate('simplifyMarketplaceApp.userEmail.createdBy')}
-                id="user-email-createdBy"
-                name="createdBy"
-                data-cy="createdBy"
-                type="text"
-              />
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.userEmail.createdAt')}
-                id="user-email-createdAt"
-                name="createdAt"
-                data-cy="createdAt"
-                type="date"
-              />
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.userEmail.updatedBy')}
-                id="user-email-updatedBy"
-                name="updatedBy"
-                data-cy="updatedBy"
-                type="text"
-              />
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.userEmail.updatedAt')}
-                id="user-email-updatedAt"
-                name="updatedAt"
-                data-cy="updatedAt"
-                type="date"
-              />
-              <ValidatedField
-                id="user-email-customUser"
-                name="customUserId"
-                data-cy="customUser"
-                label={translate('simplifyMarketplaceApp.userEmail.customUser')}
+                id="user-email-user"
+                name="userId"
+                data-cy="user"
+                label={translate('simplifyMarketplaceApp.userEmail.user')}
                 type="select"
               >
                 <option value="" key="0" />
-                {customUsers
-                  ? customUsers.map(otherEntity => (
+                {users
+                  ? users.map(otherEntity => (
                       <option value={otherEntity.id} key={otherEntity.id}>
                         {otherEntity.id}
                       </option>

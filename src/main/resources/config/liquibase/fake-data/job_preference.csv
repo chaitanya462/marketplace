@@ -1,11 +1,11 @@
-id;hourly_rate;daily_rate;monthly_rate;hour_per_day;hour_per_week;engagement_type;employment_type;location_type;available_from;available_to;is_active;created_by;created_at;updated_by;updated_at
-1;1631;19452;38621;16109;48333;PartTime;Contractual;WorkFromOffice;2021-08-09;2021-08-09;true;Ergonomic;2021-08-08;implementation paradigms success;2021-08-09
-2;79670;47700;48484;45398;76000;PartTime;Contractual;WorkFromOffice;2021-08-09;2021-08-08;false;Mission;2021-08-08;ubiquitous Gloves Sausages;2021-08-09
-3;56529;44467;80120;88381;89628;PartTime;Permanent;WorkFromHome;2021-08-08;2021-08-08;false;Aruban Concrete Ergonomic;2021-08-09;Awesome Wooden;2021-08-09
-4;39552;26390;48402;85479;77888;FullTime;Permanent;WorkFromHome;2021-08-09;2021-08-08;false;emulation;2021-08-08;PCI withdrawal;2021-08-08
-5;5809;5494;22567;92537;24765;FullTime;Contractual;WorkFromOffice;2021-08-08;2021-08-08;true;array payment;2021-08-09;optical;2021-08-08
-6;83298;97057;4612;41931;3259;PartTime;Permanent;Both;2021-08-08;2021-08-08;true;local Bhutanese markets;2021-08-08;Mouse;2021-08-08
-7;29901;39935;76345;81294;98527;FullTime;Permanent;WorkFromOffice;2021-08-08;2021-08-08;false;cyan SQL User-friendly;2021-08-08;Arizona Pizza;2021-08-08
-8;55942;1889;13208;30558;58644;PartTime;Permanent;Both;2021-08-08;2021-08-08;false;ADP;2021-08-08;lime;2021-08-09
-9;6260;97611;99380;87368;5888;PartTime;Contractual;Both;2021-08-08;2021-08-08;false;Cambridgeshire Kentucky;2021-08-09;index transmitting Bedfordshire;2021-08-08
-10;41254;54497;76943;92296;52944;PartTime;Permanent;Both;2021-08-09;2021-08-09;false;synthesize International Bolivia;2021-08-08;Health Implementation experiences;2021-08-08
+id;hourly_rate;daily_rate;monthly_rate;hour_per_day;hour_per_week;engagement_type;employment_type;location_type;available_from;available_to;is_active
+1;1631;19452;38621;16109;48333;PartTime;Contractual;WorkFromOffice;2021-08-12;2021-08-12;true
+2;14561;4566;8453;19394;89835;FullTime;Permanent;Both;2021-08-12;2021-08-11;true
+3;41781;5581;81391;32536;89109;FullTime;Permanent;Both;2021-08-11;2021-08-11;false
+4;76000;97281;97506;16525;8963;FullTime;Permanent;WorkFromOffice;2021-08-11;2021-08-11;false
+5;60969;67512;34862;92111;43899;FullTime;Permanent;WorkFromOffice;2021-08-12;2021-08-11;true
+6;11243;56529;44467;80120;88381;PartTime;Contractual;WorkFromOffice;2021-08-11;2021-08-12;true
+7;30807;85550;69824;4920;48613;FullTime;Permanent;WorkFromHome;2021-08-12;2021-08-12;false
+8;9137;62354;10646;53274;73831;FullTime;Permanent;WorkFromHome;2021-08-12;2021-08-12;false
+9;48402;85479;77888;9996;46472;PartTime;Permanent;Both;2021-08-12;2021-08-12;false
+10;28420;37190;72215;58518;88596;FullTime;Contractual;WorkFromHome;2021-08-12;2021-08-11;true

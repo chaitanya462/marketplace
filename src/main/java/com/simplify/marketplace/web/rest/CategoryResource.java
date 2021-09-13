@@ -1,11 +1,14 @@
 package com.simplify.marketplace.web.rest;
 
+import com.simplify.marketplace.domain.Category;
 import com.simplify.marketplace.repository.CategoryRepository;
 import com.simplify.marketplace.service.CategoryService;
+import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.dto.CategoryDTO;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,6 +33,8 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class CategoryResource {
 
+    private UserService userService;
+
     private final Logger log = LoggerFactory.getLogger(CategoryResource.class);
 
     private static final String ENTITY_NAME = "category";
@@ -41,9 +46,10 @@ public class CategoryResource {
 
     private final CategoryRepository categoryRepository;
 
-    public CategoryResource(CategoryService categoryService, CategoryRepository categoryRepository) {
+    public CategoryResource(CategoryService categoryService, CategoryRepository categoryRepository, UserService userService) {
         this.categoryService = categoryService;
         this.categoryRepository = categoryRepository;
+        this.userService = userService;
     }
 
     /**
@@ -59,6 +65,10 @@ public class CategoryResource {
         if (categoryDTO.getId() != null) {
             throw new BadRequestAlertException("A new category cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        categoryDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        categoryDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        categoryDTO.setUpdatedAt(LocalDate.now());
+        categoryDTO.setCreatedAt(LocalDate.now());
         CategoryDTO result = categoryService.save(categoryDTO);
         return ResponseEntity
             .created(new URI("/api/categories/" + result.getId()))
@@ -92,7 +102,8 @@ public class CategoryResource {
         if (!categoryRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-
+        categoryDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        categoryDTO.setUpdatedAt(LocalDate.now());
         CategoryDTO result = categoryService.save(categoryDTO);
         return ResponseEntity
             .ok()
@@ -127,6 +138,8 @@ public class CategoryResource {
         if (!categoryRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        categoryDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        categoryDTO.setUpdatedAt(LocalDate.now());
 
         Optional<CategoryDTO> result = categoryService.partialUpdate(categoryDTO);
 
@@ -146,6 +159,7 @@ public class CategoryResource {
     public ResponseEntity<List<CategoryDTO>> getAllCategories(Pageable pageable) {
         log.debug("REST request to get a page of Categories");
         Page<CategoryDTO> page = categoryService.findAll(pageable);
+
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -161,6 +175,22 @@ public class CategoryResource {
         log.debug("REST request to get Category : {}", id);
         Optional<CategoryDTO> categoryDTO = categoryService.findOne(id);
         return ResponseUtil.wrapOrNotFound(categoryDTO);
+    }
+
+    //to get all parent categories
+    @GetMapping("/allcategories")
+    public List<Category> getAllcategory() {
+        log.debug("REST request to get all parent Category ");
+        List<Category> categories = categoryRepository.findByIsParent();
+        return categories;
+    }
+
+    //to get subcategories of a particular category
+    @GetMapping("/allsubcategories/{id}")
+    public List<Category> getsubCategories(@PathVariable Long id) {
+        log.debug("REST request to get Category : {}", id);
+        List<Category> subcategories = categoryRepository.findByParentId(id);
+        return subcategories;
     }
 
     /**

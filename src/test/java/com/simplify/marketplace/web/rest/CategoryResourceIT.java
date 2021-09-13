@@ -10,8 +10,6 @@ import com.simplify.marketplace.domain.Category;
 import com.simplify.marketplace.repository.CategoryRepository;
 import com.simplify.marketplace.service.dto.CategoryDTO;
 import com.simplify.marketplace.service.mapper.CategoryMapper;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -42,18 +40,6 @@ class CategoryResourceIT {
     private static final Boolean DEFAULT_IS_ACTIVE = false;
     private static final Boolean UPDATED_IS_ACTIVE = true;
 
-    private static final String DEFAULT_CREATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_CREATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_CREATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_CREATED_AT = LocalDate.now(ZoneId.systemDefault());
-
-    private static final String DEFAULT_UPDATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_UPDATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_UPDATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_UPDATED_AT = LocalDate.now(ZoneId.systemDefault());
-
     private static final String ENTITY_API_URL = "/api/categories";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -81,14 +67,7 @@ class CategoryResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Category createEntity(EntityManager em) {
-        Category category = new Category()
-            .name(DEFAULT_NAME)
-            .isParent(DEFAULT_IS_PARENT)
-            .isActive(DEFAULT_IS_ACTIVE)
-            .createdBy(DEFAULT_CREATED_BY)
-            .createdAt(DEFAULT_CREATED_AT)
-            .updatedBy(DEFAULT_UPDATED_BY)
-            .updatedAt(DEFAULT_UPDATED_AT);
+        Category category = new Category().name(DEFAULT_NAME).isParent(DEFAULT_IS_PARENT).isActive(DEFAULT_IS_ACTIVE);
         return category;
     }
 
@@ -99,14 +78,7 @@ class CategoryResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Category createUpdatedEntity(EntityManager em) {
-        Category category = new Category()
-            .name(UPDATED_NAME)
-            .isParent(UPDATED_IS_PARENT)
-            .isActive(UPDATED_IS_ACTIVE)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+        Category category = new Category().name(UPDATED_NAME).isParent(UPDATED_IS_PARENT).isActive(UPDATED_IS_ACTIVE);
         return category;
     }
 
@@ -132,10 +104,6 @@ class CategoryResourceIT {
         assertThat(testCategory.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testCategory.getIsParent()).isEqualTo(DEFAULT_IS_PARENT);
         assertThat(testCategory.getIsActive()).isEqualTo(DEFAULT_IS_ACTIVE);
-        assertThat(testCategory.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
-        assertThat(testCategory.getCreatedAt()).isEqualTo(DEFAULT_CREATED_AT);
-        assertThat(testCategory.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
-        assertThat(testCategory.getUpdatedAt()).isEqualTo(DEFAULT_UPDATED_AT);
     }
 
     @Test
@@ -171,11 +139,7 @@ class CategoryResourceIT {
             .andExpect(jsonPath("$.[*].id").value(hasItem(category.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].isParent").value(hasItem(DEFAULT_IS_PARENT.booleanValue())))
-            .andExpect(jsonPath("$.[*].isActive").value(hasItem(DEFAULT_IS_ACTIVE.booleanValue())))
-            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
-            .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())))
-            .andExpect(jsonPath("$.[*].updatedBy").value(hasItem(DEFAULT_UPDATED_BY)))
-            .andExpect(jsonPath("$.[*].updatedAt").value(hasItem(DEFAULT_UPDATED_AT.toString())));
+            .andExpect(jsonPath("$.[*].isActive").value(hasItem(DEFAULT_IS_ACTIVE.booleanValue())));
     }
 
     @Test
@@ -192,11 +156,7 @@ class CategoryResourceIT {
             .andExpect(jsonPath("$.id").value(category.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.isParent").value(DEFAULT_IS_PARENT.booleanValue()))
-            .andExpect(jsonPath("$.isActive").value(DEFAULT_IS_ACTIVE.booleanValue()))
-            .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY))
-            .andExpect(jsonPath("$.createdAt").value(DEFAULT_CREATED_AT.toString()))
-            .andExpect(jsonPath("$.updatedBy").value(DEFAULT_UPDATED_BY))
-            .andExpect(jsonPath("$.updatedAt").value(DEFAULT_UPDATED_AT.toString()));
+            .andExpect(jsonPath("$.isActive").value(DEFAULT_IS_ACTIVE.booleanValue()));
     }
 
     @Test
@@ -218,14 +178,7 @@ class CategoryResourceIT {
         Category updatedCategory = categoryRepository.findById(category.getId()).get();
         // Disconnect from session so that the updates on updatedCategory are not directly saved in db
         em.detach(updatedCategory);
-        updatedCategory
-            .name(UPDATED_NAME)
-            .isParent(UPDATED_IS_PARENT)
-            .isActive(UPDATED_IS_ACTIVE)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+        updatedCategory.name(UPDATED_NAME).isParent(UPDATED_IS_PARENT).isActive(UPDATED_IS_ACTIVE);
         CategoryDTO categoryDTO = categoryMapper.toDto(updatedCategory);
 
         restCategoryMockMvc
@@ -243,10 +196,6 @@ class CategoryResourceIT {
         assertThat(testCategory.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testCategory.getIsParent()).isEqualTo(UPDATED_IS_PARENT);
         assertThat(testCategory.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);
-        assertThat(testCategory.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testCategory.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testCategory.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testCategory.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test
@@ -326,7 +275,7 @@ class CategoryResourceIT {
         Category partialUpdatedCategory = new Category();
         partialUpdatedCategory.setId(category.getId());
 
-        partialUpdatedCategory.name(UPDATED_NAME).createdBy(UPDATED_CREATED_BY).createdAt(UPDATED_CREATED_AT).updatedBy(UPDATED_UPDATED_BY);
+        partialUpdatedCategory.name(UPDATED_NAME);
 
         restCategoryMockMvc
             .perform(
@@ -343,10 +292,6 @@ class CategoryResourceIT {
         assertThat(testCategory.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testCategory.getIsParent()).isEqualTo(DEFAULT_IS_PARENT);
         assertThat(testCategory.getIsActive()).isEqualTo(DEFAULT_IS_ACTIVE);
-        assertThat(testCategory.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testCategory.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testCategory.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testCategory.getUpdatedAt()).isEqualTo(DEFAULT_UPDATED_AT);
     }
 
     @Test
@@ -361,14 +306,7 @@ class CategoryResourceIT {
         Category partialUpdatedCategory = new Category();
         partialUpdatedCategory.setId(category.getId());
 
-        partialUpdatedCategory
-            .name(UPDATED_NAME)
-            .isParent(UPDATED_IS_PARENT)
-            .isActive(UPDATED_IS_ACTIVE)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+        partialUpdatedCategory.name(UPDATED_NAME).isParent(UPDATED_IS_PARENT).isActive(UPDATED_IS_ACTIVE);
 
         restCategoryMockMvc
             .perform(
@@ -385,10 +323,6 @@ class CategoryResourceIT {
         assertThat(testCategory.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testCategory.getIsParent()).isEqualTo(UPDATED_IS_PARENT);
         assertThat(testCategory.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);
-        assertThat(testCategory.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testCategory.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testCategory.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testCategory.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test

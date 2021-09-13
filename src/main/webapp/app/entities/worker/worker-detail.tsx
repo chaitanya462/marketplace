@@ -68,37 +68,15 @@ export const WorkerDetail = (props: RouteComponentProps<{ id: string }>) => {
             {workerEntity.dateOfBirth ? <TextFormat value={workerEntity.dateOfBirth} type="date" format={APP_LOCAL_DATE_FORMAT} /> : null}
           </dd>
           <dt>
-            <span id="createdBy">
-              <Translate contentKey="simplifyMarketplaceApp.worker.createdBy">Created By</Translate>
+            <span id="isActive">
+              <Translate contentKey="simplifyMarketplaceApp.worker.isActive">Is Active</Translate>
             </span>
           </dt>
-          <dd>{workerEntity.createdBy}</dd>
+          <dd>{workerEntity.isActive ? 'true' : 'false'}</dd>
           <dt>
-            <span id="createdAt">
-              <Translate contentKey="simplifyMarketplaceApp.worker.createdAt">Created At</Translate>
-            </span>
+            <Translate contentKey="simplifyMarketplaceApp.worker.user">User</Translate>
           </dt>
-          <dd>
-            {workerEntity.createdAt ? <TextFormat value={workerEntity.createdAt} type="date" format={APP_LOCAL_DATE_FORMAT} /> : null}
-          </dd>
-          <dt>
-            <span id="updatedBy">
-              <Translate contentKey="simplifyMarketplaceApp.worker.updatedBy">Updated By</Translate>
-            </span>
-          </dt>
-          <dd>{workerEntity.updatedBy}</dd>
-          <dt>
-            <span id="updatedAt">
-              <Translate contentKey="simplifyMarketplaceApp.worker.updatedAt">Updated At</Translate>
-            </span>
-          </dt>
-          <dd>
-            {workerEntity.updatedAt ? <TextFormat value={workerEntity.updatedAt} type="date" format={APP_LOCAL_DATE_FORMAT} /> : null}
-          </dd>
-          <dt>
-            <Translate contentKey="simplifyMarketplaceApp.worker.customUser">Custom User</Translate>
-          </dt>
-          <dd>{workerEntity.customUser ? workerEntity.customUser.id : ''}</dd>
+          <dd>{workerEntity.user ? workerEntity.user.id : ''}</dd>
           <dt>
             <Translate contentKey="simplifyMarketplaceApp.worker.skill">Skill</Translate>
           </dt>

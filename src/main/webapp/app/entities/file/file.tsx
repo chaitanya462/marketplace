@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Col, Row, Table } from 'reactstrap';
-import { Translate, TextFormat, getSortState } from 'react-jhipster';
+import { Translate, getSortState } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { getEntities, reset } from './file.reducer';
@@ -147,18 +147,6 @@ export const File = (props: RouteComponentProps<{ url: string }>) => {
                     <Translate contentKey="simplifyMarketplaceApp.file.isProfilePic">Is Profile Pic</Translate>{' '}
                     <FontAwesomeIcon icon="sort" />
                   </th>
-                  <th className="hand" onClick={sort('createdBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.file.createdBy">Created By</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('createdAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.file.createdAt">Created At</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('updatedBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.file.updatedBy">Updated By</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('updatedAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.file.updatedAt">Updated At</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
                   <th>
                     <Translate contentKey="simplifyMarketplaceApp.file.worker">Worker</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
@@ -184,10 +172,6 @@ export const File = (props: RouteComponentProps<{ url: string }>) => {
                     <td>{file.isDefault ? 'true' : 'false'}</td>
                     <td>{file.isResume ? 'true' : 'false'}</td>
                     <td>{file.isProfilePic ? 'true' : 'false'}</td>
-                    <td>{file.createdBy}</td>
-                    <td>{file.createdAt ? <TextFormat type="date" value={file.createdAt} format={APP_LOCAL_DATE_FORMAT} /> : null}</td>
-                    <td>{file.updatedBy}</td>
-                    <td>{file.updatedAt ? <TextFormat type="date" value={file.updatedAt} format={APP_LOCAL_DATE_FORMAT} /> : null}</td>
                     <td>{file.worker ? <Link to={`worker/${file.worker.id}`}>{file.worker.id}</Link> : ''}</td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">

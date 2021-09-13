@@ -2,10 +2,12 @@ package com.simplify.marketplace.web.rest;
 
 import com.simplify.marketplace.repository.OtpAttemptRepository;
 import com.simplify.marketplace.service.OtpAttemptService;
+import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.dto.OtpAttemptDTO;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,6 +32,8 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class OtpAttemptResource {
 
+    private UserService userService;
+
     private final Logger log = LoggerFactory.getLogger(OtpAttemptResource.class);
 
     private static final String ENTITY_NAME = "otpAttempt";
@@ -41,9 +45,10 @@ public class OtpAttemptResource {
 
     private final OtpAttemptRepository otpAttemptRepository;
 
-    public OtpAttemptResource(OtpAttemptService otpAttemptService, OtpAttemptRepository otpAttemptRepository) {
+    public OtpAttemptResource(OtpAttemptService otpAttemptService, OtpAttemptRepository otpAttemptRepository, UserService userService) {
         this.otpAttemptService = otpAttemptService;
         this.otpAttemptRepository = otpAttemptRepository;
+        this.userService = userService;
     }
 
     /**
@@ -59,6 +64,8 @@ public class OtpAttemptResource {
         if (otpAttemptDTO.getId() != null) {
             throw new BadRequestAlertException("A new otpAttempt cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        otpAttemptDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        otpAttemptDTO.setCreatedAt(LocalDate.now());
         OtpAttemptDTO result = otpAttemptService.save(otpAttemptDTO);
         return ResponseEntity
             .created(new URI("/api/otp-attempts/" + result.getId()))

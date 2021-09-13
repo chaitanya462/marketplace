@@ -22,12 +22,9 @@
       "companyWebsite": "Company Website",
       "companyType": "Company Type",
       "primaryPhone": "Primary Phone",
+      "isActive": "Is Active",
       "description": "Description",
       "startDate": "Start Date",
-      "createdBy": "Created By",
-      "createdAt": "Created At",
-      "updatedBy": "Updated By",
-      "updatedAt": "Updated At",
       "customUser": "Custom User"
     }
   }

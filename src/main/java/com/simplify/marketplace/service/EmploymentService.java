@@ -1,7 +1,10 @@
 package com.simplify.marketplace.service;
 
+import com.simplify.marketplace.domain.Employment;
 import com.simplify.marketplace.service.dto.EmploymentDTO;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -40,6 +43,7 @@ public interface EmploymentService {
      * @return the entity.
      */
     Optional<EmploymentDTO> findOne(Long id);
+    List<Employment> findOneWorker(Long workerid);
 
     /**
      * Delete the "id" employment.
@@ -47,4 +51,6 @@ public interface EmploymentService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    public Employment getEmploymentById(Long id);
 }

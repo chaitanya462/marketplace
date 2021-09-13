@@ -124,34 +124,6 @@ export const CertificateUpdate = (props: RouteComponentProps<{ id: string }>) =>
                 type="text"
               />
               <ValidatedField
-                label={translate('simplifyMarketplaceApp.certificate.createdBy')}
-                id="certificate-createdBy"
-                name="createdBy"
-                data-cy="createdBy"
-                type="text"
-              />
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.certificate.createdAt')}
-                id="certificate-createdAt"
-                name="createdAt"
-                data-cy="createdAt"
-                type="date"
-              />
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.certificate.updatedBy')}
-                id="certificate-updatedBy"
-                name="updatedBy"
-                data-cy="updatedBy"
-                type="text"
-              />
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.certificate.updatedAt')}
-                id="certificate-updatedAt"
-                name="updatedAt"
-                data-cy="updatedAt"
-                type="date"
-              />
-              <ValidatedField
                 id="certificate-worker"
                 name="workerId"
                 data-cy="worker"

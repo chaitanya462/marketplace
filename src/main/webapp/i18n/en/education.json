@@ -29,10 +29,6 @@
       "isComplete": "Is Complete",
       "degreeType": "Degree Type",
       "description": "Description",
-      "createdBy": "Created By",
-      "createdAt": "Created At",
-      "updatedBy": "Updated By",
-      "updatedAt": "Updated At",
       "majorSubject": "Major Subject",
       "minorSubject": "Minor Subject",
       "worker": "Worker"

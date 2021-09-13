@@ -21,14 +21,11 @@
       "contextId": "Context Id",
       "otp": "Otp",
       "email": "Email",
+      "isActive": "Is Active",
       "phone": "Phone",
       "type": "Type",
       "expiryTime": "Expiry Time",
-      "status": "Status",
-      "createdBy": "Created By",
-      "createdAt": "Created At",
-      "updatedBy": "Updated By",
-      "updatedAt": "Updated At"
+      "status": "Status"
     }
   }
 }

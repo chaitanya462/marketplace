@@ -165,22 +165,6 @@ export const Education = (props: RouteComponentProps<{ url: string }>) => {
                     <Translate contentKey="simplifyMarketplaceApp.education.description">Description</Translate>{' '}
                     <FontAwesomeIcon icon="sort" />
                   </th>
-                  <th className="hand" onClick={sort('createdBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.education.createdBy">Created By</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('createdAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.education.createdAt">Created At</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('updatedBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.education.updatedBy">Updated By</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('updatedAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.education.updatedAt">Updated At</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
                   <th>
                     <Translate contentKey="simplifyMarketplaceApp.education.majorSubject">Major Subject</Translate>{' '}
                     <FontAwesomeIcon icon="sort" />
@@ -224,14 +208,6 @@ export const Education = (props: RouteComponentProps<{ url: string }>) => {
                       <Translate contentKey={`simplifyMarketplaceApp.DegreeType.${education.degreeType}`} />
                     </td>
                     <td>{education.description}</td>
-                    <td>{education.createdBy}</td>
-                    <td>
-                      {education.createdAt ? <TextFormat type="date" value={education.createdAt} format={APP_LOCAL_DATE_FORMAT} /> : null}
-                    </td>
-                    <td>{education.updatedBy}</td>
-                    <td>
-                      {education.updatedAt ? <TextFormat type="date" value={education.updatedAt} format={APP_LOCAL_DATE_FORMAT} /> : null}
-                    </td>
                     <td>
                       {education.majorSubject ? (
                         <Link to={`subject-master/${education.majorSubject.id}`}>{education.majorSubject.id}</Link>

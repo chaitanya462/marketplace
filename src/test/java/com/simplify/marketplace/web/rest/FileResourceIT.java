@@ -12,8 +12,6 @@ import com.simplify.marketplace.domain.enumeration.FileType;
 import com.simplify.marketplace.repository.FileRepository;
 import com.simplify.marketplace.service.dto.FileDTO;
 import com.simplify.marketplace.service.mapper.FileMapper;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -56,18 +54,6 @@ class FileResourceIT {
     private static final Boolean DEFAULT_IS_PROFILE_PIC = false;
     private static final Boolean UPDATED_IS_PROFILE_PIC = true;
 
-    private static final String DEFAULT_CREATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_CREATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_CREATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_CREATED_AT = LocalDate.now(ZoneId.systemDefault());
-
-    private static final String DEFAULT_UPDATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_UPDATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_UPDATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_UPDATED_AT = LocalDate.now(ZoneId.systemDefault());
-
     private static final String ENTITY_API_URL = "/api/files";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -102,11 +88,7 @@ class FileResourceIT {
             .tag(DEFAULT_TAG)
             .isDefault(DEFAULT_IS_DEFAULT)
             .isResume(DEFAULT_IS_RESUME)
-            .isProfilePic(DEFAULT_IS_PROFILE_PIC)
-            .createdBy(DEFAULT_CREATED_BY)
-            .createdAt(DEFAULT_CREATED_AT)
-            .updatedBy(DEFAULT_UPDATED_BY)
-            .updatedAt(DEFAULT_UPDATED_AT);
+            .isProfilePic(DEFAULT_IS_PROFILE_PIC);
         return file;
     }
 
@@ -124,11 +106,7 @@ class FileResourceIT {
             .tag(UPDATED_TAG)
             .isDefault(UPDATED_IS_DEFAULT)
             .isResume(UPDATED_IS_RESUME)
-            .isProfilePic(UPDATED_IS_PROFILE_PIC)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .isProfilePic(UPDATED_IS_PROFILE_PIC);
         return file;
     }
 
@@ -158,10 +136,6 @@ class FileResourceIT {
         assertThat(testFile.getIsDefault()).isEqualTo(DEFAULT_IS_DEFAULT);
         assertThat(testFile.getIsResume()).isEqualTo(DEFAULT_IS_RESUME);
         assertThat(testFile.getIsProfilePic()).isEqualTo(DEFAULT_IS_PROFILE_PIC);
-        assertThat(testFile.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
-        assertThat(testFile.getCreatedAt()).isEqualTo(DEFAULT_CREATED_AT);
-        assertThat(testFile.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
-        assertThat(testFile.getUpdatedAt()).isEqualTo(DEFAULT_UPDATED_AT);
     }
 
     @Test
@@ -201,11 +175,7 @@ class FileResourceIT {
             .andExpect(jsonPath("$.[*].tag").value(hasItem(DEFAULT_TAG)))
             .andExpect(jsonPath("$.[*].isDefault").value(hasItem(DEFAULT_IS_DEFAULT.booleanValue())))
             .andExpect(jsonPath("$.[*].isResume").value(hasItem(DEFAULT_IS_RESUME.booleanValue())))
-            .andExpect(jsonPath("$.[*].isProfilePic").value(hasItem(DEFAULT_IS_PROFILE_PIC.booleanValue())))
-            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
-            .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())))
-            .andExpect(jsonPath("$.[*].updatedBy").value(hasItem(DEFAULT_UPDATED_BY)))
-            .andExpect(jsonPath("$.[*].updatedAt").value(hasItem(DEFAULT_UPDATED_AT.toString())));
+            .andExpect(jsonPath("$.[*].isProfilePic").value(hasItem(DEFAULT_IS_PROFILE_PIC.booleanValue())));
     }
 
     @Test
@@ -226,11 +196,7 @@ class FileResourceIT {
             .andExpect(jsonPath("$.tag").value(DEFAULT_TAG))
             .andExpect(jsonPath("$.isDefault").value(DEFAULT_IS_DEFAULT.booleanValue()))
             .andExpect(jsonPath("$.isResume").value(DEFAULT_IS_RESUME.booleanValue()))
-            .andExpect(jsonPath("$.isProfilePic").value(DEFAULT_IS_PROFILE_PIC.booleanValue()))
-            .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY))
-            .andExpect(jsonPath("$.createdAt").value(DEFAULT_CREATED_AT.toString()))
-            .andExpect(jsonPath("$.updatedBy").value(DEFAULT_UPDATED_BY))
-            .andExpect(jsonPath("$.updatedAt").value(DEFAULT_UPDATED_AT.toString()));
+            .andExpect(jsonPath("$.isProfilePic").value(DEFAULT_IS_PROFILE_PIC.booleanValue()));
     }
 
     @Test
@@ -259,11 +225,7 @@ class FileResourceIT {
             .tag(UPDATED_TAG)
             .isDefault(UPDATED_IS_DEFAULT)
             .isResume(UPDATED_IS_RESUME)
-            .isProfilePic(UPDATED_IS_PROFILE_PIC)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .isProfilePic(UPDATED_IS_PROFILE_PIC);
         FileDTO fileDTO = fileMapper.toDto(updatedFile);
 
         restFileMockMvc
@@ -285,10 +247,6 @@ class FileResourceIT {
         assertThat(testFile.getIsDefault()).isEqualTo(UPDATED_IS_DEFAULT);
         assertThat(testFile.getIsResume()).isEqualTo(UPDATED_IS_RESUME);
         assertThat(testFile.getIsProfilePic()).isEqualTo(UPDATED_IS_PROFILE_PIC);
-        assertThat(testFile.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testFile.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testFile.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testFile.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test
@@ -368,12 +326,7 @@ class FileResourceIT {
         File partialUpdatedFile = new File();
         partialUpdatedFile.setId(file.getId());
 
-        partialUpdatedFile
-            .path(UPDATED_PATH)
-            .isResume(UPDATED_IS_RESUME)
-            .isProfilePic(UPDATED_IS_PROFILE_PIC)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+        partialUpdatedFile.path(UPDATED_PATH).isResume(UPDATED_IS_RESUME).isProfilePic(UPDATED_IS_PROFILE_PIC);
 
         restFileMockMvc
             .perform(
@@ -394,10 +347,6 @@ class FileResourceIT {
         assertThat(testFile.getIsDefault()).isEqualTo(DEFAULT_IS_DEFAULT);
         assertThat(testFile.getIsResume()).isEqualTo(UPDATED_IS_RESUME);
         assertThat(testFile.getIsProfilePic()).isEqualTo(UPDATED_IS_PROFILE_PIC);
-        assertThat(testFile.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
-        assertThat(testFile.getCreatedAt()).isEqualTo(DEFAULT_CREATED_AT);
-        assertThat(testFile.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testFile.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test
@@ -419,11 +368,7 @@ class FileResourceIT {
             .tag(UPDATED_TAG)
             .isDefault(UPDATED_IS_DEFAULT)
             .isResume(UPDATED_IS_RESUME)
-            .isProfilePic(UPDATED_IS_PROFILE_PIC)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .isProfilePic(UPDATED_IS_PROFILE_PIC);
 
         restFileMockMvc
             .perform(
@@ -444,10 +389,6 @@ class FileResourceIT {
         assertThat(testFile.getIsDefault()).isEqualTo(UPDATED_IS_DEFAULT);
         assertThat(testFile.getIsResume()).isEqualTo(UPDATED_IS_RESUME);
         assertThat(testFile.getIsProfilePic()).isEqualTo(UPDATED_IS_PROFILE_PIC);
-        assertThat(testFile.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testFile.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testFile.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testFile.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test

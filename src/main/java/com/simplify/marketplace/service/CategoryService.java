@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 /**
  * Service Interface for managing {@link com.simplify.marketplace.domain.Category}.
  */
+
 public interface CategoryService {
     /**
      * Save a category.

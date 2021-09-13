@@ -1,13 +1,21 @@
 package com.simplify.marketplace.service.impl;
 
+import com.simplify.marketplace.domain.ElasticWorker;
 import com.simplify.marketplace.domain.Employment;
+import com.simplify.marketplace.repository.ClientRepository;
+import com.simplify.marketplace.repository.ESearchWorkerRepository;
 import com.simplify.marketplace.repository.EmploymentRepository;
+import com.simplify.marketplace.repository.LocationRepository;
+import com.simplify.marketplace.repository.WorkerRepository;
 import com.simplify.marketplace.service.EmploymentService;
 import com.simplify.marketplace.service.dto.EmploymentDTO;
 import com.simplify.marketplace.service.mapper.EmploymentMapper;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +33,18 @@ public class EmploymentServiceImpl implements EmploymentService {
     private final EmploymentRepository employmentRepository;
 
     private final EmploymentMapper employmentMapper;
+
+    @Autowired
+    WorkerRepository workerrepo;
+
+    @Autowired
+    ESearchWorkerRepository elasticworkerrepo;
+
+    @Autowired
+    LocationRepository locRepo;
+
+    @Autowired
+    ClientRepository clientRepo;
 
     public EmploymentServiceImpl(EmploymentRepository employmentRepository, EmploymentMapper employmentMapper) {
         this.employmentRepository = employmentRepository;
@@ -71,8 +91,23 @@ public class EmploymentServiceImpl implements EmploymentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<Employment> findOneWorker(Long id) {
+        log.debug("Request to get Employment : {}", id);
+        return employmentRepository.findByWorkerId(id);
+    }
+
+    @Override
     public void delete(Long id) {
         log.debug("Request to delete Employment : {}", id);
         employmentRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Employment getEmploymentById(Long id) {
+        Employment ans = employmentRepository.findById(id).get();
+
+        return ans;
     }
 }

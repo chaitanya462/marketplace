@@ -1,16 +1,23 @@
 package com.simplify.marketplace.web.rest;
 
+import com.simplify.marketplace.domain.*;
+import com.simplify.marketplace.repository.ESearchWorkerRepository;
 import com.simplify.marketplace.repository.EducationRepository;
+import com.simplify.marketplace.repository.WorkerRepository;
 import com.simplify.marketplace.service.EducationService;
+import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.dto.EducationDTO;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +37,20 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class EducationResource {
 
+    private UserService userService;
+
+    @Autowired
+    ESearchWorkerRepository rep1;
+
+    @Autowired
+    RabbitTemplate rabbit_msg;
+
+    @Autowired
+    WorkerRepository wrepo;
+
+    @Autowired
+    EducationRepository edurep;
+
     private final Logger log = LoggerFactory.getLogger(EducationResource.class);
 
     private static final String ENTITY_NAME = "education";
@@ -41,9 +62,10 @@ public class EducationResource {
 
     private final EducationRepository educationRepository;
 
-    public EducationResource(EducationService educationService, EducationRepository educationRepository) {
+    public EducationResource(EducationService educationService, EducationRepository educationRepository, UserService userService) {
         this.educationService = educationService;
         this.educationRepository = educationRepository;
+        this.userService = userService;
     }
 
     /**
@@ -59,7 +81,21 @@ public class EducationResource {
         if (educationDTO.getId() != null) {
             throw new BadRequestAlertException("A new education cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        educationDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        educationDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        educationDTO.setUpdatedAt(LocalDate.now());
+        educationDTO.setCreatedAt(LocalDate.now());
+
         EducationDTO result = educationService.save(educationDTO);
+
+        Education education = educationRepository.findById(result.getId()).get();
+        if (education.getWorker() != null) {
+            Long workerid = education.getWorker().getId();
+            ElasticWorker elasticworker = rep1.findById(workerid.toString()).get();
+            elasticworker.addEducation(education);
+            rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+        }
+
         return ResponseEntity
             .created(new URI("/api/educations/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -92,8 +128,29 @@ public class EducationResource {
         if (!educationRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        educationDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        educationDTO.setUpdatedAt(LocalDate.now());
+
+        Education prevEducation = educationRepository.findById(educationDTO.getId()).get();
 
         EducationDTO result = educationService.save(educationDTO);
+
+        Education updatedEducation = educationRepository.findById(result.getId()).get();
+
+        if (prevEducation.getWorker() != null && !Objects.equals(updatedEducation.getWorker().getId(), prevEducation.getWorker().getId())) {
+            ElasticWorker prevElasticWorker = rep1.findById(prevEducation.getWorker().getId().toString()).get();
+            prevEducation.setWorker(null);
+            prevElasticWorker = prevElasticWorker.removeEducation(prevEducation);
+            rabbit_msg.convertAndSend("topicExchange1", "routingKey", prevElasticWorker);
+        }
+
+        prevEducation.setWorker(null);
+
+        ElasticWorker elasticworker = rep1.findById(updatedEducation.getWorker().getId().toString()).get();
+        elasticworker.removeEducation(prevEducation);
+        elasticworker.addEducation(updatedEducation);
+        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, educationDTO.getId().toString()))
@@ -127,6 +184,8 @@ public class EducationResource {
         if (!educationRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        educationDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        educationDTO.setUpdatedAt(LocalDate.now());
 
         Optional<EducationDTO> result = educationService.partialUpdate(educationDTO);
 
@@ -148,6 +207,13 @@ public class EducationResource {
         Page<EducationDTO> page = educationService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @GetMapping("/educations/worker/{workerid}")
+    public List<Education> getworkerEducation(@PathVariable Long workerid) {
+        log.debug("REST request to get Education : {}", workerid);
+        List<Education> educations = educationService.findOneWorker(workerid);
+        return educations;
     }
 
     /**
@@ -172,7 +238,16 @@ public class EducationResource {
     @DeleteMapping("/educations/{id}")
     public ResponseEntity<Void> deleteEducation(@PathVariable Long id) {
         log.debug("REST request to delete Education : {}", id);
+        Education edu = edurep.findById(id).get();
         educationService.delete(id);
+
+        Long curr_id = edu.getWorker().getId();
+        edu.setWorker(null);
+        ElasticWorker eworker = rep1.findById(curr_id.toString()).get();
+        eworker.removeEducation(edu);
+
+        rabbit_msg.convertAndSend("topicExchange1", "routingKey", eworker);
+
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

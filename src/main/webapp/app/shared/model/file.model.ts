@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { IWorker } from 'app/shared/model/worker.model';
 import { FileFormat } from 'app/shared/model/enumerations/file-format.model';
 import { FileType } from 'app/shared/model/enumerations/file-type.model';
@@ -12,10 +11,6 @@ export interface IFile {
   isDefault?: boolean | null;
   isResume?: boolean | null;
   isProfilePic?: boolean | null;
-  createdBy?: string | null;
-  createdAt?: string | null;
-  updatedBy?: string | null;
-  updatedAt?: string | null;
   worker?: IWorker | null;
 }
 

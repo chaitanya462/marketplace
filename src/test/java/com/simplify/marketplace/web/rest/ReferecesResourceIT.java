@@ -38,8 +38,8 @@ class ReferecesResourceIT {
     private static final String DEFAULT_EMAIL = ":fR@d.-\\;OT8";
     private static final String UPDATED_EMAIL = "g5@#e4.l?dm5V";
 
-    private static final Integer DEFAULT_PHONE = 1000000000;
-    private static final Integer UPDATED_PHONE = 1000000001;
+    private static final String DEFAULT_PHONE = "AAAAAAAAAA";
+    private static final String UPDATED_PHONE = "BBBBBBBBBB";
 
     private static final String DEFAULT_PROFILE_LINK = "AAAAAAAAAA";
     private static final String UPDATED_PROFILE_LINK = "BBBBBBBBBB";

@@ -1,16 +1,26 @@
 package com.simplify.marketplace.web.rest;
 
+import com.simplify.marketplace.domain.*;
+import com.simplify.marketplace.repository.CategoryRepository;
+import com.simplify.marketplace.repository.ESearchWorkerRepository;
 import com.simplify.marketplace.repository.JobPreferenceRepository;
+import com.simplify.marketplace.repository.WorkerRepository;
 import com.simplify.marketplace.service.JobPreferenceService;
+import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.dto.JobPreferenceDTO;
+import com.simplify.marketplace.service.mapper.CategoryMapper;
+import com.simplify.marketplace.service.mapper.JobPreferenceMapper;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,9 +40,29 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class JobPreferenceResource {
 
+    private UserService userService;
+
+    @Autowired
+    CategoryRepository categoryRepository;
+
+    @Autowired
+    CategoryMapper categoryMapper;
+
+    @Autowired
+    JobPreferenceMapper jobpreferencesMapper;
+
     private final Logger log = LoggerFactory.getLogger(JobPreferenceResource.class);
 
     private static final String ENTITY_NAME = "jobPreference";
+
+    @Autowired
+    ESearchWorkerRepository rep1;
+
+    @Autowired
+    RabbitTemplate rabbit_msg;
+
+    @Autowired
+    WorkerRepository wrepo;
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
@@ -41,9 +71,14 @@ public class JobPreferenceResource {
 
     private final JobPreferenceRepository jobPreferenceRepository;
 
-    public JobPreferenceResource(JobPreferenceService jobPreferenceService, JobPreferenceRepository jobPreferenceRepository) {
+    public JobPreferenceResource(
+        JobPreferenceService jobPreferenceService,
+        JobPreferenceRepository jobPreferenceRepository,
+        UserService userService
+    ) {
         this.jobPreferenceService = jobPreferenceService;
         this.jobPreferenceRepository = jobPreferenceRepository;
+        this.userService = userService;
     }
 
     /**
@@ -59,7 +94,28 @@ public class JobPreferenceResource {
         if (jobPreferenceDTO.getId() != null) {
             throw new BadRequestAlertException("A new jobPreference cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        jobPreferenceDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        jobPreferenceDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        jobPreferenceDTO.setUpdatedAt(LocalDate.now());
+        jobPreferenceDTO.setCreatedAt(LocalDate.now());
         JobPreferenceDTO result = jobPreferenceService.save(jobPreferenceDTO);
+
+        System.out.println("\n\n\n\n\n" + jobPreferenceDTO + "\n\n\n\n\n\n");
+        if (jobPreferenceDTO.getWorker() != null) {
+            String Workerid = jobPreferenceDTO.getWorker().getId().toString();
+
+            ElasticWorker elasticworker = rep1.findById(Workerid).get();
+
+            Category subCategory = categoryMapper.toEntity(jobPreferenceDTO.getSubCategory());
+            System.out.println("\n\n\n\n\n\n\n" + subCategory + "\n\n\n\n\n");
+            Category ParentCategory = categoryRepository.findById(subCategory.getParent().getId()).get();
+            elasticworker.setCategory(ParentCategory.getName());
+            jobPreferenceDTO.setId(result.getId());
+            elasticworker.addJobPreference(jobpreferencesMapper.toEntity(jobPreferenceDTO));
+
+            rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+        }
+
         return ResponseEntity
             .created(new URI("/api/job-preferences/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -93,6 +149,8 @@ public class JobPreferenceResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
+        jobPreferenceDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        jobPreferenceDTO.setUpdatedAt(LocalDate.now());
         JobPreferenceDTO result = jobPreferenceService.save(jobPreferenceDTO);
         return ResponseEntity
             .ok()
@@ -127,6 +185,8 @@ public class JobPreferenceResource {
         if (!jobPreferenceRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        jobPreferenceDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        jobPreferenceDTO.setUpdatedAt(LocalDate.now());
 
         Optional<JobPreferenceDTO> result = jobPreferenceService.partialUpdate(jobPreferenceDTO);
 
@@ -161,6 +221,13 @@ public class JobPreferenceResource {
         log.debug("REST request to get JobPreference : {}", id);
         Optional<JobPreferenceDTO> jobPreferenceDTO = jobPreferenceService.findOne(id);
         return ResponseUtil.wrapOrNotFound(jobPreferenceDTO);
+    }
+
+    @GetMapping("/job-preferences/worker/{workerid}")
+    public List<JobPreference> getworkerJobPreference(@PathVariable Long workerid) {
+        log.debug("REST request to get Certificate : {}", workerid);
+        List<JobPreference> jobPreferences = jobPreferenceService.findOneWorker(workerid);
+        return jobPreferences;
     }
 
     /**

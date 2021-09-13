@@ -1,6 +1,7 @@
 package com.simplify.marketplace.repository;
 
 import com.simplify.marketplace.domain.UserPhone;
+import java.util.List;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +10,7 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface UserPhoneRepository extends JpaRepository<UserPhone, Long> {}
+public interface UserPhoneRepository extends JpaRepository<UserPhone, Long> {
+    @Query("select userPhone from UserPhone userPhone where userPhone.user.login = ?#{principal.username}")
+    List<UserPhone> findByUserIsCurrentUser();
+}

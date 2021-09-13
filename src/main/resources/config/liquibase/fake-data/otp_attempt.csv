@@ -1,11 +1,11 @@
-id;context_id;otp;status;ip;coookie;created_by;created_at
-1;HTTP open-source;90378;Failed;streamline Soft Pants;Web invoice District;local white;2021-08-08
-2;interfaces withdrawal bluetooth;65409;Expired;program;Industrial deposit;Optimized;2021-08-08
-3;1080p Division;18367;Expired;solutions;(E.M.U.-6) Gloves;cutting-edge Avon;2021-08-09
-4;Corporate;57961;Expired;sensor;transform;e-markets;2021-08-09
-5;Dollar;60979;Failed;3rd supply-chains;enterprise;Assistant Program;2021-08-08
-6;Market SCSI;79439;Failed;Tasty;Sleek Mississippi;indexing;2021-08-08
-7;Liaison Gardens invoice;82371;Approved;De-engineered Malaysia;Jewelery installation;synergize;2021-08-08
-8;visionary;7900;Expired;SCSI sticky Plastic;invoice;USB Home Maryland;2021-08-08
-9;Turnpike JBOD online;68669;Approved;Avon;quantify connecting Tasty;benchmark Engineer;2021-08-09
-10;multi-byte;68573;Expired;payment;real-time architectures;overriding Field;2021-08-08
+id;context_id;otp;is_active;status;ip;coookie
+1;HTTP open-source;90378;false;Approved;Wooden Pants;Web invoice District
+2;local white;49354;true;Failed;multi-state Spurs;payment program
+3;Industrial deposit;14590;false;Expired;quantify parse;digital Grocery
+4;Radial;78162;false;Approved;moratorium cutting-edge Avon;synergy
+5;New sensor Tools;11379;false;Failed;Afghani Dollar;Mount Books
+6;Cheese holistic;16422;true;Pending;Naira multimedia Legacy;Chair
+7;transform;55092;true;Failed;service-desk Malta;Plastic tertiary bluetooth
+8;deposit Rubber Health;80024;false;Failed;mission-critical drive;visionary
+9;Territory;89060;false;Failed;hack;Metal Facilitator
+10;Plastic recontextualize indexing;51779;true;Approved;online;Dynamic Tools quantify

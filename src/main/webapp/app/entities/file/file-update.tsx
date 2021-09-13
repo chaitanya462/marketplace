@@ -141,34 +141,6 @@ export const FileUpdate = (props: RouteComponentProps<{ id: string }>) => {
                 type="checkbox"
               />
               <ValidatedField
-                label={translate('simplifyMarketplaceApp.file.createdBy')}
-                id="file-createdBy"
-                name="createdBy"
-                data-cy="createdBy"
-                type="text"
-              />
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.file.createdAt')}
-                id="file-createdAt"
-                name="createdAt"
-                data-cy="createdAt"
-                type="date"
-              />
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.file.updatedBy')}
-                id="file-updatedBy"
-                name="updatedBy"
-                data-cy="updatedBy"
-                type="text"
-              />
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.file.updatedAt')}
-                id="file-updatedAt"
-                name="updatedAt"
-                data-cy="updatedAt"
-                type="date"
-              />
-              <ValidatedField
                 id="file-worker"
                 name="workerId"
                 data-cy="worker"

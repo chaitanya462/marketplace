@@ -115,11 +115,6 @@ export const ReferecesUpdate = (props: RouteComponentProps<{ id: string }>) => {
                 name="phone"
                 data-cy="phone"
                 type="text"
-                validate={{
-                  min: { value: 1000000000, message: translate('entity.validation.min', { min: 1000000000 }) },
-                  max: { value: 9999999999, message: translate('entity.validation.max', { max: 9999999999 }) },
-                  validate: v => isNumber(v) || translate('entity.validation.number'),
-                }}
               />
               <ValidatedField
                 label={translate('simplifyMarketplaceApp.refereces.profileLink')}

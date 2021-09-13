@@ -1,6 +1,7 @@
 package com.simplify.marketplace.repository;
 
-import com.simplify.marketplace.domain.Portfolio;
+import com.simplify.marketplace.domain.*;
+import java.util.*;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +10,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {}
+public interface PortfolioRepository extends JpaRepository<Portfolio, Long> {
+    List<Portfolio> findByWorkerId(Long workerid);
+}

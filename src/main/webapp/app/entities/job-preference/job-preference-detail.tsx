@@ -104,38 +104,6 @@ export const JobPreferenceDetail = (props: RouteComponentProps<{ id: string }>) 
           </dt>
           <dd>{jobPreferenceEntity.isActive ? 'true' : 'false'}</dd>
           <dt>
-            <span id="createdBy">
-              <Translate contentKey="simplifyMarketplaceApp.jobPreference.createdBy">Created By</Translate>
-            </span>
-          </dt>
-          <dd>{jobPreferenceEntity.createdBy}</dd>
-          <dt>
-            <span id="createdAt">
-              <Translate contentKey="simplifyMarketplaceApp.jobPreference.createdAt">Created At</Translate>
-            </span>
-          </dt>
-          <dd>
-            {jobPreferenceEntity.createdAt ? (
-              <TextFormat value={jobPreferenceEntity.createdAt} type="date" format={APP_LOCAL_DATE_FORMAT} />
-            ) : null}
-          </dd>
-          <dt>
-            <span id="updatedBy">
-              <Translate contentKey="simplifyMarketplaceApp.jobPreference.updatedBy">Updated By</Translate>
-            </span>
-          </dt>
-          <dd>{jobPreferenceEntity.updatedBy}</dd>
-          <dt>
-            <span id="updatedAt">
-              <Translate contentKey="simplifyMarketplaceApp.jobPreference.updatedAt">Updated At</Translate>
-            </span>
-          </dt>
-          <dd>
-            {jobPreferenceEntity.updatedAt ? (
-              <TextFormat value={jobPreferenceEntity.updatedAt} type="date" format={APP_LOCAL_DATE_FORMAT} />
-            ) : null}
-          </dd>
-          <dt>
             <Translate contentKey="simplifyMarketplaceApp.jobPreference.subCategory">Sub Category</Translate>
           </dt>
           <dd>{jobPreferenceEntity.subCategory ? jobPreferenceEntity.subCategory.id : ''}</dd>

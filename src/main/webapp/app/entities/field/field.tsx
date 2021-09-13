@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Col, Row, Table } from 'reactstrap';
-import { Translate, TextFormat, getSortState } from 'react-jhipster';
+import { Translate, getSortState } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { getEntities, reset } from './field.reducer';
@@ -137,18 +137,6 @@ export const Field = (props: RouteComponentProps<{ url: string }>) => {
                   <th className="hand" onClick={sort('isActive')}>
                     <Translate contentKey="simplifyMarketplaceApp.field.isActive">Is Active</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
-                  <th className="hand" onClick={sort('createdBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.field.createdBy">Created By</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('createdAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.field.createdAt">Created At</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('updatedBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.field.updatedBy">Updated By</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('updatedAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.field.updatedAt">Updated At</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
                   <th>
                     <Translate contentKey="simplifyMarketplaceApp.field.category">Category</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
@@ -169,10 +157,6 @@ export const Field = (props: RouteComponentProps<{ url: string }>) => {
                       <Translate contentKey={`simplifyMarketplaceApp.FieldType.${field.fieldType}`} />
                     </td>
                     <td>{field.isActive ? 'true' : 'false'}</td>
-                    <td>{field.createdBy}</td>
-                    <td>{field.createdAt ? <TextFormat type="date" value={field.createdAt} format={APP_LOCAL_DATE_FORMAT} /> : null}</td>
-                    <td>{field.updatedBy}</td>
-                    <td>{field.updatedAt ? <TextFormat type="date" value={field.updatedAt} format={APP_LOCAL_DATE_FORMAT} /> : null}</td>
                     <td>{field.category ? <Link to={`category/${field.category.id}`}>{field.category.id}</Link> : ''}</td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">

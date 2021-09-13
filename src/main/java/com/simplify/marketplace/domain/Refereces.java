@@ -1,12 +1,21 @@
 package com.simplify.marketplace.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.simplify.marketplace.domain.enumeration.RelationType;
 import java.io.Serializable;
+import java.time.LocalDate;
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import lombok.Data;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  * A Refereces.
@@ -14,6 +23,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "refereces")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Data
 public class Refereces implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -29,10 +39,8 @@ public class Refereces implements Serializable {
     @Column(name = "email")
     private String email;
 
-    @Min(value = 1000000000)
-    @Max(value = 9999999999L)
     @Column(name = "phone")
-    private Integer phone;
+    private String phone;
 
     @Column(name = "profile_link")
     private String profileLink;
@@ -41,31 +49,36 @@ public class Refereces implements Serializable {
     @Column(name = "relation_type")
     private RelationType relationType;
 
+    @Column(name = "created_by")
+    private String createdBy;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
+    @Column(name = "created_at")
+    private LocalDate createdAt;
+
+    @Column(name = "updated_by")
+    private String updatedBy;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
+    @Column(name = "updated_at")
+    private LocalDate updatedAt;
+
     @ManyToOne
     @JsonIgnoreProperties(
-        value = {
-            "customUser", "files", "educations", "certificates", "employments", "portfolios", "refereces", "jobPreferences", "skills",
-        },
+        value = { "user", "files", "educations", "certificates", "employments", "portfolios", "refereces", "jobPreferences", "skills" },
         allowSetters = true
     )
     private Worker worker;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Refereces id(Long id) {
         this.id = id;
         return this;
-    }
-
-    public String getName() {
-        return this.name;
     }
 
     public Refereces name(String name) {
@@ -73,38 +86,14 @@ public class Refereces implements Serializable {
         return this;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return this.email;
-    }
-
     public Refereces email(String email) {
         this.email = email;
         return this;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Integer getPhone() {
-        return this.phone;
-    }
-
-    public Refereces phone(Integer phone) {
+    public Refereces phone(String phone) {
         this.phone = phone;
         return this;
-    }
-
-    public void setPhone(Integer phone) {
-        this.phone = phone;
-    }
-
-    public String getProfileLink() {
-        return this.profileLink;
     }
 
     public Refereces profileLink(String profileLink) {
@@ -112,25 +101,9 @@ public class Refereces implements Serializable {
         return this;
     }
 
-    public void setProfileLink(String profileLink) {
-        this.profileLink = profileLink;
-    }
-
-    public RelationType getRelationType() {
-        return this.relationType;
-    }
-
     public Refereces relationType(RelationType relationType) {
         this.relationType = relationType;
         return this;
-    }
-
-    public void setRelationType(RelationType relationType) {
-        this.relationType = relationType;
-    }
-
-    public Worker getWorker() {
-        return this.worker;
     }
 
     public Refereces worker(Worker worker) {
@@ -138,39 +111,23 @@ public class Refereces implements Serializable {
         return this;
     }
 
-    public void setWorker(Worker worker) {
-        this.worker = worker;
+    public Refereces createdBy(String createdBy) {
+        this.createdBy = createdBy;
+        return this;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Refereces)) {
-            return false;
-        }
-        return id != null && id.equals(((Refereces) o).id);
+    public Refereces createdAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+        return this;
     }
 
-    @Override
-    public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
-        return getClass().hashCode();
+    public Refereces updatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+        return this;
     }
 
-    // prettier-ignore
-    @Override
-    public String toString() {
-        return "Refereces{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", email='" + getEmail() + "'" +
-            ", phone=" + getPhone() +
-            ", profileLink='" + getProfileLink() + "'" +
-            ", relationType='" + getRelationType() + "'" +
-            "}";
+    public Refereces updatedAt(LocalDate updatedAt) {
+        this.updatedAt = updatedAt;
+        return this;
     }
 }

@@ -145,34 +145,6 @@ export const EmploymentUpdate = (props: RouteComponentProps<{ id: string }>) => 
                 type="text"
               />
               <ValidatedField
-                label={translate('simplifyMarketplaceApp.employment.createdBy')}
-                id="employment-createdBy"
-                name="createdBy"
-                data-cy="createdBy"
-                type="text"
-              />
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.employment.createdAt')}
-                id="employment-createdAt"
-                name="createdAt"
-                data-cy="createdAt"
-                type="date"
-              />
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.employment.updatedBy')}
-                id="employment-updatedBy"
-                name="updatedBy"
-                data-cy="updatedBy"
-                type="text"
-              />
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.employment.updatedAt')}
-                id="employment-updatedAt"
-                name="updatedAt"
-                data-cy="updatedAt"
-                type="date"
-              />
-              <ValidatedField
                 id="employment-company"
                 name="companyId"
                 data-cy="company"

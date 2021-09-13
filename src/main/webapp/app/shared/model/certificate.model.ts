@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import { IWorker } from 'app/shared/model/worker.model';
 
 export interface ICertificate {
@@ -8,10 +7,6 @@ export interface ICertificate {
   issueYear?: number | null;
   expiryYear?: number | null;
   description?: string | null;
-  createdBy?: string | null;
-  createdAt?: string | null;
-  updatedBy?: string | null;
-  updatedAt?: string | null;
   worker?: IWorker | null;
 }
 

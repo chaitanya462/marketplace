@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Col, Row, Table } from 'reactstrap';
-import { Translate, TextFormat, getSortState } from 'react-jhipster';
+import { Translate, getSortState } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { getEntities, reset } from './user-email.reducer';
@@ -138,25 +138,8 @@ export const UserEmail = (props: RouteComponentProps<{ url: string }>) => {
                   <th className="hand" onClick={sort('tag')}>
                     <Translate contentKey="simplifyMarketplaceApp.userEmail.tag">Tag</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
-                  <th className="hand" onClick={sort('createdBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.userEmail.createdBy">Created By</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('createdAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.userEmail.createdAt">Created At</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('updatedBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.userEmail.updatedBy">Updated By</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('updatedAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.userEmail.updatedAt">Updated At</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
                   <th>
-                    <Translate contentKey="simplifyMarketplaceApp.userEmail.customUser">Custom User</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
+                    <Translate contentKey="simplifyMarketplaceApp.userEmail.user">User</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
                   <th />
                 </tr>
@@ -173,17 +156,7 @@ export const UserEmail = (props: RouteComponentProps<{ url: string }>) => {
                     <td>{userEmail.isActive ? 'true' : 'false'}</td>
                     <td>{userEmail.isPrimary ? 'true' : 'false'}</td>
                     <td>{userEmail.tag}</td>
-                    <td>{userEmail.createdBy}</td>
-                    <td>
-                      {userEmail.createdAt ? <TextFormat type="date" value={userEmail.createdAt} format={APP_LOCAL_DATE_FORMAT} /> : null}
-                    </td>
-                    <td>{userEmail.updatedBy}</td>
-                    <td>
-                      {userEmail.updatedAt ? <TextFormat type="date" value={userEmail.updatedAt} format={APP_LOCAL_DATE_FORMAT} /> : null}
-                    </td>
-                    <td>
-                      {userEmail.customUser ? <Link to={`custom-user/${userEmail.customUser.id}`}>{userEmail.customUser.id}</Link> : ''}
-                    </td>
+                    <td>{userEmail.user ? userEmail.user.id : ''}</td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">
                         <Button tag={Link} to={`${match.url}/${userEmail.id}`} color="info" size="sm" data-cy="entityDetailsButton">

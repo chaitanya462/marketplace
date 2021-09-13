@@ -6,8 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { ILocation } from 'app/shared/model/location.model';
 import { getEntities as getLocations } from 'app/entities/location/location.reducer';
-import { ICustomUser } from 'app/shared/model/custom-user.model';
-import { getEntities as getCustomUsers } from 'app/entities/custom-user/custom-user.reducer';
+import { IUser } from 'app/shared/model/user.model';
+import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
 import { getEntity, updateEntity, createEntity, reset } from './address.reducer';
 import { IAddress } from 'app/shared/model/address.model';
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
@@ -20,7 +20,7 @@ export const AddressUpdate = (props: RouteComponentProps<{ id: string }>) => {
   const [isNew] = useState(!props.match.params || !props.match.params.id);
 
   const locations = useAppSelector(state => state.location.entities);
-  const customUsers = useAppSelector(state => state.customUser.entities);
+  const users = useAppSelector(state => state.userManagement.users);
   const addressEntity = useAppSelector(state => state.address.entity);
   const loading = useAppSelector(state => state.address.loading);
   const updating = useAppSelector(state => state.address.updating);
@@ -36,7 +36,7 @@ export const AddressUpdate = (props: RouteComponentProps<{ id: string }>) => {
     }
 
     dispatch(getLocations({}));
-    dispatch(getCustomUsers({}));
+    dispatch(getUsers({}));
   }, []);
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export const AddressUpdate = (props: RouteComponentProps<{ id: string }>) => {
       ...addressEntity,
       ...values,
       location: locations.find(it => it.id.toString() === values.locationId.toString()),
-      customUser: customUsers.find(it => it.id.toString() === values.customUserId.toString()),
+      user: users.find(it => it.id.toString() === values.userId.toString()),
     };
 
     if (isNew) {
@@ -66,7 +66,7 @@ export const AddressUpdate = (props: RouteComponentProps<{ id: string }>) => {
       : {
           ...addressEntity,
           locationId: addressEntity?.location?.id,
-          customUserId: addressEntity?.customUser?.id,
+          userId: addressEntity?.user?.id,
         };
 
   return (
@@ -132,15 +132,15 @@ export const AddressUpdate = (props: RouteComponentProps<{ id: string }>) => {
                   : null}
               </ValidatedField>
               <ValidatedField
-                id="address-customUser"
-                name="customUserId"
-                data-cy="customUser"
-                label={translate('simplifyMarketplaceApp.address.customUser')}
+                id="address-user"
+                name="userId"
+                data-cy="user"
+                label={translate('simplifyMarketplaceApp.address.user')}
                 type="select"
               >
                 <option value="" key="0" />
-                {customUsers
-                  ? customUsers.map(otherEntity => (
+                {users
+                  ? users.map(otherEntity => (
                       <option value={otherEntity.id} key={otherEntity.id}>
                         {otherEntity.id}
                       </option>

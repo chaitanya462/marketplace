@@ -69,18 +69,6 @@ class JobPreferenceResourceIT {
     private static final Boolean DEFAULT_IS_ACTIVE = false;
     private static final Boolean UPDATED_IS_ACTIVE = true;
 
-    private static final String DEFAULT_CREATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_CREATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_CREATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_CREATED_AT = LocalDate.now(ZoneId.systemDefault());
-
-    private static final String DEFAULT_UPDATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_UPDATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_UPDATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_UPDATED_AT = LocalDate.now(ZoneId.systemDefault());
-
     private static final String ENTITY_API_URL = "/api/job-preferences";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -119,11 +107,7 @@ class JobPreferenceResourceIT {
             .locationType(DEFAULT_LOCATION_TYPE)
             .availableFrom(DEFAULT_AVAILABLE_FROM)
             .availableTo(DEFAULT_AVAILABLE_TO)
-            .isActive(DEFAULT_IS_ACTIVE)
-            .createdBy(DEFAULT_CREATED_BY)
-            .createdAt(DEFAULT_CREATED_AT)
-            .updatedBy(DEFAULT_UPDATED_BY)
-            .updatedAt(DEFAULT_UPDATED_AT);
+            .isActive(DEFAULT_IS_ACTIVE);
         return jobPreference;
     }
 
@@ -145,11 +129,7 @@ class JobPreferenceResourceIT {
             .locationType(UPDATED_LOCATION_TYPE)
             .availableFrom(UPDATED_AVAILABLE_FROM)
             .availableTo(UPDATED_AVAILABLE_TO)
-            .isActive(UPDATED_IS_ACTIVE)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .isActive(UPDATED_IS_ACTIVE);
         return jobPreference;
     }
 
@@ -185,10 +165,6 @@ class JobPreferenceResourceIT {
         assertThat(testJobPreference.getAvailableFrom()).isEqualTo(DEFAULT_AVAILABLE_FROM);
         assertThat(testJobPreference.getAvailableTo()).isEqualTo(DEFAULT_AVAILABLE_TO);
         assertThat(testJobPreference.getIsActive()).isEqualTo(DEFAULT_IS_ACTIVE);
-        assertThat(testJobPreference.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
-        assertThat(testJobPreference.getCreatedAt()).isEqualTo(DEFAULT_CREATED_AT);
-        assertThat(testJobPreference.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
-        assertThat(testJobPreference.getUpdatedAt()).isEqualTo(DEFAULT_UPDATED_AT);
     }
 
     @Test
@@ -234,11 +210,7 @@ class JobPreferenceResourceIT {
             .andExpect(jsonPath("$.[*].locationType").value(hasItem(DEFAULT_LOCATION_TYPE.toString())))
             .andExpect(jsonPath("$.[*].availableFrom").value(hasItem(DEFAULT_AVAILABLE_FROM.toString())))
             .andExpect(jsonPath("$.[*].availableTo").value(hasItem(DEFAULT_AVAILABLE_TO.toString())))
-            .andExpect(jsonPath("$.[*].isActive").value(hasItem(DEFAULT_IS_ACTIVE.booleanValue())))
-            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
-            .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())))
-            .andExpect(jsonPath("$.[*].updatedBy").value(hasItem(DEFAULT_UPDATED_BY)))
-            .andExpect(jsonPath("$.[*].updatedAt").value(hasItem(DEFAULT_UPDATED_AT.toString())));
+            .andExpect(jsonPath("$.[*].isActive").value(hasItem(DEFAULT_IS_ACTIVE.booleanValue())));
     }
 
     @Test
@@ -263,11 +235,7 @@ class JobPreferenceResourceIT {
             .andExpect(jsonPath("$.locationType").value(DEFAULT_LOCATION_TYPE.toString()))
             .andExpect(jsonPath("$.availableFrom").value(DEFAULT_AVAILABLE_FROM.toString()))
             .andExpect(jsonPath("$.availableTo").value(DEFAULT_AVAILABLE_TO.toString()))
-            .andExpect(jsonPath("$.isActive").value(DEFAULT_IS_ACTIVE.booleanValue()))
-            .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY))
-            .andExpect(jsonPath("$.createdAt").value(DEFAULT_CREATED_AT.toString()))
-            .andExpect(jsonPath("$.updatedBy").value(DEFAULT_UPDATED_BY))
-            .andExpect(jsonPath("$.updatedAt").value(DEFAULT_UPDATED_AT.toString()));
+            .andExpect(jsonPath("$.isActive").value(DEFAULT_IS_ACTIVE.booleanValue()));
     }
 
     @Test
@@ -300,11 +268,7 @@ class JobPreferenceResourceIT {
             .locationType(UPDATED_LOCATION_TYPE)
             .availableFrom(UPDATED_AVAILABLE_FROM)
             .availableTo(UPDATED_AVAILABLE_TO)
-            .isActive(UPDATED_IS_ACTIVE)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .isActive(UPDATED_IS_ACTIVE);
         JobPreferenceDTO jobPreferenceDTO = jobPreferenceMapper.toDto(updatedJobPreference);
 
         restJobPreferenceMockMvc
@@ -330,10 +294,6 @@ class JobPreferenceResourceIT {
         assertThat(testJobPreference.getAvailableFrom()).isEqualTo(UPDATED_AVAILABLE_FROM);
         assertThat(testJobPreference.getAvailableTo()).isEqualTo(UPDATED_AVAILABLE_TO);
         assertThat(testJobPreference.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);
-        assertThat(testJobPreference.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testJobPreference.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testJobPreference.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testJobPreference.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test
@@ -415,12 +375,7 @@ class JobPreferenceResourceIT {
         JobPreference partialUpdatedJobPreference = new JobPreference();
         partialUpdatedJobPreference.setId(jobPreference.getId());
 
-        partialUpdatedJobPreference
-            .hourPerDay(UPDATED_HOUR_PER_DAY)
-            .hourPerWeek(UPDATED_HOUR_PER_WEEK)
-            .locationType(UPDATED_LOCATION_TYPE)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedAt(UPDATED_UPDATED_AT);
+        partialUpdatedJobPreference.hourPerDay(UPDATED_HOUR_PER_DAY).hourPerWeek(UPDATED_HOUR_PER_WEEK).locationType(UPDATED_LOCATION_TYPE);
 
         restJobPreferenceMockMvc
             .perform(
@@ -445,10 +400,6 @@ class JobPreferenceResourceIT {
         assertThat(testJobPreference.getAvailableFrom()).isEqualTo(DEFAULT_AVAILABLE_FROM);
         assertThat(testJobPreference.getAvailableTo()).isEqualTo(DEFAULT_AVAILABLE_TO);
         assertThat(testJobPreference.getIsActive()).isEqualTo(DEFAULT_IS_ACTIVE);
-        assertThat(testJobPreference.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
-        assertThat(testJobPreference.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testJobPreference.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
-        assertThat(testJobPreference.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test
@@ -474,11 +425,7 @@ class JobPreferenceResourceIT {
             .locationType(UPDATED_LOCATION_TYPE)
             .availableFrom(UPDATED_AVAILABLE_FROM)
             .availableTo(UPDATED_AVAILABLE_TO)
-            .isActive(UPDATED_IS_ACTIVE)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .isActive(UPDATED_IS_ACTIVE);
 
         restJobPreferenceMockMvc
             .perform(
@@ -503,10 +450,6 @@ class JobPreferenceResourceIT {
         assertThat(testJobPreference.getAvailableFrom()).isEqualTo(UPDATED_AVAILABLE_FROM);
         assertThat(testJobPreference.getAvailableTo()).isEqualTo(UPDATED_AVAILABLE_TO);
         assertThat(testJobPreference.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);
-        assertThat(testJobPreference.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testJobPreference.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testJobPreference.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testJobPreference.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test

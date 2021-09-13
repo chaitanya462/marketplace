@@ -7,8 +7,8 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity {@link UserEmail} and its DTO {@link UserEmailDTO}.
  */
-@Mapper(componentModel = "spring", uses = { CustomUserMapper.class })
+@Mapper(componentModel = "spring", uses = { UserMapper.class })
 public interface UserEmailMapper extends EntityMapper<UserEmailDTO, UserEmail> {
-    @Mapping(target = "customUser", source = "customUser", qualifiedByName = "id")
+    @Mapping(target = "user", source = "user", qualifiedByName = "id")
     UserEmailDTO toDto(UserEmail s);
 }

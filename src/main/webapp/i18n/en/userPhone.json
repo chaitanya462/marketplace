@@ -22,10 +22,6 @@
       "isActive": "Is Active",
       "isPrimary": "Is Primary",
       "tag": "Tag",
-      "createdBy": "Created By",
-      "createdAt": "Created At",
-      "updatedBy": "Updated By",
-      "updatedAt": "Updated At",
       "customUser": "Custom User"
     }
   }

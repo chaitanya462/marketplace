@@ -21,10 +21,6 @@
       "name": "Name",
       "isParent": "Is Parent",
       "isActive": "Is Active",
-      "createdBy": "Created By",
-      "createdAt": "Created At",
-      "updatedBy": "Updated By",
-      "updatedAt": "Updated At",
       "category": "Category",
       "field": "Field",
       "parent": "Parent"

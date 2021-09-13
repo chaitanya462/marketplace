@@ -1,11 +1,11 @@
-id;first_name;middle_name;last_name;primary_phone;description;date_of_birth;created_by;created_at;updated_by;updated_at
-1;Matilde;Right-sized;Leannon;2860300485;Analyst IB Mission;2021-08-09;Hills indexing Towels;2021-08-09;deposit Tools Rufiyaa;2021-08-08
-2;Josiah;Grass-roots Avon;Monahan;5156707316;Planner South;2021-08-09;synergistic Small Account;2021-08-08;reintermediate integrated;2021-08-08
-3;Elinor;Cheese B2B;Jenkins;8242373465;mindshare magenta;2021-08-09;protocol Regional;2021-08-09;Borders;2021-08-09
-4;Dixie;SDD Ohio customer;VonRueden;2229303556;Lesotho impactful alarm;2021-08-08;Future;2021-08-08;cross-platform;2021-08-08
-5;Brittany;invoice connect;Kilback;4112989998;Director Global;2021-08-08;Movies Michigan;2021-08-08;Re-contextualized holistic;2021-08-08
-6;Avery;Avon sensor;Howell;4861821533;Avon multi-byte;2021-08-08;navigate;2021-08-09;vertical Tasty Senior;2021-08-08
-7;Brian;Representative overriding;Kassulke;5277970769;capacitor Outdoors;2021-08-08;Wisconsin;2021-08-09;Ergonomic Architect;2021-08-08
-8;Ettie;quantify;Mosciski;8146984605;Arizona;2021-08-09;Interactions Future;2021-08-08;Managed upward-trending;2021-08-09
-9;Daisha;Balanced Togo;Wolf;8115021615;quantify;2021-08-08;invoice Yen interfaces;2021-08-08;Toys;2021-08-09
-10;Mitchell;Licensed virtual feed;Keebler;6874456529;Computer Loan turn-key;2021-08-08;generation programming hack;2021-08-08;transmitting Ramp repurpose;2021-08-09
+id;first_name;middle_name;last_name;primary_phone;description;date_of_birth;is_active
+1;Matilde;Right-sized;Leannon;parsing;IB Mission;2021-08-12;true
+2;Jaden;stable Curve;Schmidt;calculate;Tools Rufiyaa connecting;2021-08-12;false
+3;Vladimir;Licensed Plains;Mayert;South fuchsia bus;Netherlands;2021-08-11;false
+4;Lucio;withdrawal navigate;Gusikowski;Cheese B2B;haptic program;2021-08-11;true
+5;Connor;protocol Regional;Dicki;Borders;systematic;2021-08-12;true
+6;Kayley;Garden Valley Designer;Carroll;Borders;Wyoming Future;2021-08-11;false
+7;Peter;Rwanda Account;Hackett;Alley sexy protocol;Switchable Movies;2021-08-11;false
+8;Francisca;enhance directional incremental;Hills;Rubber Borders;Home Buckinghamshire;2021-08-11;false
+9;Cathrine;dot-com Regional bandwidth;Rowe;Generic Rubber Program;index;2021-08-12;true
+10;Theo;Outdoors;Nikolaus;Wisconsin;Belgium;2021-08-12;true

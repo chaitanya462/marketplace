@@ -2,10 +2,12 @@ package com.simplify.marketplace.web.rest;
 
 import com.simplify.marketplace.repository.OtpRepository;
 import com.simplify.marketplace.service.OtpService;
+import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.dto.OtpDTO;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,6 +32,8 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class OtpResource {
 
+    private UserService userService;
+
     private final Logger log = LoggerFactory.getLogger(OtpResource.class);
 
     private static final String ENTITY_NAME = "otp";
@@ -41,9 +45,10 @@ public class OtpResource {
 
     private final OtpRepository otpRepository;
 
-    public OtpResource(OtpService otpService, OtpRepository otpRepository) {
+    public OtpResource(OtpService otpService, OtpRepository otpRepository, UserService userService) {
         this.otpService = otpService;
         this.otpRepository = otpRepository;
+        this.userService = userService;
     }
 
     /**
@@ -59,6 +64,8 @@ public class OtpResource {
         if (otpDTO.getId() != null) {
             throw new BadRequestAlertException("A new otp cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        otpDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        otpDTO.setCreatedAt(LocalDate.now());
         OtpDTO result = otpService.save(otpDTO);
         return ResponseEntity
             .created(new URI("/api/otps/" + result.getId()))

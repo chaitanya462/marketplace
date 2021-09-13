@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Col, Row, Table } from 'reactstrap';
-import { Translate, TextFormat, getSortState } from 'react-jhipster';
+import { Translate, getSortState } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { getEntities, reset } from './category.reducer';
@@ -134,18 +134,6 @@ export const Category = (props: RouteComponentProps<{ url: string }>) => {
                   <th className="hand" onClick={sort('isActive')}>
                     <Translate contentKey="simplifyMarketplaceApp.category.isActive">Is Active</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
-                  <th className="hand" onClick={sort('createdBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.category.createdBy">Created By</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('createdAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.category.createdAt">Created At</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('updatedBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.category.updatedBy">Updated By</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('updatedAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.category.updatedAt">Updated At</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
                   <th>
                     <Translate contentKey="simplifyMarketplaceApp.category.parent">Parent</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
@@ -163,14 +151,6 @@ export const Category = (props: RouteComponentProps<{ url: string }>) => {
                     <td>{category.name}</td>
                     <td>{category.isParent ? 'true' : 'false'}</td>
                     <td>{category.isActive ? 'true' : 'false'}</td>
-                    <td>{category.createdBy}</td>
-                    <td>
-                      {category.createdAt ? <TextFormat type="date" value={category.createdAt} format={APP_LOCAL_DATE_FORMAT} /> : null}
-                    </td>
-                    <td>{category.updatedBy}</td>
-                    <td>
-                      {category.updatedAt ? <TextFormat type="date" value={category.updatedAt} format={APP_LOCAL_DATE_FORMAT} /> : null}
-                    </td>
                     <td>{category.parent ? <Link to={`category/${category.parent.id}`}>{category.parent.id}</Link> : ''}</td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">

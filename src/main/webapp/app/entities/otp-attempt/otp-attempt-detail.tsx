@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Row, Col } from 'reactstrap';
-import { Translate, TextFormat } from 'react-jhipster';
+import { Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { getEntity } from './otp-attempt.reducer';
@@ -42,6 +42,12 @@ export const OtpAttemptDetail = (props: RouteComponentProps<{ id: string }>) => 
           </dt>
           <dd>{otpAttemptEntity.otp}</dd>
           <dt>
+            <span id="isActive">
+              <Translate contentKey="simplifyMarketplaceApp.otpAttempt.isActive">Is Active</Translate>
+            </span>
+          </dt>
+          <dd>{otpAttemptEntity.isActive ? 'true' : 'false'}</dd>
+          <dt>
             <span id="status">
               <Translate contentKey="simplifyMarketplaceApp.otpAttempt.status">Status</Translate>
             </span>
@@ -59,22 +65,6 @@ export const OtpAttemptDetail = (props: RouteComponentProps<{ id: string }>) => 
             </span>
           </dt>
           <dd>{otpAttemptEntity.coookie}</dd>
-          <dt>
-            <span id="createdBy">
-              <Translate contentKey="simplifyMarketplaceApp.otpAttempt.createdBy">Created By</Translate>
-            </span>
-          </dt>
-          <dd>{otpAttemptEntity.createdBy}</dd>
-          <dt>
-            <span id="createdAt">
-              <Translate contentKey="simplifyMarketplaceApp.otpAttempt.createdAt">Created At</Translate>
-            </span>
-          </dt>
-          <dd>
-            {otpAttemptEntity.createdAt ? (
-              <TextFormat value={otpAttemptEntity.createdAt} type="date" format={APP_LOCAL_DATE_FORMAT} />
-            ) : null}
-          </dd>
         </dl>
         <Button tag={Link} to="/otp-attempt" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

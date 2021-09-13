@@ -2,10 +2,12 @@ package com.simplify.marketplace.web.rest;
 
 import com.simplify.marketplace.repository.AddressRepository;
 import com.simplify.marketplace.service.AddressService;
+import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.dto.AddressDTO;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,6 +32,8 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class AddressResource {
 
+    private UserService userService;
+
     private final Logger log = LoggerFactory.getLogger(AddressResource.class);
 
     private static final String ENTITY_NAME = "address";
@@ -41,9 +45,10 @@ public class AddressResource {
 
     private final AddressRepository addressRepository;
 
-    public AddressResource(AddressService addressService, AddressRepository addressRepository) {
+    public AddressResource(AddressService addressService, AddressRepository addressRepository, UserService userService) {
         this.addressService = addressService;
         this.addressRepository = addressRepository;
+        this.userService = userService;
     }
 
     /**
@@ -59,6 +64,11 @@ public class AddressResource {
         if (addressDTO.getId() != null) {
             throw new BadRequestAlertException("A new address cannot already have an ID", ENTITY_NAME, "idexists");
         }
+
+        addressDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        addressDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        addressDTO.setUpdatedAt(LocalDate.now());
+        addressDTO.setCreatedAt(LocalDate.now());
         AddressDTO result = addressService.save(addressDTO);
         return ResponseEntity
             .created(new URI("/api/addresses/" + result.getId()))
@@ -92,7 +102,8 @@ public class AddressResource {
         if (!addressRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-
+        addressDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        addressDTO.setUpdatedAt(LocalDate.now());
         AddressDTO result = addressService.save(addressDTO);
         return ResponseEntity
             .ok()
@@ -128,6 +139,8 @@ public class AddressResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
+        addressDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        addressDTO.setUpdatedAt(LocalDate.now());
         Optional<AddressDTO> result = addressService.partialUpdate(addressDTO);
 
         return ResponseUtil.wrapOrNotFound(

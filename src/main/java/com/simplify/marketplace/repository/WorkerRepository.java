@@ -25,4 +25,6 @@ public interface WorkerRepository extends JpaRepository<Worker, Long> {
 
     @Query("select worker from Worker worker left join fetch worker.skills where worker.id =:id")
     Optional<Worker> findOneWithEagerRelationships(@Param("id") Long id);
+
+    Optional<Worker> findByUserId(Long id);
 }

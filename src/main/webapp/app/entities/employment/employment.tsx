@@ -151,22 +151,6 @@ export const Employment = (props: RouteComponentProps<{ url: string }>) => {
                     <Translate contentKey="simplifyMarketplaceApp.employment.description">Description</Translate>{' '}
                     <FontAwesomeIcon icon="sort" />
                   </th>
-                  <th className="hand" onClick={sort('createdBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.employment.createdBy">Created By</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('createdAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.employment.createdAt">Created At</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('updatedBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.employment.updatedBy">Updated By</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('updatedAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.employment.updatedAt">Updated At</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
                   <th>
                     <Translate contentKey="simplifyMarketplaceApp.employment.company">Company</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
@@ -195,14 +179,6 @@ export const Employment = (props: RouteComponentProps<{ url: string }>) => {
                     <td>{employment.isCurrent ? 'true' : 'false'}</td>
                     <td>{employment.lastSalary}</td>
                     <td>{employment.description}</td>
-                    <td>{employment.createdBy}</td>
-                    <td>
-                      {employment.createdAt ? <TextFormat type="date" value={employment.createdAt} format={APP_LOCAL_DATE_FORMAT} /> : null}
-                    </td>
-                    <td>{employment.updatedBy}</td>
-                    <td>
-                      {employment.updatedAt ? <TextFormat type="date" value={employment.updatedAt} format={APP_LOCAL_DATE_FORMAT} /> : null}
-                    </td>
                     <td>{employment.company ? <Link to={`client/${employment.company.id}`}>{employment.company.id}</Link> : ''}</td>
                     <td>{employment.worker ? <Link to={`worker/${employment.worker.id}`}>{employment.worker.id}</Link> : ''}</td>
                     <td className="text-right">

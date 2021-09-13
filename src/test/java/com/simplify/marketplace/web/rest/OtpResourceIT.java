@@ -44,6 +44,9 @@ class OtpResourceIT {
     private static final String DEFAULT_EMAIL = "AAAAAAAAAA";
     private static final String UPDATED_EMAIL = "BBBBBBBBBB";
 
+    private static final Boolean DEFAULT_IS_ACTIVE = false;
+    private static final Boolean UPDATED_IS_ACTIVE = true;
+
     private static final Integer DEFAULT_PHONE = 1;
     private static final Integer UPDATED_PHONE = 2;
 
@@ -55,18 +58,6 @@ class OtpResourceIT {
 
     private static final OtpStatus DEFAULT_STATUS = OtpStatus.Pending;
     private static final OtpStatus UPDATED_STATUS = OtpStatus.Failed;
-
-    private static final String DEFAULT_CREATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_CREATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_CREATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_CREATED_AT = LocalDate.now(ZoneId.systemDefault());
-
-    private static final String DEFAULT_UPDATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_UPDATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_UPDATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_UPDATED_AT = LocalDate.now(ZoneId.systemDefault());
 
     private static final String ENTITY_API_URL = "/api/otps";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -99,14 +90,11 @@ class OtpResourceIT {
             .contextId(DEFAULT_CONTEXT_ID)
             .otp(DEFAULT_OTP)
             .email(DEFAULT_EMAIL)
+            .isActive(DEFAULT_IS_ACTIVE)
             .phone(DEFAULT_PHONE)
             .type(DEFAULT_TYPE)
             .expiryTime(DEFAULT_EXPIRY_TIME)
-            .status(DEFAULT_STATUS)
-            .createdBy(DEFAULT_CREATED_BY)
-            .createdAt(DEFAULT_CREATED_AT)
-            .updatedBy(DEFAULT_UPDATED_BY)
-            .updatedAt(DEFAULT_UPDATED_AT);
+            .status(DEFAULT_STATUS);
         return otp;
     }
 
@@ -121,14 +109,11 @@ class OtpResourceIT {
             .contextId(UPDATED_CONTEXT_ID)
             .otp(UPDATED_OTP)
             .email(UPDATED_EMAIL)
+            .isActive(UPDATED_IS_ACTIVE)
             .phone(UPDATED_PHONE)
             .type(UPDATED_TYPE)
             .expiryTime(UPDATED_EXPIRY_TIME)
-            .status(UPDATED_STATUS)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .status(UPDATED_STATUS);
         return otp;
     }
 
@@ -154,14 +139,11 @@ class OtpResourceIT {
         assertThat(testOtp.getContextId()).isEqualTo(DEFAULT_CONTEXT_ID);
         assertThat(testOtp.getOtp()).isEqualTo(DEFAULT_OTP);
         assertThat(testOtp.getEmail()).isEqualTo(DEFAULT_EMAIL);
+        assertThat(testOtp.getIsActive()).isEqualTo(DEFAULT_IS_ACTIVE);
         assertThat(testOtp.getPhone()).isEqualTo(DEFAULT_PHONE);
         assertThat(testOtp.getType()).isEqualTo(DEFAULT_TYPE);
         assertThat(testOtp.getExpiryTime()).isEqualTo(DEFAULT_EXPIRY_TIME);
         assertThat(testOtp.getStatus()).isEqualTo(DEFAULT_STATUS);
-        assertThat(testOtp.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
-        assertThat(testOtp.getCreatedAt()).isEqualTo(DEFAULT_CREATED_AT);
-        assertThat(testOtp.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
-        assertThat(testOtp.getUpdatedAt()).isEqualTo(DEFAULT_UPDATED_AT);
     }
 
     @Test
@@ -198,14 +180,11 @@ class OtpResourceIT {
             .andExpect(jsonPath("$.[*].contextId").value(hasItem(DEFAULT_CONTEXT_ID)))
             .andExpect(jsonPath("$.[*].otp").value(hasItem(DEFAULT_OTP)))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
+            .andExpect(jsonPath("$.[*].isActive").value(hasItem(DEFAULT_IS_ACTIVE.booleanValue())))
             .andExpect(jsonPath("$.[*].phone").value(hasItem(DEFAULT_PHONE)))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
             .andExpect(jsonPath("$.[*].expiryTime").value(hasItem(DEFAULT_EXPIRY_TIME.toString())))
-            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
-            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
-            .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())))
-            .andExpect(jsonPath("$.[*].updatedBy").value(hasItem(DEFAULT_UPDATED_BY)))
-            .andExpect(jsonPath("$.[*].updatedAt").value(hasItem(DEFAULT_UPDATED_AT.toString())));
+            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
     }
 
     @Test
@@ -223,14 +202,11 @@ class OtpResourceIT {
             .andExpect(jsonPath("$.contextId").value(DEFAULT_CONTEXT_ID))
             .andExpect(jsonPath("$.otp").value(DEFAULT_OTP))
             .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
+            .andExpect(jsonPath("$.isActive").value(DEFAULT_IS_ACTIVE.booleanValue()))
             .andExpect(jsonPath("$.phone").value(DEFAULT_PHONE))
             .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
             .andExpect(jsonPath("$.expiryTime").value(DEFAULT_EXPIRY_TIME.toString()))
-            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
-            .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY))
-            .andExpect(jsonPath("$.createdAt").value(DEFAULT_CREATED_AT.toString()))
-            .andExpect(jsonPath("$.updatedBy").value(DEFAULT_UPDATED_BY))
-            .andExpect(jsonPath("$.updatedAt").value(DEFAULT_UPDATED_AT.toString()));
+            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
     }
 
     @Test
@@ -256,14 +232,11 @@ class OtpResourceIT {
             .contextId(UPDATED_CONTEXT_ID)
             .otp(UPDATED_OTP)
             .email(UPDATED_EMAIL)
+            .isActive(UPDATED_IS_ACTIVE)
             .phone(UPDATED_PHONE)
             .type(UPDATED_TYPE)
             .expiryTime(UPDATED_EXPIRY_TIME)
-            .status(UPDATED_STATUS)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .status(UPDATED_STATUS);
         OtpDTO otpDTO = otpMapper.toDto(updatedOtp);
 
         restOtpMockMvc
@@ -281,14 +254,11 @@ class OtpResourceIT {
         assertThat(testOtp.getContextId()).isEqualTo(UPDATED_CONTEXT_ID);
         assertThat(testOtp.getOtp()).isEqualTo(UPDATED_OTP);
         assertThat(testOtp.getEmail()).isEqualTo(UPDATED_EMAIL);
+        assertThat(testOtp.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);
         assertThat(testOtp.getPhone()).isEqualTo(UPDATED_PHONE);
         assertThat(testOtp.getType()).isEqualTo(UPDATED_TYPE);
         assertThat(testOtp.getExpiryTime()).isEqualTo(UPDATED_EXPIRY_TIME);
         assertThat(testOtp.getStatus()).isEqualTo(UPDATED_STATUS);
-        assertThat(testOtp.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testOtp.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testOtp.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testOtp.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test
@@ -369,13 +339,11 @@ class OtpResourceIT {
         partialUpdatedOtp.setId(otp.getId());
 
         partialUpdatedOtp
+            .isActive(UPDATED_IS_ACTIVE)
             .phone(UPDATED_PHONE)
             .type(UPDATED_TYPE)
             .expiryTime(UPDATED_EXPIRY_TIME)
-            .status(UPDATED_STATUS)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .status(UPDATED_STATUS);
 
         restOtpMockMvc
             .perform(
@@ -392,14 +360,11 @@ class OtpResourceIT {
         assertThat(testOtp.getContextId()).isEqualTo(DEFAULT_CONTEXT_ID);
         assertThat(testOtp.getOtp()).isEqualTo(DEFAULT_OTP);
         assertThat(testOtp.getEmail()).isEqualTo(DEFAULT_EMAIL);
+        assertThat(testOtp.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);
         assertThat(testOtp.getPhone()).isEqualTo(UPDATED_PHONE);
         assertThat(testOtp.getType()).isEqualTo(UPDATED_TYPE);
         assertThat(testOtp.getExpiryTime()).isEqualTo(UPDATED_EXPIRY_TIME);
         assertThat(testOtp.getStatus()).isEqualTo(UPDATED_STATUS);
-        assertThat(testOtp.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testOtp.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testOtp.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
-        assertThat(testOtp.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test
@@ -418,14 +383,11 @@ class OtpResourceIT {
             .contextId(UPDATED_CONTEXT_ID)
             .otp(UPDATED_OTP)
             .email(UPDATED_EMAIL)
+            .isActive(UPDATED_IS_ACTIVE)
             .phone(UPDATED_PHONE)
             .type(UPDATED_TYPE)
             .expiryTime(UPDATED_EXPIRY_TIME)
-            .status(UPDATED_STATUS)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .status(UPDATED_STATUS);
 
         restOtpMockMvc
             .perform(
@@ -442,14 +404,11 @@ class OtpResourceIT {
         assertThat(testOtp.getContextId()).isEqualTo(UPDATED_CONTEXT_ID);
         assertThat(testOtp.getOtp()).isEqualTo(UPDATED_OTP);
         assertThat(testOtp.getEmail()).isEqualTo(UPDATED_EMAIL);
+        assertThat(testOtp.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);
         assertThat(testOtp.getPhone()).isEqualTo(UPDATED_PHONE);
         assertThat(testOtp.getType()).isEqualTo(UPDATED_TYPE);
         assertThat(testOtp.getExpiryTime()).isEqualTo(UPDATED_EXPIRY_TIME);
         assertThat(testOtp.getStatus()).isEqualTo(UPDATED_STATUS);
-        assertThat(testOtp.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testOtp.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testOtp.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testOtp.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test

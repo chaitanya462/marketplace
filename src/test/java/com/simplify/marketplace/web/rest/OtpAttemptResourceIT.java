@@ -11,8 +11,6 @@ import com.simplify.marketplace.domain.enumeration.OtpStatus;
 import com.simplify.marketplace.repository.OtpAttemptRepository;
 import com.simplify.marketplace.service.dto.OtpAttemptDTO;
 import com.simplify.marketplace.service.mapper.OtpAttemptMapper;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -40,6 +38,9 @@ class OtpAttemptResourceIT {
     private static final Integer DEFAULT_OTP = 1;
     private static final Integer UPDATED_OTP = 2;
 
+    private static final Boolean DEFAULT_IS_ACTIVE = false;
+    private static final Boolean UPDATED_IS_ACTIVE = true;
+
     private static final OtpStatus DEFAULT_STATUS = OtpStatus.Pending;
     private static final OtpStatus UPDATED_STATUS = OtpStatus.Failed;
 
@@ -48,12 +49,6 @@ class OtpAttemptResourceIT {
 
     private static final String DEFAULT_COOOKIE = "AAAAAAAAAA";
     private static final String UPDATED_COOOKIE = "BBBBBBBBBB";
-
-    private static final String DEFAULT_CREATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_CREATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_CREATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_CREATED_AT = LocalDate.now(ZoneId.systemDefault());
 
     private static final String ENTITY_API_URL = "/api/otp-attempts";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -85,11 +80,10 @@ class OtpAttemptResourceIT {
         OtpAttempt otpAttempt = new OtpAttempt()
             .contextId(DEFAULT_CONTEXT_ID)
             .otp(DEFAULT_OTP)
+            .isActive(DEFAULT_IS_ACTIVE)
             .status(DEFAULT_STATUS)
             .ip(DEFAULT_IP)
-            .coookie(DEFAULT_COOOKIE)
-            .createdBy(DEFAULT_CREATED_BY)
-            .createdAt(DEFAULT_CREATED_AT);
+            .coookie(DEFAULT_COOOKIE);
         return otpAttempt;
     }
 
@@ -103,11 +97,10 @@ class OtpAttemptResourceIT {
         OtpAttempt otpAttempt = new OtpAttempt()
             .contextId(UPDATED_CONTEXT_ID)
             .otp(UPDATED_OTP)
+            .isActive(UPDATED_IS_ACTIVE)
             .status(UPDATED_STATUS)
             .ip(UPDATED_IP)
-            .coookie(UPDATED_COOOKIE)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT);
+            .coookie(UPDATED_COOOKIE);
         return otpAttempt;
     }
 
@@ -132,11 +125,10 @@ class OtpAttemptResourceIT {
         OtpAttempt testOtpAttempt = otpAttemptList.get(otpAttemptList.size() - 1);
         assertThat(testOtpAttempt.getContextId()).isEqualTo(DEFAULT_CONTEXT_ID);
         assertThat(testOtpAttempt.getOtp()).isEqualTo(DEFAULT_OTP);
+        assertThat(testOtpAttempt.getIsActive()).isEqualTo(DEFAULT_IS_ACTIVE);
         assertThat(testOtpAttempt.getStatus()).isEqualTo(DEFAULT_STATUS);
         assertThat(testOtpAttempt.getIp()).isEqualTo(DEFAULT_IP);
         assertThat(testOtpAttempt.getCoookie()).isEqualTo(DEFAULT_COOOKIE);
-        assertThat(testOtpAttempt.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
-        assertThat(testOtpAttempt.getCreatedAt()).isEqualTo(DEFAULT_CREATED_AT);
     }
 
     @Test
@@ -172,11 +164,10 @@ class OtpAttemptResourceIT {
             .andExpect(jsonPath("$.[*].id").value(hasItem(otpAttempt.getId().intValue())))
             .andExpect(jsonPath("$.[*].contextId").value(hasItem(DEFAULT_CONTEXT_ID)))
             .andExpect(jsonPath("$.[*].otp").value(hasItem(DEFAULT_OTP)))
+            .andExpect(jsonPath("$.[*].isActive").value(hasItem(DEFAULT_IS_ACTIVE.booleanValue())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].ip").value(hasItem(DEFAULT_IP)))
-            .andExpect(jsonPath("$.[*].coookie").value(hasItem(DEFAULT_COOOKIE)))
-            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
-            .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())));
+            .andExpect(jsonPath("$.[*].coookie").value(hasItem(DEFAULT_COOOKIE)));
     }
 
     @Test
@@ -193,11 +184,10 @@ class OtpAttemptResourceIT {
             .andExpect(jsonPath("$.id").value(otpAttempt.getId().intValue()))
             .andExpect(jsonPath("$.contextId").value(DEFAULT_CONTEXT_ID))
             .andExpect(jsonPath("$.otp").value(DEFAULT_OTP))
+            .andExpect(jsonPath("$.isActive").value(DEFAULT_IS_ACTIVE.booleanValue()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
             .andExpect(jsonPath("$.ip").value(DEFAULT_IP))
-            .andExpect(jsonPath("$.coookie").value(DEFAULT_COOOKIE))
-            .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY))
-            .andExpect(jsonPath("$.createdAt").value(DEFAULT_CREATED_AT.toString()));
+            .andExpect(jsonPath("$.coookie").value(DEFAULT_COOOKIE));
     }
 
     @Test
@@ -222,11 +212,10 @@ class OtpAttemptResourceIT {
         updatedOtpAttempt
             .contextId(UPDATED_CONTEXT_ID)
             .otp(UPDATED_OTP)
+            .isActive(UPDATED_IS_ACTIVE)
             .status(UPDATED_STATUS)
             .ip(UPDATED_IP)
-            .coookie(UPDATED_COOOKIE)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT);
+            .coookie(UPDATED_COOOKIE);
         OtpAttemptDTO otpAttemptDTO = otpAttemptMapper.toDto(updatedOtpAttempt);
 
         restOtpAttemptMockMvc
@@ -243,11 +232,10 @@ class OtpAttemptResourceIT {
         OtpAttempt testOtpAttempt = otpAttemptList.get(otpAttemptList.size() - 1);
         assertThat(testOtpAttempt.getContextId()).isEqualTo(UPDATED_CONTEXT_ID);
         assertThat(testOtpAttempt.getOtp()).isEqualTo(UPDATED_OTP);
+        assertThat(testOtpAttempt.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);
         assertThat(testOtpAttempt.getStatus()).isEqualTo(UPDATED_STATUS);
         assertThat(testOtpAttempt.getIp()).isEqualTo(UPDATED_IP);
         assertThat(testOtpAttempt.getCoookie()).isEqualTo(UPDATED_COOOKIE);
-        assertThat(testOtpAttempt.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testOtpAttempt.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
     }
 
     @Test
@@ -327,7 +315,7 @@ class OtpAttemptResourceIT {
         OtpAttempt partialUpdatedOtpAttempt = new OtpAttempt();
         partialUpdatedOtpAttempt.setId(otpAttempt.getId());
 
-        partialUpdatedOtpAttempt.otp(UPDATED_OTP).createdBy(UPDATED_CREATED_BY).createdAt(UPDATED_CREATED_AT);
+        partialUpdatedOtpAttempt.otp(UPDATED_OTP).coookie(UPDATED_COOOKIE);
 
         restOtpAttemptMockMvc
             .perform(
@@ -343,11 +331,10 @@ class OtpAttemptResourceIT {
         OtpAttempt testOtpAttempt = otpAttemptList.get(otpAttemptList.size() - 1);
         assertThat(testOtpAttempt.getContextId()).isEqualTo(DEFAULT_CONTEXT_ID);
         assertThat(testOtpAttempt.getOtp()).isEqualTo(UPDATED_OTP);
+        assertThat(testOtpAttempt.getIsActive()).isEqualTo(DEFAULT_IS_ACTIVE);
         assertThat(testOtpAttempt.getStatus()).isEqualTo(DEFAULT_STATUS);
         assertThat(testOtpAttempt.getIp()).isEqualTo(DEFAULT_IP);
-        assertThat(testOtpAttempt.getCoookie()).isEqualTo(DEFAULT_COOOKIE);
-        assertThat(testOtpAttempt.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testOtpAttempt.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
+        assertThat(testOtpAttempt.getCoookie()).isEqualTo(UPDATED_COOOKIE);
     }
 
     @Test
@@ -365,11 +352,10 @@ class OtpAttemptResourceIT {
         partialUpdatedOtpAttempt
             .contextId(UPDATED_CONTEXT_ID)
             .otp(UPDATED_OTP)
+            .isActive(UPDATED_IS_ACTIVE)
             .status(UPDATED_STATUS)
             .ip(UPDATED_IP)
-            .coookie(UPDATED_COOOKIE)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT);
+            .coookie(UPDATED_COOOKIE);
 
         restOtpAttemptMockMvc
             .perform(
@@ -385,11 +371,10 @@ class OtpAttemptResourceIT {
         OtpAttempt testOtpAttempt = otpAttemptList.get(otpAttemptList.size() - 1);
         assertThat(testOtpAttempt.getContextId()).isEqualTo(UPDATED_CONTEXT_ID);
         assertThat(testOtpAttempt.getOtp()).isEqualTo(UPDATED_OTP);
+        assertThat(testOtpAttempt.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);
         assertThat(testOtpAttempt.getStatus()).isEqualTo(UPDATED_STATUS);
         assertThat(testOtpAttempt.getIp()).isEqualTo(UPDATED_IP);
         assertThat(testOtpAttempt.getCoookie()).isEqualTo(UPDATED_COOOKIE);
-        assertThat(testOtpAttempt.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testOtpAttempt.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
     }
 
     @Test

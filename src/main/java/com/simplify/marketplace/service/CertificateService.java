@@ -1,7 +1,10 @@
 package com.simplify.marketplace.service;
 
+import com.simplify.marketplace.domain.Certificate;
 import com.simplify.marketplace.service.dto.CertificateDTO;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -40,6 +43,7 @@ public interface CertificateService {
      * @return the entity.
      */
     Optional<CertificateDTO> findOne(Long id);
+    List<Certificate> findOneWorker(Long workerid);
 
     /**
      * Delete the "id" certificate.
@@ -47,4 +51,5 @@ public interface CertificateService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+    Set<Certificate> insertElasticSearch(CertificateDTO certificateDTO);
 }

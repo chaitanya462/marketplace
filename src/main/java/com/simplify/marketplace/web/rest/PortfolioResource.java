@@ -1,16 +1,23 @@
 package com.simplify.marketplace.web.rest;
 
+import com.simplify.marketplace.domain.*;
+import com.simplify.marketplace.repository.ESearchWorkerRepository;
 import com.simplify.marketplace.repository.PortfolioRepository;
+import com.simplify.marketplace.repository.WorkerRepository;
 import com.simplify.marketplace.service.PortfolioService;
+import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.dto.PortfolioDTO;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,9 +37,20 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class PortfolioResource {
 
+    private final UserService userService;
+
     private final Logger log = LoggerFactory.getLogger(PortfolioResource.class);
 
     private static final String ENTITY_NAME = "portfolio";
+
+    @Autowired
+    ESearchWorkerRepository rep1;
+
+    @Autowired
+    RabbitTemplate rabbit_msg;
+
+    @Autowired
+    WorkerRepository wrepo;
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
@@ -41,9 +59,10 @@ public class PortfolioResource {
 
     private final PortfolioRepository portfolioRepository;
 
-    public PortfolioResource(PortfolioService portfolioService, PortfolioRepository portfolioRepository) {
+    public PortfolioResource(PortfolioService portfolioService, PortfolioRepository portfolioRepository, UserService userService) {
         this.portfolioService = portfolioService;
         this.portfolioRepository = portfolioRepository;
+        this.userService = userService;
     }
 
     /**
@@ -59,7 +78,20 @@ public class PortfolioResource {
         if (portfolioDTO.getId() != null) {
             throw new BadRequestAlertException("A new portfolio cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        portfolioDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        portfolioDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        portfolioDTO.setUpdatedAt(LocalDate.now());
+        portfolioDTO.setCreatedAt(LocalDate.now());
         PortfolioDTO result = portfolioService.save(portfolioDTO);
+
+        Portfolio portfolio = portfolioRepository.findById(result.getId()).get();
+        if (portfolio.getWorker() != null) {
+            Long workerid = portfolio.getWorker().getId();
+            ElasticWorker elasticworker = rep1.findById(workerid.toString()).get();
+            elasticworker.addPortfolio(portfolio);
+
+            rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+        }
         return ResponseEntity
             .created(new URI("/api/portfolios/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -92,8 +124,26 @@ public class PortfolioResource {
         if (!portfolioRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        portfolioDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        portfolioDTO.setUpdatedAt(LocalDate.now());
+        Portfolio prevPortfolio = portfolioRepository.findById(portfolioDTO.getId()).get();
 
         PortfolioDTO result = portfolioService.save(portfolioDTO);
+        Portfolio updatedPortfolio = portfolioRepository.findById(result.getId()).get();
+
+        if (prevPortfolio.getWorker() != null && !Objects.equals(updatedPortfolio.getWorker().getId(), prevPortfolio.getWorker().getId())) {
+            ElasticWorker prevElasticWorker = rep1.findById(prevPortfolio.getWorker().getId().toString()).get();
+            prevPortfolio.setWorker(null);
+            prevElasticWorker = prevElasticWorker.removePortfolio(prevPortfolio);
+            rabbit_msg.convertAndSend("topicExchange1", "routingKey", prevElasticWorker);
+        }
+
+        prevPortfolio.setWorker(null);
+
+        ElasticWorker elasticworker = rep1.findById(updatedPortfolio.getWorker().getId().toString()).get();
+        elasticworker.removePortfolio(prevPortfolio);
+        elasticworker.addPortfolio(updatedPortfolio);
+        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, portfolioDTO.getId().toString()))
@@ -127,6 +177,8 @@ public class PortfolioResource {
         if (!portfolioRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        portfolioDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        portfolioDTO.setUpdatedAt(LocalDate.now());
 
         Optional<PortfolioDTO> result = portfolioService.partialUpdate(portfolioDTO);
 
@@ -148,6 +200,13 @@ public class PortfolioResource {
         Page<PortfolioDTO> page = portfolioService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @GetMapping("/portfolios/worker/{workerid}")
+    public List<Portfolio> getworkerPortfolio(@PathVariable Long workerid) {
+        log.debug("REST request to get Portfolio : {}", workerid);
+        List<Portfolio> portfolios = portfolioService.findOneWorker(workerid);
+        return portfolios;
     }
 
     /**
@@ -172,7 +231,16 @@ public class PortfolioResource {
     @DeleteMapping("/portfolios/{id}")
     public ResponseEntity<Void> deletePortfolio(@PathVariable Long id) {
         log.debug("REST request to delete Portfolio : {}", id);
+        Portfolio portfolio = portfolioRepository.findById(id).get();
+
         portfolioService.delete(id);
+        Long curr_id = portfolio.getWorker().getId();
+        ElasticWorker elasicWorker = rep1.findById(curr_id.toString()).get();
+        portfolio.setWorker(null);
+
+        elasicWorker.removePortfolio(portfolio);
+
+        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasicWorker);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

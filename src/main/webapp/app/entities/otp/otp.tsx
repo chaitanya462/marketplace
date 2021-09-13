@@ -134,6 +134,9 @@ export const Otp = (props: RouteComponentProps<{ url: string }>) => {
                   <th className="hand" onClick={sort('email')}>
                     <Translate contentKey="simplifyMarketplaceApp.otp.email">Email</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
+                  <th className="hand" onClick={sort('isActive')}>
+                    <Translate contentKey="simplifyMarketplaceApp.otp.isActive">Is Active</Translate> <FontAwesomeIcon icon="sort" />
+                  </th>
                   <th className="hand" onClick={sort('phone')}>
                     <Translate contentKey="simplifyMarketplaceApp.otp.phone">Phone</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
@@ -145,18 +148,6 @@ export const Otp = (props: RouteComponentProps<{ url: string }>) => {
                   </th>
                   <th className="hand" onClick={sort('status')}>
                     <Translate contentKey="simplifyMarketplaceApp.otp.status">Status</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('createdBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.otp.createdBy">Created By</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('createdAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.otp.createdAt">Created At</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('updatedBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.otp.updatedBy">Updated By</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('updatedAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.otp.updatedAt">Updated At</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
                   <th />
                 </tr>
@@ -172,6 +163,7 @@ export const Otp = (props: RouteComponentProps<{ url: string }>) => {
                     <td>{otp.contextId}</td>
                     <td>{otp.otp}</td>
                     <td>{otp.email}</td>
+                    <td>{otp.isActive ? 'true' : 'false'}</td>
                     <td>{otp.phone}</td>
                     <td>
                       <Translate contentKey={`simplifyMarketplaceApp.OtpType.${otp.type}`} />
@@ -180,10 +172,6 @@ export const Otp = (props: RouteComponentProps<{ url: string }>) => {
                     <td>
                       <Translate contentKey={`simplifyMarketplaceApp.OtpStatus.${otp.status}`} />
                     </td>
-                    <td>{otp.createdBy}</td>
-                    <td>{otp.createdAt ? <TextFormat type="date" value={otp.createdAt} format={APP_LOCAL_DATE_FORMAT} /> : null}</td>
-                    <td>{otp.updatedBy}</td>
-                    <td>{otp.updatedAt ? <TextFormat type="date" value={otp.updatedAt} format={APP_LOCAL_DATE_FORMAT} /> : null}</td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">
                         <Button tag={Link} to={`${match.url}/${otp.id}`} color="info" size="sm" data-cy="entityDetailsButton">

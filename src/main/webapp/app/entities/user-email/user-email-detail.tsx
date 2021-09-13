@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Row, Col } from 'reactstrap';
-import { Translate, TextFormat } from 'react-jhipster';
+import { Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { getEntity } from './user-email.reducer';
@@ -54,37 +54,9 @@ export const UserEmailDetail = (props: RouteComponentProps<{ id: string }>) => {
           </dt>
           <dd>{userEmailEntity.tag}</dd>
           <dt>
-            <span id="createdBy">
-              <Translate contentKey="simplifyMarketplaceApp.userEmail.createdBy">Created By</Translate>
-            </span>
+            <Translate contentKey="simplifyMarketplaceApp.userEmail.user">User</Translate>
           </dt>
-          <dd>{userEmailEntity.createdBy}</dd>
-          <dt>
-            <span id="createdAt">
-              <Translate contentKey="simplifyMarketplaceApp.userEmail.createdAt">Created At</Translate>
-            </span>
-          </dt>
-          <dd>
-            {userEmailEntity.createdAt ? <TextFormat value={userEmailEntity.createdAt} type="date" format={APP_LOCAL_DATE_FORMAT} /> : null}
-          </dd>
-          <dt>
-            <span id="updatedBy">
-              <Translate contentKey="simplifyMarketplaceApp.userEmail.updatedBy">Updated By</Translate>
-            </span>
-          </dt>
-          <dd>{userEmailEntity.updatedBy}</dd>
-          <dt>
-            <span id="updatedAt">
-              <Translate contentKey="simplifyMarketplaceApp.userEmail.updatedAt">Updated At</Translate>
-            </span>
-          </dt>
-          <dd>
-            {userEmailEntity.updatedAt ? <TextFormat value={userEmailEntity.updatedAt} type="date" format={APP_LOCAL_DATE_FORMAT} /> : null}
-          </dd>
-          <dt>
-            <Translate contentKey="simplifyMarketplaceApp.userEmail.customUser">Custom User</Translate>
-          </dt>
-          <dd>{userEmailEntity.customUser ? userEmailEntity.customUser.id : ''}</dd>
+          <dd>{userEmailEntity.user ? userEmailEntity.user.id : ''}</dd>
         </dl>
         <Button tag={Link} to="/user-email" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

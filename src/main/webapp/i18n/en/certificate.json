@@ -23,10 +23,6 @@
       "issueYear": "Issue Year",
       "expiryYear": "Expiry Year",
       "description": "Description",
-      "createdBy": "Created By",
-      "createdAt": "Created At",
-      "updatedBy": "Updated By",
-      "updatedAt": "Updated At",
       "worker": "Worker"
     }
   }

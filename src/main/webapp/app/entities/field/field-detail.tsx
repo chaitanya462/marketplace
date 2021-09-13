@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Row, Col } from 'reactstrap';
-import { Translate, TextFormat } from 'react-jhipster';
+import { Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { getEntity } from './field.reducer';
@@ -53,30 +53,6 @@ export const FieldDetail = (props: RouteComponentProps<{ id: string }>) => {
             </span>
           </dt>
           <dd>{fieldEntity.isActive ? 'true' : 'false'}</dd>
-          <dt>
-            <span id="createdBy">
-              <Translate contentKey="simplifyMarketplaceApp.field.createdBy">Created By</Translate>
-            </span>
-          </dt>
-          <dd>{fieldEntity.createdBy}</dd>
-          <dt>
-            <span id="createdAt">
-              <Translate contentKey="simplifyMarketplaceApp.field.createdAt">Created At</Translate>
-            </span>
-          </dt>
-          <dd>{fieldEntity.createdAt ? <TextFormat value={fieldEntity.createdAt} type="date" format={APP_LOCAL_DATE_FORMAT} /> : null}</dd>
-          <dt>
-            <span id="updatedBy">
-              <Translate contentKey="simplifyMarketplaceApp.field.updatedBy">Updated By</Translate>
-            </span>
-          </dt>
-          <dd>{fieldEntity.updatedBy}</dd>
-          <dt>
-            <span id="updatedAt">
-              <Translate contentKey="simplifyMarketplaceApp.field.updatedAt">Updated At</Translate>
-            </span>
-          </dt>
-          <dd>{fieldEntity.updatedAt ? <TextFormat value={fieldEntity.updatedAt} type="date" format={APP_LOCAL_DATE_FORMAT} /> : null}</dd>
           <dt>
             <Translate contentKey="simplifyMarketplaceApp.field.category">Category</Translate>
           </dt>

@@ -141,6 +141,9 @@ export const Client = (props: RouteComponentProps<{ url: string }>) => {
                     <Translate contentKey="simplifyMarketplaceApp.client.primaryPhone">Primary Phone</Translate>{' '}
                     <FontAwesomeIcon icon="sort" />
                   </th>
+                  <th className="hand" onClick={sort('isActive')}>
+                    <Translate contentKey="simplifyMarketplaceApp.client.isActive">Is Active</Translate> <FontAwesomeIcon icon="sort" />
+                  </th>
                   <th className="hand" onClick={sort('description')}>
                     <Translate contentKey="simplifyMarketplaceApp.client.description">Description</Translate>{' '}
                     <FontAwesomeIcon icon="sort" />
@@ -148,20 +151,8 @@ export const Client = (props: RouteComponentProps<{ url: string }>) => {
                   <th className="hand" onClick={sort('startDate')}>
                     <Translate contentKey="simplifyMarketplaceApp.client.startDate">Start Date</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
-                  <th className="hand" onClick={sort('createdBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.client.createdBy">Created By</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('createdAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.client.createdAt">Created At</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('updatedBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.client.updatedBy">Updated By</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('updatedAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.client.updatedAt">Updated At</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
                   <th>
-                    <Translate contentKey="simplifyMarketplaceApp.client.customUser">Custom User</Translate> <FontAwesomeIcon icon="sort" />
+                    <Translate contentKey="simplifyMarketplaceApp.client.user">User</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
                   <th />
                 </tr>
@@ -180,13 +171,10 @@ export const Client = (props: RouteComponentProps<{ url: string }>) => {
                       <Translate contentKey={`simplifyMarketplaceApp.CompanyType.${client.companyType}`} />
                     </td>
                     <td>{client.primaryPhone}</td>
+                    <td>{client.isActive ? 'true' : 'false'}</td>
                     <td>{client.description}</td>
                     <td>{client.startDate ? <TextFormat type="date" value={client.startDate} format={APP_LOCAL_DATE_FORMAT} /> : null}</td>
-                    <td>{client.createdBy}</td>
-                    <td>{client.createdAt ? <TextFormat type="date" value={client.createdAt} format={APP_LOCAL_DATE_FORMAT} /> : null}</td>
-                    <td>{client.updatedBy}</td>
-                    <td>{client.updatedAt ? <TextFormat type="date" value={client.updatedAt} format={APP_LOCAL_DATE_FORMAT} /> : null}</td>
-                    <td>{client.customUser ? <Link to={`custom-user/${client.customUser.id}`}>{client.customUser.id}</Link> : ''}</td>
+                    <td>{client.user ? client.user.id : ''}</td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">
                         <Button tag={Link} to={`${match.url}/${client.id}`} color="info" size="sm" data-cy="entityDetailsButton">

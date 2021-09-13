@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Col, Row, Table } from 'reactstrap';
-import { Translate, TextFormat, getSortState } from 'react-jhipster';
+import { Translate, getSortState } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { getEntities, reset } from './otp-attempt.reducer';
@@ -132,6 +132,9 @@ export const OtpAttempt = (props: RouteComponentProps<{ url: string }>) => {
                   <th className="hand" onClick={sort('otp')}>
                     <Translate contentKey="simplifyMarketplaceApp.otpAttempt.otp">Otp</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
+                  <th className="hand" onClick={sort('isActive')}>
+                    <Translate contentKey="simplifyMarketplaceApp.otpAttempt.isActive">Is Active</Translate> <FontAwesomeIcon icon="sort" />
+                  </th>
                   <th className="hand" onClick={sort('status')}>
                     <Translate contentKey="simplifyMarketplaceApp.otpAttempt.status">Status</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
@@ -140,14 +143,6 @@ export const OtpAttempt = (props: RouteComponentProps<{ url: string }>) => {
                   </th>
                   <th className="hand" onClick={sort('coookie')}>
                     <Translate contentKey="simplifyMarketplaceApp.otpAttempt.coookie">Coookie</Translate> <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('createdBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.otpAttempt.createdBy">Created By</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('createdAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.otpAttempt.createdAt">Created At</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
                   </th>
                   <th />
                 </tr>
@@ -162,15 +157,12 @@ export const OtpAttempt = (props: RouteComponentProps<{ url: string }>) => {
                     </td>
                     <td>{otpAttempt.contextId}</td>
                     <td>{otpAttempt.otp}</td>
+                    <td>{otpAttempt.isActive ? 'true' : 'false'}</td>
                     <td>
                       <Translate contentKey={`simplifyMarketplaceApp.OtpStatus.${otpAttempt.status}`} />
                     </td>
                     <td>{otpAttempt.ip}</td>
                     <td>{otpAttempt.coookie}</td>
-                    <td>{otpAttempt.createdBy}</td>
-                    <td>
-                      {otpAttempt.createdAt ? <TextFormat type="date" value={otpAttempt.createdAt} format={APP_LOCAL_DATE_FORMAT} /> : null}
-                    </td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">
                         <Button tag={Link} to={`${match.url}/${otpAttempt.id}`} color="info" size="sm" data-cy="entityDetailsButton">

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <!--
+        Added the constraints for entity JobPreference.
+    -->
+    <changeSet id="20210812100502-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="sub_category_id"
+                                 baseTableName="job_preference"
+                                 constraintName="fk_job_preference__sub_category_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="category"/>
+
+        <addForeignKeyConstraint baseColumnNames="worker_id"
+                                 baseTableName="job_preference"
+                                 constraintName="fk_job_preference__worker_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="worker"/>
+    </changeSet>
+</databaseChangeLog>

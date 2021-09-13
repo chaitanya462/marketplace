@@ -1,13 +1,21 @@
 package com.simplify.marketplace.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  * A Category.
@@ -15,6 +23,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "category")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Data
 public class Category implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -35,12 +44,20 @@ public class Category implements Serializable {
     @Column(name = "created_by")
     private String createdBy;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
     @Column(name = "created_at")
     private LocalDate createdAt;
 
     @Column(name = "updated_by")
     private String updatedBy;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
     @Column(name = "updated_at")
     private LocalDate updatedAt;
 
@@ -59,21 +76,10 @@ public class Category implements Serializable {
     private Category parent;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Category id(Long id) {
         this.id = id;
         return this;
-    }
-
-    public String getName() {
-        return this.name;
     }
 
     public Category name(String name) {
@@ -81,90 +87,14 @@ public class Category implements Serializable {
         return this;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Boolean getIsParent() {
-        return this.isParent;
-    }
-
     public Category isParent(Boolean isParent) {
         this.isParent = isParent;
         return this;
     }
 
-    public void setIsParent(Boolean isParent) {
-        this.isParent = isParent;
-    }
-
-    public Boolean getIsActive() {
-        return this.isActive;
-    }
-
     public Category isActive(Boolean isActive) {
         this.isActive = isActive;
         return this;
-    }
-
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
-    }
-
-    public String getCreatedBy() {
-        return this.createdBy;
-    }
-
-    public Category createdBy(String createdBy) {
-        this.createdBy = createdBy;
-        return this;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public LocalDate getCreatedAt() {
-        return this.createdAt;
-    }
-
-    public Category createdAt(LocalDate createdAt) {
-        this.createdAt = createdAt;
-        return this;
-    }
-
-    public void setCreatedAt(LocalDate createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public String getUpdatedBy() {
-        return this.updatedBy;
-    }
-
-    public Category updatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-        return this;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
-    public LocalDate getUpdatedAt() {
-        return this.updatedAt;
-    }
-
-    public Category updatedAt(LocalDate updatedAt) {
-        this.updatedAt = updatedAt;
-        return this;
-    }
-
-    public void setUpdatedAt(LocalDate updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public Set<Category> getCategories() {
-        return this.categories;
     }
 
     public Category categories(Set<Category> categories) {
@@ -184,20 +114,6 @@ public class Category implements Serializable {
         return this;
     }
 
-    public void setCategories(Set<Category> categories) {
-        if (this.categories != null) {
-            this.categories.forEach(i -> i.setParent(null));
-        }
-        if (categories != null) {
-            categories.forEach(i -> i.setParent(this));
-        }
-        this.categories = categories;
-    }
-
-    public Set<Field> getFields() {
-        return this.fields;
-    }
-
     public Category fields(Set<Field> fields) {
         this.setFields(fields);
         return this;
@@ -215,60 +131,72 @@ public class Category implements Serializable {
         return this;
     }
 
-    public void setFields(Set<Field> fields) {
-        if (this.fields != null) {
-            this.fields.forEach(i -> i.setCategory(null));
-        }
-        if (fields != null) {
-            fields.forEach(i -> i.setCategory(this));
-        }
-        this.fields = fields;
-    }
-
-    public Category getParent() {
-        return this.parent;
-    }
-
     public Category parent(Category category) {
         this.setParent(category);
         return this;
     }
 
-    public void setParent(Category category) {
-        this.parent = category;
+    public Category createdBy(String createdBy) {
+        this.createdBy = createdBy;
+        return this;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+    public Category createdAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+        return this;
+    }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Category)) {
-            return false;
-        }
-        return id != null && id.equals(((Category) o).id);
+    public Category updatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+        return this;
+    }
+
+    public Category updatedAt(LocalDate updatedAt) {
+        this.updatedAt = updatedAt;
+        return this;
     }
 
     @Override
     public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
-        return getClass().hashCode();
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+        result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
+        result = prime * result + ((fields == null) ? 0 : fields.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
+        result = prime * result + ((isParent == null) ? 0 : isParent.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((parent == null) ? 0 : parent.hashCode());
+        result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+        result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
+        return result;
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
-        return "Category{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", isParent='" + getIsParent() + "'" +
-            ", isActive='" + getIsActive() + "'" +
-            ", createdBy='" + getCreatedBy() + "'" +
-            ", createdAt='" + getCreatedAt() + "'" +
-            ", updatedBy='" + getUpdatedBy() + "'" +
-            ", updatedAt='" + getUpdatedAt() + "'" +
-            "}";
+        return (
+            "Category [id=" +
+            id +
+            ", name=" +
+            name +
+            ", isParent=" +
+            isParent +
+            ", isActive=" +
+            isActive +
+            ", createdBy=" +
+            createdBy +
+            ", createdAt=" +
+            createdAt +
+            ", updatedBy=" +
+            updatedBy +
+            ", updatedAt=" +
+            updatedAt +
+            ", fields=" +
+            fields +
+            ", parent=" +
+            parent +
+            "]"
+        );
     }
 }

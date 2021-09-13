@@ -2,10 +2,12 @@ package com.simplify.marketplace.web.rest;
 
 import com.simplify.marketplace.repository.FieldRepository;
 import com.simplify.marketplace.service.FieldService;
+import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.dto.FieldDTO;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,6 +32,8 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class FieldResource {
 
+    private UserService userService;
+
     private final Logger log = LoggerFactory.getLogger(FieldResource.class);
 
     private static final String ENTITY_NAME = "field";
@@ -41,9 +45,10 @@ public class FieldResource {
 
     private final FieldRepository fieldRepository;
 
-    public FieldResource(FieldService fieldService, FieldRepository fieldRepository) {
+    public FieldResource(FieldService fieldService, FieldRepository fieldRepository, UserService userService) {
         this.fieldService = fieldService;
         this.fieldRepository = fieldRepository;
+        this.userService = userService;
     }
 
     /**
@@ -59,6 +64,10 @@ public class FieldResource {
         if (fieldDTO.getId() != null) {
             throw new BadRequestAlertException("A new field cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        fieldDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        fieldDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        fieldDTO.setUpdatedAt(LocalDate.now());
+        fieldDTO.setCreatedAt(LocalDate.now());
         FieldDTO result = fieldService.save(fieldDTO);
         return ResponseEntity
             .created(new URI("/api/fields/" + result.getId()))
@@ -92,6 +101,8 @@ public class FieldResource {
         if (!fieldRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        fieldDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        fieldDTO.setUpdatedAt(LocalDate.now());
 
         FieldDTO result = fieldService.save(fieldDTO);
         return ResponseEntity
@@ -127,6 +138,8 @@ public class FieldResource {
         if (!fieldRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        fieldDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        fieldDTO.setUpdatedAt(LocalDate.now());
 
         Optional<FieldDTO> result = fieldService.partialUpdate(fieldDTO);
 

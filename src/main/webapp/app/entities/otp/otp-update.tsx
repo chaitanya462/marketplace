@@ -99,6 +99,14 @@ export const OtpUpdate = (props: RouteComponentProps<{ id: string }>) => {
                 type="text"
               />
               <ValidatedField
+                label={translate('simplifyMarketplaceApp.otp.isActive')}
+                id="otp-isActive"
+                name="isActive"
+                data-cy="isActive"
+                check
+                type="checkbox"
+              />
+              <ValidatedField
                 label={translate('simplifyMarketplaceApp.otp.phone')}
                 id="otp-phone"
                 name="phone"
@@ -128,34 +136,6 @@ export const OtpUpdate = (props: RouteComponentProps<{ id: string }>) => {
                 <option value="Expired">{translate('simplifyMarketplaceApp.OtpStatus.Expired')}</option>
                 <option value="Approved">{translate('simplifyMarketplaceApp.OtpStatus.Approved')}</option>
               </ValidatedField>
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.otp.createdBy')}
-                id="otp-createdBy"
-                name="createdBy"
-                data-cy="createdBy"
-                type="text"
-              />
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.otp.createdAt')}
-                id="otp-createdAt"
-                name="createdAt"
-                data-cy="createdAt"
-                type="date"
-              />
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.otp.updatedBy')}
-                id="otp-updatedBy"
-                name="updatedBy"
-                data-cy="updatedBy"
-                type="text"
-              />
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.otp.updatedAt')}
-                id="otp-updatedAt"
-                name="updatedAt"
-                data-cy="updatedAt"
-                type="date"
-              />
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/otp" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

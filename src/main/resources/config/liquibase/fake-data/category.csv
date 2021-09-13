@@ -1,11 +1,11 @@
-id;name;is_parent;is_active;created_by;created_at;updated_by;updated_at
-1;Table;false;true;Directives;2021-08-09;bypassing District Practical;2021-08-08
-2;transmitting Berkshire Planner;false;true;Steel transmitting Nevada;2021-08-08;killer red;2021-08-08
-3;Washington;true;false;fresh-thinking Ecuador;2021-08-08;Chicken Overpass;2021-08-08
-4;Music Investment;false;true;Cheese archive;2021-08-08;Versatile bypass California;2021-08-08
-5;Product Loan connecting;false;true;fresh-thinking Open-source;2021-08-09;XML Web;2021-08-09
-6;Avon;false;false;Island Saint Money;2021-08-09;Computers synergistic blue;2021-08-08
-7;Verde Islands Tasty;false;false;Central;2021-08-08;Public-key Cambridgeshire;2021-08-08
-8;global;true;true;circuit;2021-08-09;Chicken;2021-08-08
-9;Pennsylvania Unbranded;false;false;Principal;2021-08-08;frame Borders;2021-08-09
-10;Chicken methodologies Human;true;false;Pants Intranet mint;2021-08-08;Cheese;2021-08-08
+id;name;is_parent;is_active
+1;Table;false;true
+2;Directives;false;true
+3;Refined metrics e-commerce;false;true
+4;transmitting Berkshire Planner;false;true
+5;Steel transmitting Nevada;true;false
+6;interfaces Games;false;true
+7;Tasty methodologies Realigned;true;false
+8;violet Loan Music;true;false
+9;visionary;false;true
+10;archive;true;true

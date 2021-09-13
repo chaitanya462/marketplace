@@ -54,6 +54,12 @@ export const ClientDetail = (props: RouteComponentProps<{ id: string }>) => {
           </dt>
           <dd>{clientEntity.primaryPhone}</dd>
           <dt>
+            <span id="isActive">
+              <Translate contentKey="simplifyMarketplaceApp.client.isActive">Is Active</Translate>
+            </span>
+          </dt>
+          <dd>{clientEntity.isActive ? 'true' : 'false'}</dd>
+          <dt>
             <span id="description">
               <Translate contentKey="simplifyMarketplaceApp.client.description">Description</Translate>
             </span>
@@ -68,37 +74,9 @@ export const ClientDetail = (props: RouteComponentProps<{ id: string }>) => {
             {clientEntity.startDate ? <TextFormat value={clientEntity.startDate} type="date" format={APP_LOCAL_DATE_FORMAT} /> : null}
           </dd>
           <dt>
-            <span id="createdBy">
-              <Translate contentKey="simplifyMarketplaceApp.client.createdBy">Created By</Translate>
-            </span>
+            <Translate contentKey="simplifyMarketplaceApp.client.user">User</Translate>
           </dt>
-          <dd>{clientEntity.createdBy}</dd>
-          <dt>
-            <span id="createdAt">
-              <Translate contentKey="simplifyMarketplaceApp.client.createdAt">Created At</Translate>
-            </span>
-          </dt>
-          <dd>
-            {clientEntity.createdAt ? <TextFormat value={clientEntity.createdAt} type="date" format={APP_LOCAL_DATE_FORMAT} /> : null}
-          </dd>
-          <dt>
-            <span id="updatedBy">
-              <Translate contentKey="simplifyMarketplaceApp.client.updatedBy">Updated By</Translate>
-            </span>
-          </dt>
-          <dd>{clientEntity.updatedBy}</dd>
-          <dt>
-            <span id="updatedAt">
-              <Translate contentKey="simplifyMarketplaceApp.client.updatedAt">Updated At</Translate>
-            </span>
-          </dt>
-          <dd>
-            {clientEntity.updatedAt ? <TextFormat value={clientEntity.updatedAt} type="date" format={APP_LOCAL_DATE_FORMAT} /> : null}
-          </dd>
-          <dt>
-            <Translate contentKey="simplifyMarketplaceApp.client.customUser">Custom User</Translate>
-          </dt>
-          <dd>{clientEntity.customUser ? clientEntity.customUser.id : ''}</dd>
+          <dd>{clientEntity.user ? clientEntity.user.id : ''}</dd>
         </dl>
         <Button tag={Link} to="/client" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

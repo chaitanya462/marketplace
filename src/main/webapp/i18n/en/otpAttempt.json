@@ -20,11 +20,10 @@
       "id": "ID",
       "contextId": "Context Id",
       "otp": "Otp",
+      "isActive": "Is Active",
       "status": "Status",
       "ip": "Ip",
-      "coookie": "Coookie",
-      "createdBy": "Created By",
-      "createdAt": "Created At"
+      "coookie": "Coookie"
     }
   }
 }

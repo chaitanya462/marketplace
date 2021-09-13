@@ -2,10 +2,12 @@ package com.simplify.marketplace.web.rest;
 
 import com.simplify.marketplace.repository.UserEmailRepository;
 import com.simplify.marketplace.service.UserEmailService;
+import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.dto.UserEmailDTO;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -32,6 +34,7 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class UserEmailResource {
 
+    private UserService userService;
     private final Logger log = LoggerFactory.getLogger(UserEmailResource.class);
 
     private static final String ENTITY_NAME = "userEmail";
@@ -43,9 +46,10 @@ public class UserEmailResource {
 
     private final UserEmailRepository userEmailRepository;
 
-    public UserEmailResource(UserEmailService userEmailService, UserEmailRepository userEmailRepository) {
+    public UserEmailResource(UserEmailService userEmailService, UserEmailRepository userEmailRepository, UserService userService) {
         this.userEmailService = userEmailService;
         this.userEmailRepository = userEmailRepository;
+        this.userService = userService;
     }
 
     /**
@@ -61,6 +65,10 @@ public class UserEmailResource {
         if (userEmailDTO.getId() != null) {
             throw new BadRequestAlertException("A new userEmail cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        userEmailDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        userEmailDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        userEmailDTO.setUpdatedAt(LocalDate.now());
+        userEmailDTO.setCreatedAt(LocalDate.now());
         UserEmailDTO result = userEmailService.save(userEmailDTO);
         return ResponseEntity
             .created(new URI("/api/user-emails/" + result.getId()))
@@ -94,6 +102,8 @@ public class UserEmailResource {
         if (!userEmailRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        userEmailDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        userEmailDTO.setUpdatedAt(LocalDate.now());
 
         UserEmailDTO result = userEmailService.save(userEmailDTO);
         return ResponseEntity
@@ -129,6 +139,8 @@ public class UserEmailResource {
         if (!userEmailRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        userEmailDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        userEmailDTO.setUpdatedAt(LocalDate.now());
 
         Optional<UserEmailDTO> result = userEmailService.partialUpdate(userEmailDTO);
 

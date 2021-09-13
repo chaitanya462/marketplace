@@ -12,10 +12,6 @@ export interface IEmployment {
   isCurrent?: boolean | null;
   lastSalary?: number | null;
   description?: string | null;
-  createdBy?: string | null;
-  createdAt?: string | null;
-  updatedBy?: string | null;
-  updatedAt?: string | null;
   locations?: ILocation[] | null;
   company?: IClient | null;
   worker?: IWorker | null;

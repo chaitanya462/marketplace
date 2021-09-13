@@ -4,8 +4,8 @@ import { Button, Row, Col, FormText } from 'reactstrap';
 import { isNumber, Translate, translate, ValidatedField, ValidatedForm } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { ICustomUser } from 'app/shared/model/custom-user.model';
-import { getEntities as getCustomUsers } from 'app/entities/custom-user/custom-user.reducer';
+import { IUser } from 'app/shared/model/user.model';
+import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
 import { ISkillsMaster } from 'app/shared/model/skills-master.model';
 import { getEntities as getSkillsMasters } from 'app/entities/skills-master/skills-master.reducer';
 import { getEntity, updateEntity, createEntity, reset } from './worker.reducer';
@@ -19,7 +19,7 @@ export const WorkerUpdate = (props: RouteComponentProps<{ id: string }>) => {
 
   const [isNew] = useState(!props.match.params || !props.match.params.id);
 
-  const customUsers = useAppSelector(state => state.customUser.entities);
+  const users = useAppSelector(state => state.userManagement.users);
   const skillsMasters = useAppSelector(state => state.skillsMaster.entities);
   const workerEntity = useAppSelector(state => state.worker.entity);
   const loading = useAppSelector(state => state.worker.loading);
@@ -35,7 +35,7 @@ export const WorkerUpdate = (props: RouteComponentProps<{ id: string }>) => {
       dispatch(getEntity(props.match.params.id));
     }
 
-    dispatch(getCustomUsers({}));
+    dispatch(getUsers({}));
     dispatch(getSkillsMasters({}));
   }, []);
 
@@ -50,7 +50,7 @@ export const WorkerUpdate = (props: RouteComponentProps<{ id: string }>) => {
       ...workerEntity,
       ...values,
       skills: mapIdList(values.skills),
-      customUser: customUsers.find(it => it.id.toString() === values.customUserId.toString()),
+      user: users.find(it => it.id.toString() === values.userId.toString()),
     };
 
     if (isNew) {
@@ -65,7 +65,7 @@ export const WorkerUpdate = (props: RouteComponentProps<{ id: string }>) => {
       ? {}
       : {
           ...workerEntity,
-          customUserId: workerEntity?.customUser?.id,
+          userId: workerEntity?.user?.id,
           skills: workerEntity?.skills?.map(e => e.id.toString()),
         };
 
@@ -127,12 +127,6 @@ export const WorkerUpdate = (props: RouteComponentProps<{ id: string }>) => {
                 name="primaryPhone"
                 data-cy="primaryPhone"
                 type="text"
-                validate={{
-                  required: { value: true, message: translate('entity.validation.required') },
-                  min: { value: 1000000000, message: translate('entity.validation.min', { min: 1000000000 }) },
-                  max: { value: 9999999999, message: translate('entity.validation.max', { max: 9999999999 }) },
-                  validate: v => isNumber(v) || translate('entity.validation.number'),
-                }}
               />
               <ValidatedField
                 label={translate('simplifyMarketplaceApp.worker.description')}
@@ -149,43 +143,23 @@ export const WorkerUpdate = (props: RouteComponentProps<{ id: string }>) => {
                 type="date"
               />
               <ValidatedField
-                label={translate('simplifyMarketplaceApp.worker.createdBy')}
-                id="worker-createdBy"
-                name="createdBy"
-                data-cy="createdBy"
-                type="text"
+                label={translate('simplifyMarketplaceApp.worker.isActive')}
+                id="worker-isActive"
+                name="isActive"
+                data-cy="isActive"
+                check
+                type="checkbox"
               />
               <ValidatedField
-                label={translate('simplifyMarketplaceApp.worker.createdAt')}
-                id="worker-createdAt"
-                name="createdAt"
-                data-cy="createdAt"
-                type="date"
-              />
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.worker.updatedBy')}
-                id="worker-updatedBy"
-                name="updatedBy"
-                data-cy="updatedBy"
-                type="text"
-              />
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.worker.updatedAt')}
-                id="worker-updatedAt"
-                name="updatedAt"
-                data-cy="updatedAt"
-                type="date"
-              />
-              <ValidatedField
-                id="worker-customUser"
-                name="customUserId"
-                data-cy="customUser"
-                label={translate('simplifyMarketplaceApp.worker.customUser')}
+                id="worker-user"
+                name="userId"
+                data-cy="user"
+                label={translate('simplifyMarketplaceApp.worker.user')}
                 type="select"
               >
                 <option value="" key="0" />
-                {customUsers
-                  ? customUsers.map(otherEntity => (
+                {users
+                  ? users.map(otherEntity => (
                       <option value={otherEntity.id} key={otherEntity.id}>
                         {otherEntity.id}
                       </option>

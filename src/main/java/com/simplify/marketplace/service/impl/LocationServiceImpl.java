@@ -1,11 +1,15 @@
 package com.simplify.marketplace.service.impl;
 
+import com.simplify.marketplace.domain.Employment;
 import com.simplify.marketplace.domain.Location;
 import com.simplify.marketplace.repository.LocationRepository;
 import com.simplify.marketplace.service.LocationService;
 import com.simplify.marketplace.service.dto.LocationDTO;
 import com.simplify.marketplace.service.mapper.LocationMapper;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -74,5 +78,12 @@ public class LocationServiceImpl implements LocationService {
     public void delete(Long id) {
         log.debug("Request to delete Location : {}", id);
         locationRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<Location> fineONEEMP(Long id) {
+        log.debug("Request to get Employment : {}", id);
+        return locationRepository.findByEmploymentId(id);
     }
 }

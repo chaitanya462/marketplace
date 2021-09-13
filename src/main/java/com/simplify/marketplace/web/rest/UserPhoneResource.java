@@ -2,15 +2,15 @@ package com.simplify.marketplace.web.rest;
 
 import com.simplify.marketplace.repository.UserPhoneRepository;
 import com.simplify.marketplace.service.UserPhoneService;
+import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.dto.UserPhoneDTO;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +32,8 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class UserPhoneResource {
 
+    private UserService userService;
+
     private final Logger log = LoggerFactory.getLogger(UserPhoneResource.class);
 
     private static final String ENTITY_NAME = "userPhone";
@@ -43,9 +45,10 @@ public class UserPhoneResource {
 
     private final UserPhoneRepository userPhoneRepository;
 
-    public UserPhoneResource(UserPhoneService userPhoneService, UserPhoneRepository userPhoneRepository) {
+    public UserPhoneResource(UserPhoneService userPhoneService, UserPhoneRepository userPhoneRepository, UserService userService) {
         this.userPhoneService = userPhoneService;
         this.userPhoneRepository = userPhoneRepository;
+        this.userService = userService;
     }
 
     /**
@@ -56,11 +59,15 @@ public class UserPhoneResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/user-phones")
-    public ResponseEntity<UserPhoneDTO> createUserPhone(@Valid @RequestBody UserPhoneDTO userPhoneDTO) throws URISyntaxException {
+    public ResponseEntity<UserPhoneDTO> createUserPhone(@RequestBody UserPhoneDTO userPhoneDTO) throws URISyntaxException {
         log.debug("REST request to save UserPhone : {}", userPhoneDTO);
         if (userPhoneDTO.getId() != null) {
             throw new BadRequestAlertException("A new userPhone cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        userPhoneDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        userPhoneDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        userPhoneDTO.setUpdatedAt(LocalDate.now());
+        userPhoneDTO.setCreatedAt(LocalDate.now());
         UserPhoneDTO result = userPhoneService.save(userPhoneDTO);
         return ResponseEntity
             .created(new URI("/api/user-phones/" + result.getId()))
@@ -81,7 +88,7 @@ public class UserPhoneResource {
     @PutMapping("/user-phones/{id}")
     public ResponseEntity<UserPhoneDTO> updateUserPhone(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody UserPhoneDTO userPhoneDTO
+        @RequestBody UserPhoneDTO userPhoneDTO
     ) throws URISyntaxException {
         log.debug("REST request to update UserPhone : {}, {}", id, userPhoneDTO);
         if (userPhoneDTO.getId() == null) {
@@ -94,7 +101,8 @@ public class UserPhoneResource {
         if (!userPhoneRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-
+        userPhoneDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        userPhoneDTO.setUpdatedAt(LocalDate.now());
         UserPhoneDTO result = userPhoneService.save(userPhoneDTO);
         return ResponseEntity
             .ok()
@@ -116,7 +124,7 @@ public class UserPhoneResource {
     @PatchMapping(value = "/user-phones/{id}", consumes = "application/merge-patch+json")
     public ResponseEntity<UserPhoneDTO> partialUpdateUserPhone(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody UserPhoneDTO userPhoneDTO
+        @RequestBody UserPhoneDTO userPhoneDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update UserPhone partially : {}, {}", id, userPhoneDTO);
         if (userPhoneDTO.getId() == null) {
@@ -129,7 +137,8 @@ public class UserPhoneResource {
         if (!userPhoneRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-
+        userPhoneDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        userPhoneDTO.setUpdatedAt(LocalDate.now());
         Optional<UserPhoneDTO> result = userPhoneService.partialUpdate(userPhoneDTO);
 
         return ResponseUtil.wrapOrNotFound(

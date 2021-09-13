@@ -2,9 +2,11 @@ package com.simplify.marketplace.web.rest;
 
 import com.simplify.marketplace.config.Constants;
 import com.simplify.marketplace.domain.User;
+import com.simplify.marketplace.domain.User;
 import com.simplify.marketplace.repository.UserRepository;
 import com.simplify.marketplace.security.AuthoritiesConstants;
 import com.simplify.marketplace.service.MailService;
+import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.dto.AdminUserDTO;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
@@ -12,6 +14,7 @@ import com.simplify.marketplace.web.rest.errors.EmailAlreadyUsedException;
 import com.simplify.marketplace.web.rest.errors.LoginAlreadyUsedException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.Collections;
 import javax.validation.Valid;
@@ -26,6 +29,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
@@ -84,13 +88,14 @@ public class UserResource {
     private final UserService userService;
 
     private final UserRepository userRepository;
-
+    private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
 
-    public UserResource(UserService userService, UserRepository userRepository, MailService mailService) {
+    public UserResource(UserService userService, UserRepository userRepository, MailService mailService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.mailService = mailService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -105,25 +110,66 @@ public class UserResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      * @throws BadRequestAlertException {@code 400 (Bad Request)} if the login or email is already in use.
      */
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/users")
-    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    // @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<User> createUser(@Valid @RequestBody AdminUserDTO userDTO) throws URISyntaxException {
         log.debug("REST request to save User : {}", userDTO);
+        User newUser;
 
-        if (userDTO.getId() != null) {
-            throw new BadRequestAlertException("A new user cannot already have an ID", "userManagement", "idexists");
+        if (userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).isPresent()) {
             // Lowercase the user login before comparing with database
-        } else if (userRepository.findOneByLogin(userDTO.getLogin().toLowerCase()).isPresent()) {
-            throw new LoginAlreadyUsedException();
-        } else if (userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).isPresent()) {
-            throw new EmailAlreadyUsedException();
+            newUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).get();
+            if (!newUser.isActivated()) {
+                // SignUp Resend Condition
+                //System.out.println("\n\n\n\n\nI'm in resend\n\n\n\n\n");
+                mailService.sendActivationEmail(newUser);
+            } else {
+                //Login Condition
+                newUser.setResetKey(userService.generateOTP());
+                userRepository.save(newUser);
+                //System.out.println("\n\n\n\n\nhello I'm in login condition"+newUser.getResetKey()+"hello\n\n\n\n\n");
+                mailService.sendCreationEmail(newUser);
+            }
         } else {
-            User newUser = userService.createUser(userDTO);
-            mailService.sendCreationEmail(newUser);
+            //Register Condition
+            //System.out.println("\n\n\n\n\nI'm in register\n\n\n\n\n");
+            newUser = userService.createUser(userDTO);
+            mailService.sendActivationEmail(newUser);
+        }
+        return ResponseEntity
+            .created(new URI("/api/admin/users/" + newUser.getLogin()))
+            .headers(HeaderUtil.createAlert(applicationName, "userManagement.created", newUser.getLogin()))
+            .body(newUser);
+    }
+
+    @PostMapping("/users/authenticate")
+    public ResponseEntity<Boolean> VadlidatingOtp(@RequestBody Map<String, String> map) throws URISyntaxException {
+        Boolean check = false;
+        Optional<User> existingUser;
+        if (!userRepository.findOneByEmailIgnoreCase(map.get("email")).isPresent()) {
+            throw new BadRequestAlertException("A new user cannot get Otp wihtout using email", "userManagement", "enter email");
+        } else {
+            existingUser = userRepository.findOneByEmailIgnoreCase(map.get("email"));
+            if (!existingUser.get().isActivated()) {
+                if (existingUser.get().getActivationKey().equals(map.get("otp"))) {
+                    existingUser.get().setPassword(passwordEncoder.encode("1234"));
+
+                    existingUser.get().setActivated(true);
+                    check = existingUser.get().isActivated();
+                    userRepository.save(existingUser.get());
+                }
+            } else {
+                if (existingUser.get().getResetKey().equals(map.get("otp"))) {
+                    existingUser.get().setPassword(passwordEncoder.encode("1234"));
+                    System.out.println("\n\n\n\n 5\n\n\n\n");
+                    check = true;
+                }
+            }
             return ResponseEntity
-                .created(new URI("/api/admin/users/" + newUser.getLogin()))
-                .headers(HeaderUtil.createAlert(applicationName, "userManagement.created", newUser.getLogin()))
-                .body(newUser);
+                .created(new URI("/api/admin/users/authentiacte"))
+                .headers(HeaderUtil.createAlert(applicationName, "userManagement.created", existingUser.get().getLogin()))
+                .body(check);
         }
     }
 
@@ -147,6 +193,9 @@ public class UserResource {
         if (existingUser.isPresent() && (!existingUser.get().getId().equals(userDTO.getId()))) {
             throw new LoginAlreadyUsedException();
         }
+        // userDTO.setlastModifiedBy(userService.getUserWithAuthorities().get().getId()+"");
+        // userDTO.setlastModifiedDate(LocalDate.now());
+
         Optional<AdminUserDTO> updatedUser = userService.updateUser(userDTO);
 
         return ResponseUtil.wrapOrNotFound(

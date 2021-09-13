@@ -11,8 +11,6 @@ import com.simplify.marketplace.domain.enumeration.FieldType;
 import com.simplify.marketplace.repository.FieldRepository;
 import com.simplify.marketplace.service.dto.FieldDTO;
 import com.simplify.marketplace.service.mapper.FieldMapper;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -46,18 +44,6 @@ class FieldResourceIT {
     private static final Boolean DEFAULT_IS_ACTIVE = false;
     private static final Boolean UPDATED_IS_ACTIVE = true;
 
-    private static final String DEFAULT_CREATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_CREATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_CREATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_CREATED_AT = LocalDate.now(ZoneId.systemDefault());
-
-    private static final String DEFAULT_UPDATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_UPDATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_UPDATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_UPDATED_AT = LocalDate.now(ZoneId.systemDefault());
-
     private static final String ENTITY_API_URL = "/api/fields";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -89,11 +75,7 @@ class FieldResourceIT {
             .fieldName(DEFAULT_FIELD_NAME)
             .fieldLabel(DEFAULT_FIELD_LABEL)
             .fieldType(DEFAULT_FIELD_TYPE)
-            .isActive(DEFAULT_IS_ACTIVE)
-            .createdBy(DEFAULT_CREATED_BY)
-            .createdAt(DEFAULT_CREATED_AT)
-            .updatedBy(DEFAULT_UPDATED_BY)
-            .updatedAt(DEFAULT_UPDATED_AT);
+            .isActive(DEFAULT_IS_ACTIVE);
         return field;
     }
 
@@ -108,11 +90,7 @@ class FieldResourceIT {
             .fieldName(UPDATED_FIELD_NAME)
             .fieldLabel(UPDATED_FIELD_LABEL)
             .fieldType(UPDATED_FIELD_TYPE)
-            .isActive(UPDATED_IS_ACTIVE)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .isActive(UPDATED_IS_ACTIVE);
         return field;
     }
 
@@ -139,10 +117,6 @@ class FieldResourceIT {
         assertThat(testField.getFieldLabel()).isEqualTo(DEFAULT_FIELD_LABEL);
         assertThat(testField.getFieldType()).isEqualTo(DEFAULT_FIELD_TYPE);
         assertThat(testField.getIsActive()).isEqualTo(DEFAULT_IS_ACTIVE);
-        assertThat(testField.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
-        assertThat(testField.getCreatedAt()).isEqualTo(DEFAULT_CREATED_AT);
-        assertThat(testField.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
-        assertThat(testField.getUpdatedAt()).isEqualTo(DEFAULT_UPDATED_AT);
     }
 
     @Test
@@ -179,11 +153,7 @@ class FieldResourceIT {
             .andExpect(jsonPath("$.[*].fieldName").value(hasItem(DEFAULT_FIELD_NAME)))
             .andExpect(jsonPath("$.[*].fieldLabel").value(hasItem(DEFAULT_FIELD_LABEL)))
             .andExpect(jsonPath("$.[*].fieldType").value(hasItem(DEFAULT_FIELD_TYPE.toString())))
-            .andExpect(jsonPath("$.[*].isActive").value(hasItem(DEFAULT_IS_ACTIVE.booleanValue())))
-            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
-            .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())))
-            .andExpect(jsonPath("$.[*].updatedBy").value(hasItem(DEFAULT_UPDATED_BY)))
-            .andExpect(jsonPath("$.[*].updatedAt").value(hasItem(DEFAULT_UPDATED_AT.toString())));
+            .andExpect(jsonPath("$.[*].isActive").value(hasItem(DEFAULT_IS_ACTIVE.booleanValue())));
     }
 
     @Test
@@ -201,11 +171,7 @@ class FieldResourceIT {
             .andExpect(jsonPath("$.fieldName").value(DEFAULT_FIELD_NAME))
             .andExpect(jsonPath("$.fieldLabel").value(DEFAULT_FIELD_LABEL))
             .andExpect(jsonPath("$.fieldType").value(DEFAULT_FIELD_TYPE.toString()))
-            .andExpect(jsonPath("$.isActive").value(DEFAULT_IS_ACTIVE.booleanValue()))
-            .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY))
-            .andExpect(jsonPath("$.createdAt").value(DEFAULT_CREATED_AT.toString()))
-            .andExpect(jsonPath("$.updatedBy").value(DEFAULT_UPDATED_BY))
-            .andExpect(jsonPath("$.updatedAt").value(DEFAULT_UPDATED_AT.toString()));
+            .andExpect(jsonPath("$.isActive").value(DEFAULT_IS_ACTIVE.booleanValue()));
     }
 
     @Test
@@ -231,11 +197,7 @@ class FieldResourceIT {
             .fieldName(UPDATED_FIELD_NAME)
             .fieldLabel(UPDATED_FIELD_LABEL)
             .fieldType(UPDATED_FIELD_TYPE)
-            .isActive(UPDATED_IS_ACTIVE)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .isActive(UPDATED_IS_ACTIVE);
         FieldDTO fieldDTO = fieldMapper.toDto(updatedField);
 
         restFieldMockMvc
@@ -254,10 +216,6 @@ class FieldResourceIT {
         assertThat(testField.getFieldLabel()).isEqualTo(UPDATED_FIELD_LABEL);
         assertThat(testField.getFieldType()).isEqualTo(UPDATED_FIELD_TYPE);
         assertThat(testField.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);
-        assertThat(testField.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testField.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testField.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testField.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test
@@ -337,8 +295,6 @@ class FieldResourceIT {
         Field partialUpdatedField = new Field();
         partialUpdatedField.setId(field.getId());
 
-        partialUpdatedField.updatedBy(UPDATED_UPDATED_BY).updatedAt(UPDATED_UPDATED_AT);
-
         restFieldMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedField.getId())
@@ -355,10 +311,6 @@ class FieldResourceIT {
         assertThat(testField.getFieldLabel()).isEqualTo(DEFAULT_FIELD_LABEL);
         assertThat(testField.getFieldType()).isEqualTo(DEFAULT_FIELD_TYPE);
         assertThat(testField.getIsActive()).isEqualTo(DEFAULT_IS_ACTIVE);
-        assertThat(testField.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
-        assertThat(testField.getCreatedAt()).isEqualTo(DEFAULT_CREATED_AT);
-        assertThat(testField.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testField.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test
@@ -377,11 +329,7 @@ class FieldResourceIT {
             .fieldName(UPDATED_FIELD_NAME)
             .fieldLabel(UPDATED_FIELD_LABEL)
             .fieldType(UPDATED_FIELD_TYPE)
-            .isActive(UPDATED_IS_ACTIVE)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .isActive(UPDATED_IS_ACTIVE);
 
         restFieldMockMvc
             .perform(
@@ -399,10 +347,6 @@ class FieldResourceIT {
         assertThat(testField.getFieldLabel()).isEqualTo(UPDATED_FIELD_LABEL);
         assertThat(testField.getFieldType()).isEqualTo(UPDATED_FIELD_TYPE);
         assertThat(testField.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);
-        assertThat(testField.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testField.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testField.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testField.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test

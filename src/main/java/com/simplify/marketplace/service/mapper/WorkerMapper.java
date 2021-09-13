@@ -8,9 +8,9 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity {@link Worker} and its DTO {@link WorkerDTO}.
  */
-@Mapper(componentModel = "spring", uses = { CustomUserMapper.class, SkillsMasterMapper.class })
+@Mapper(componentModel = "spring", uses = { UserMapper.class, SkillsMasterMapper.class })
 public interface WorkerMapper extends EntityMapper<WorkerDTO, Worker> {
-    @Mapping(target = "customUser", source = "customUser", qualifiedByName = "id")
+    @Mapping(target = "user", source = "user", qualifiedByName = "id")
     @Mapping(target = "skills", source = "skills", qualifiedByName = "idSet")
     WorkerDTO toDto(Worker s);
 

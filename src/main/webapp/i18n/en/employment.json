@@ -25,10 +25,6 @@
       "isCurrent": "Is Current",
       "lastSalary": "Last Salary",
       "description": "Description",
-      "createdBy": "Created By",
-      "createdAt": "Created At",
-      "updatedBy": "Updated By",
-      "updatedAt": "Updated At",
       "location": "Location",
       "company": "Company",
       "worker": "Worker"

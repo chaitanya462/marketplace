@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Col, Row, Table } from 'reactstrap';
-import { Translate, TextFormat, getSortState } from 'react-jhipster';
+import { Translate, getSortState } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { getEntities, reset } from './certificate.reducer';
@@ -144,22 +144,6 @@ export const Certificate = (props: RouteComponentProps<{ url: string }>) => {
                     <Translate contentKey="simplifyMarketplaceApp.certificate.description">Description</Translate>{' '}
                     <FontAwesomeIcon icon="sort" />
                   </th>
-                  <th className="hand" onClick={sort('createdBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.certificate.createdBy">Created By</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('createdAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.certificate.createdAt">Created At</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('updatedBy')}>
-                    <Translate contentKey="simplifyMarketplaceApp.certificate.updatedBy">Updated By</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th className="hand" onClick={sort('updatedAt')}>
-                    <Translate contentKey="simplifyMarketplaceApp.certificate.updatedAt">Updated At</Translate>{' '}
-                    <FontAwesomeIcon icon="sort" />
-                  </th>
                   <th>
                     <Translate contentKey="simplifyMarketplaceApp.certificate.worker">Worker</Translate> <FontAwesomeIcon icon="sort" />
                   </th>
@@ -179,18 +163,6 @@ export const Certificate = (props: RouteComponentProps<{ url: string }>) => {
                     <td>{certificate.issueYear}</td>
                     <td>{certificate.expiryYear}</td>
                     <td>{certificate.description}</td>
-                    <td>{certificate.createdBy}</td>
-                    <td>
-                      {certificate.createdAt ? (
-                        <TextFormat type="date" value={certificate.createdAt} format={APP_LOCAL_DATE_FORMAT} />
-                      ) : null}
-                    </td>
-                    <td>{certificate.updatedBy}</td>
-                    <td>
-                      {certificate.updatedAt ? (
-                        <TextFormat type="date" value={certificate.updatedAt} format={APP_LOCAL_DATE_FORMAT} />
-                      ) : null}
-                    </td>
                     <td>{certificate.worker ? <Link to={`worker/${certificate.worker.id}`}>{certificate.worker.id}</Link> : ''}</td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">

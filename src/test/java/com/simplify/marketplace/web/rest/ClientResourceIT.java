@@ -43,26 +43,17 @@ class ClientResourceIT {
     private static final CompanyType DEFAULT_COMPANY_TYPE = CompanyType.IT;
     private static final CompanyType UPDATED_COMPANY_TYPE = CompanyType.Consultant;
 
-    private static final Integer DEFAULT_PRIMARY_PHONE = 1000000000;
-    private static final Integer UPDATED_PRIMARY_PHONE = 1000000001;
+    private static final String DEFAULT_PRIMARY_PHONE = "AAAAAAAAAA";
+    private static final String UPDATED_PRIMARY_PHONE = "BBBBBBBBBB";
+
+    private static final Boolean DEFAULT_IS_ACTIVE = false;
+    private static final Boolean UPDATED_IS_ACTIVE = true;
 
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
     private static final LocalDate DEFAULT_START_DATE = LocalDate.ofEpochDay(0L);
     private static final LocalDate UPDATED_START_DATE = LocalDate.now(ZoneId.systemDefault());
-
-    private static final String DEFAULT_CREATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_CREATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_CREATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_CREATED_AT = LocalDate.now(ZoneId.systemDefault());
-
-    private static final String DEFAULT_UPDATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_UPDATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_UPDATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_UPDATED_AT = LocalDate.now(ZoneId.systemDefault());
 
     private static final String ENTITY_API_URL = "/api/clients";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -96,12 +87,9 @@ class ClientResourceIT {
             .companyWebsite(DEFAULT_COMPANY_WEBSITE)
             .companyType(DEFAULT_COMPANY_TYPE)
             .primaryPhone(DEFAULT_PRIMARY_PHONE)
+            .isActive(DEFAULT_IS_ACTIVE)
             .description(DEFAULT_DESCRIPTION)
-            .startDate(DEFAULT_START_DATE)
-            .createdBy(DEFAULT_CREATED_BY)
-            .createdAt(DEFAULT_CREATED_AT)
-            .updatedBy(DEFAULT_UPDATED_BY)
-            .updatedAt(DEFAULT_UPDATED_AT);
+            .startDate(DEFAULT_START_DATE);
         return client;
     }
 
@@ -117,12 +105,9 @@ class ClientResourceIT {
             .companyWebsite(UPDATED_COMPANY_WEBSITE)
             .companyType(UPDATED_COMPANY_TYPE)
             .primaryPhone(UPDATED_PRIMARY_PHONE)
+            .isActive(UPDATED_IS_ACTIVE)
             .description(UPDATED_DESCRIPTION)
-            .startDate(UPDATED_START_DATE)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .startDate(UPDATED_START_DATE);
         return client;
     }
 
@@ -149,12 +134,9 @@ class ClientResourceIT {
         assertThat(testClient.getCompanyWebsite()).isEqualTo(DEFAULT_COMPANY_WEBSITE);
         assertThat(testClient.getCompanyType()).isEqualTo(DEFAULT_COMPANY_TYPE);
         assertThat(testClient.getPrimaryPhone()).isEqualTo(DEFAULT_PRIMARY_PHONE);
+        assertThat(testClient.getIsActive()).isEqualTo(DEFAULT_IS_ACTIVE);
         assertThat(testClient.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testClient.getStartDate()).isEqualTo(DEFAULT_START_DATE);
-        assertThat(testClient.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
-        assertThat(testClient.getCreatedAt()).isEqualTo(DEFAULT_CREATED_AT);
-        assertThat(testClient.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
-        assertThat(testClient.getUpdatedAt()).isEqualTo(DEFAULT_UPDATED_AT);
     }
 
     @Test
@@ -178,24 +160,6 @@ class ClientResourceIT {
 
     @Test
     @Transactional
-    void checkPrimaryPhoneIsRequired() throws Exception {
-        int databaseSizeBeforeTest = clientRepository.findAll().size();
-        // set the field null
-        client.setPrimaryPhone(null);
-
-        // Create the Client, which fails.
-        ClientDTO clientDTO = clientMapper.toDto(client);
-
-        restClientMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(clientDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<Client> clientList = clientRepository.findAll();
-        assertThat(clientList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     void getAllClients() throws Exception {
         // Initialize the database
         clientRepository.saveAndFlush(client);
@@ -210,12 +174,9 @@ class ClientResourceIT {
             .andExpect(jsonPath("$.[*].companyWebsite").value(hasItem(DEFAULT_COMPANY_WEBSITE)))
             .andExpect(jsonPath("$.[*].companyType").value(hasItem(DEFAULT_COMPANY_TYPE.toString())))
             .andExpect(jsonPath("$.[*].primaryPhone").value(hasItem(DEFAULT_PRIMARY_PHONE)))
+            .andExpect(jsonPath("$.[*].isActive").value(hasItem(DEFAULT_IS_ACTIVE.booleanValue())))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
-            .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
-            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
-            .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())))
-            .andExpect(jsonPath("$.[*].updatedBy").value(hasItem(DEFAULT_UPDATED_BY)))
-            .andExpect(jsonPath("$.[*].updatedAt").value(hasItem(DEFAULT_UPDATED_AT.toString())));
+            .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())));
     }
 
     @Test
@@ -234,12 +195,9 @@ class ClientResourceIT {
             .andExpect(jsonPath("$.companyWebsite").value(DEFAULT_COMPANY_WEBSITE))
             .andExpect(jsonPath("$.companyType").value(DEFAULT_COMPANY_TYPE.toString()))
             .andExpect(jsonPath("$.primaryPhone").value(DEFAULT_PRIMARY_PHONE))
+            .andExpect(jsonPath("$.isActive").value(DEFAULT_IS_ACTIVE.booleanValue()))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
-            .andExpect(jsonPath("$.startDate").value(DEFAULT_START_DATE.toString()))
-            .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY))
-            .andExpect(jsonPath("$.createdAt").value(DEFAULT_CREATED_AT.toString()))
-            .andExpect(jsonPath("$.updatedBy").value(DEFAULT_UPDATED_BY))
-            .andExpect(jsonPath("$.updatedAt").value(DEFAULT_UPDATED_AT.toString()));
+            .andExpect(jsonPath("$.startDate").value(DEFAULT_START_DATE.toString()));
     }
 
     @Test
@@ -266,12 +224,9 @@ class ClientResourceIT {
             .companyWebsite(UPDATED_COMPANY_WEBSITE)
             .companyType(UPDATED_COMPANY_TYPE)
             .primaryPhone(UPDATED_PRIMARY_PHONE)
+            .isActive(UPDATED_IS_ACTIVE)
             .description(UPDATED_DESCRIPTION)
-            .startDate(UPDATED_START_DATE)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .startDate(UPDATED_START_DATE);
         ClientDTO clientDTO = clientMapper.toDto(updatedClient);
 
         restClientMockMvc
@@ -290,12 +245,9 @@ class ClientResourceIT {
         assertThat(testClient.getCompanyWebsite()).isEqualTo(UPDATED_COMPANY_WEBSITE);
         assertThat(testClient.getCompanyType()).isEqualTo(UPDATED_COMPANY_TYPE);
         assertThat(testClient.getPrimaryPhone()).isEqualTo(UPDATED_PRIMARY_PHONE);
+        assertThat(testClient.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);
         assertThat(testClient.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testClient.getStartDate()).isEqualTo(UPDATED_START_DATE);
-        assertThat(testClient.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testClient.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testClient.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testClient.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test
@@ -379,9 +331,7 @@ class ClientResourceIT {
             .companyName(UPDATED_COMPANY_NAME)
             .companyWebsite(UPDATED_COMPANY_WEBSITE)
             .companyType(UPDATED_COMPANY_TYPE)
-            .createdBy(UPDATED_CREATED_BY)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .startDate(UPDATED_START_DATE);
 
         restClientMockMvc
             .perform(
@@ -399,12 +349,9 @@ class ClientResourceIT {
         assertThat(testClient.getCompanyWebsite()).isEqualTo(UPDATED_COMPANY_WEBSITE);
         assertThat(testClient.getCompanyType()).isEqualTo(UPDATED_COMPANY_TYPE);
         assertThat(testClient.getPrimaryPhone()).isEqualTo(DEFAULT_PRIMARY_PHONE);
+        assertThat(testClient.getIsActive()).isEqualTo(DEFAULT_IS_ACTIVE);
         assertThat(testClient.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(testClient.getStartDate()).isEqualTo(DEFAULT_START_DATE);
-        assertThat(testClient.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testClient.getCreatedAt()).isEqualTo(DEFAULT_CREATED_AT);
-        assertThat(testClient.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testClient.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
+        assertThat(testClient.getStartDate()).isEqualTo(UPDATED_START_DATE);
     }
 
     @Test
@@ -424,12 +371,9 @@ class ClientResourceIT {
             .companyWebsite(UPDATED_COMPANY_WEBSITE)
             .companyType(UPDATED_COMPANY_TYPE)
             .primaryPhone(UPDATED_PRIMARY_PHONE)
+            .isActive(UPDATED_IS_ACTIVE)
             .description(UPDATED_DESCRIPTION)
-            .startDate(UPDATED_START_DATE)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .startDate(UPDATED_START_DATE);
 
         restClientMockMvc
             .perform(
@@ -447,12 +391,9 @@ class ClientResourceIT {
         assertThat(testClient.getCompanyWebsite()).isEqualTo(UPDATED_COMPANY_WEBSITE);
         assertThat(testClient.getCompanyType()).isEqualTo(UPDATED_COMPANY_TYPE);
         assertThat(testClient.getPrimaryPhone()).isEqualTo(UPDATED_PRIMARY_PHONE);
+        assertThat(testClient.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);
         assertThat(testClient.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testClient.getStartDate()).isEqualTo(UPDATED_START_DATE);
-        assertThat(testClient.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testClient.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testClient.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testClient.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test

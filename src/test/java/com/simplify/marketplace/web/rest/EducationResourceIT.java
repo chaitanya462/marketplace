@@ -69,18 +69,6 @@ class EducationResourceIT {
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
-    private static final String DEFAULT_CREATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_CREATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_CREATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_CREATED_AT = LocalDate.now(ZoneId.systemDefault());
-
-    private static final String DEFAULT_UPDATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_UPDATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_UPDATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_UPDATED_AT = LocalDate.now(ZoneId.systemDefault());
-
     private static final String ENTITY_API_URL = "/api/educations";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -119,11 +107,7 @@ class EducationResourceIT {
             .endDate(DEFAULT_END_DATE)
             .isComplete(DEFAULT_IS_COMPLETE)
             .degreeType(DEFAULT_DEGREE_TYPE)
-            .description(DEFAULT_DESCRIPTION)
-            .createdBy(DEFAULT_CREATED_BY)
-            .createdAt(DEFAULT_CREATED_AT)
-            .updatedBy(DEFAULT_UPDATED_BY)
-            .updatedAt(DEFAULT_UPDATED_AT);
+            .description(DEFAULT_DESCRIPTION);
         return education;
     }
 
@@ -145,11 +129,7 @@ class EducationResourceIT {
             .endDate(UPDATED_END_DATE)
             .isComplete(UPDATED_IS_COMPLETE)
             .degreeType(UPDATED_DEGREE_TYPE)
-            .description(UPDATED_DESCRIPTION)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .description(UPDATED_DESCRIPTION);
         return education;
     }
 
@@ -183,10 +163,6 @@ class EducationResourceIT {
         assertThat(testEducation.getIsComplete()).isEqualTo(DEFAULT_IS_COMPLETE);
         assertThat(testEducation.getDegreeType()).isEqualTo(DEFAULT_DEGREE_TYPE);
         assertThat(testEducation.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(testEducation.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
-        assertThat(testEducation.getCreatedAt()).isEqualTo(DEFAULT_CREATED_AT);
-        assertThat(testEducation.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
-        assertThat(testEducation.getUpdatedAt()).isEqualTo(DEFAULT_UPDATED_AT);
     }
 
     @Test
@@ -230,11 +206,7 @@ class EducationResourceIT {
             .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())))
             .andExpect(jsonPath("$.[*].isComplete").value(hasItem(DEFAULT_IS_COMPLETE.booleanValue())))
             .andExpect(jsonPath("$.[*].degreeType").value(hasItem(DEFAULT_DEGREE_TYPE.toString())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
-            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
-            .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())))
-            .andExpect(jsonPath("$.[*].updatedBy").value(hasItem(DEFAULT_UPDATED_BY)))
-            .andExpect(jsonPath("$.[*].updatedAt").value(hasItem(DEFAULT_UPDATED_AT.toString())));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
     }
 
     @Test
@@ -259,11 +231,7 @@ class EducationResourceIT {
             .andExpect(jsonPath("$.endDate").value(DEFAULT_END_DATE.toString()))
             .andExpect(jsonPath("$.isComplete").value(DEFAULT_IS_COMPLETE.booleanValue()))
             .andExpect(jsonPath("$.degreeType").value(DEFAULT_DEGREE_TYPE.toString()))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
-            .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY))
-            .andExpect(jsonPath("$.createdAt").value(DEFAULT_CREATED_AT.toString()))
-            .andExpect(jsonPath("$.updatedBy").value(DEFAULT_UPDATED_BY))
-            .andExpect(jsonPath("$.updatedAt").value(DEFAULT_UPDATED_AT.toString()));
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION));
     }
 
     @Test
@@ -296,11 +264,7 @@ class EducationResourceIT {
             .endDate(UPDATED_END_DATE)
             .isComplete(UPDATED_IS_COMPLETE)
             .degreeType(UPDATED_DEGREE_TYPE)
-            .description(UPDATED_DESCRIPTION)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .description(UPDATED_DESCRIPTION);
         EducationDTO educationDTO = educationMapper.toDto(updatedEducation);
 
         restEducationMockMvc
@@ -326,10 +290,6 @@ class EducationResourceIT {
         assertThat(testEducation.getIsComplete()).isEqualTo(UPDATED_IS_COMPLETE);
         assertThat(testEducation.getDegreeType()).isEqualTo(UPDATED_DEGREE_TYPE);
         assertThat(testEducation.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testEducation.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testEducation.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testEducation.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testEducation.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test
@@ -415,9 +375,7 @@ class EducationResourceIT {
             .startDate(UPDATED_START_DATE)
             .endDate(UPDATED_END_DATE)
             .degreeType(UPDATED_DEGREE_TYPE)
-            .description(UPDATED_DESCRIPTION)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY);
+            .description(UPDATED_DESCRIPTION);
 
         restEducationMockMvc
             .perform(
@@ -442,10 +400,6 @@ class EducationResourceIT {
         assertThat(testEducation.getIsComplete()).isEqualTo(DEFAULT_IS_COMPLETE);
         assertThat(testEducation.getDegreeType()).isEqualTo(UPDATED_DEGREE_TYPE);
         assertThat(testEducation.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testEducation.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
-        assertThat(testEducation.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testEducation.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testEducation.getUpdatedAt()).isEqualTo(DEFAULT_UPDATED_AT);
     }
 
     @Test
@@ -471,11 +425,7 @@ class EducationResourceIT {
             .endDate(UPDATED_END_DATE)
             .isComplete(UPDATED_IS_COMPLETE)
             .degreeType(UPDATED_DEGREE_TYPE)
-            .description(UPDATED_DESCRIPTION)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .description(UPDATED_DESCRIPTION);
 
         restEducationMockMvc
             .perform(
@@ -500,10 +450,6 @@ class EducationResourceIT {
         assertThat(testEducation.getIsComplete()).isEqualTo(UPDATED_IS_COMPLETE);
         assertThat(testEducation.getDegreeType()).isEqualTo(UPDATED_DEGREE_TYPE);
         assertThat(testEducation.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testEducation.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testEducation.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testEducation.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testEducation.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test

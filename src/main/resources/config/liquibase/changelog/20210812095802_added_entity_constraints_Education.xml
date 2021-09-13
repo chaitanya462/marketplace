@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <!--
+        Added the constraints for entity Education.
+    -->
+    <changeSet id="20210812095802-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="major_subject_id"
+                                 baseTableName="education"
+                                 constraintName="fk_education__major_subject_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="subject_master"/>
+
+        <addForeignKeyConstraint baseColumnNames="minor_subject_id"
+                                 baseTableName="education"
+                                 constraintName="fk_education__minor_subject_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="subject_master"/>
+
+        <addForeignKeyConstraint baseColumnNames="worker_id"
+                                 baseTableName="education"
+                                 constraintName="fk_education__worker_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="worker"/>
+    </changeSet>
+</databaseChangeLog>

@@ -10,8 +10,6 @@ import com.simplify.marketplace.domain.Certificate;
 import com.simplify.marketplace.repository.CertificateRepository;
 import com.simplify.marketplace.service.dto.CertificateDTO;
 import com.simplify.marketplace.service.mapper.CertificateMapper;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -48,18 +46,6 @@ class CertificateResourceIT {
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
-    private static final String DEFAULT_CREATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_CREATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_CREATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_CREATED_AT = LocalDate.now(ZoneId.systemDefault());
-
-    private static final String DEFAULT_UPDATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_UPDATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_UPDATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_UPDATED_AT = LocalDate.now(ZoneId.systemDefault());
-
     private static final String ENTITY_API_URL = "/api/certificates";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -92,11 +78,7 @@ class CertificateResourceIT {
             .issuer(DEFAULT_ISSUER)
             .issueYear(DEFAULT_ISSUE_YEAR)
             .expiryYear(DEFAULT_EXPIRY_YEAR)
-            .description(DEFAULT_DESCRIPTION)
-            .createdBy(DEFAULT_CREATED_BY)
-            .createdAt(DEFAULT_CREATED_AT)
-            .updatedBy(DEFAULT_UPDATED_BY)
-            .updatedAt(DEFAULT_UPDATED_AT);
+            .description(DEFAULT_DESCRIPTION);
         return certificate;
     }
 
@@ -112,11 +94,7 @@ class CertificateResourceIT {
             .issuer(UPDATED_ISSUER)
             .issueYear(UPDATED_ISSUE_YEAR)
             .expiryYear(UPDATED_EXPIRY_YEAR)
-            .description(UPDATED_DESCRIPTION)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .description(UPDATED_DESCRIPTION);
         return certificate;
     }
 
@@ -146,10 +124,6 @@ class CertificateResourceIT {
         assertThat(testCertificate.getIssueYear()).isEqualTo(DEFAULT_ISSUE_YEAR);
         assertThat(testCertificate.getExpiryYear()).isEqualTo(DEFAULT_EXPIRY_YEAR);
         assertThat(testCertificate.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(testCertificate.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
-        assertThat(testCertificate.getCreatedAt()).isEqualTo(DEFAULT_CREATED_AT);
-        assertThat(testCertificate.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
-        assertThat(testCertificate.getUpdatedAt()).isEqualTo(DEFAULT_UPDATED_AT);
     }
 
     @Test
@@ -189,11 +163,7 @@ class CertificateResourceIT {
             .andExpect(jsonPath("$.[*].issuer").value(hasItem(DEFAULT_ISSUER)))
             .andExpect(jsonPath("$.[*].issueYear").value(hasItem(DEFAULT_ISSUE_YEAR)))
             .andExpect(jsonPath("$.[*].expiryYear").value(hasItem(DEFAULT_EXPIRY_YEAR)))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
-            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
-            .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())))
-            .andExpect(jsonPath("$.[*].updatedBy").value(hasItem(DEFAULT_UPDATED_BY)))
-            .andExpect(jsonPath("$.[*].updatedAt").value(hasItem(DEFAULT_UPDATED_AT.toString())));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
     }
 
     @Test
@@ -212,11 +182,7 @@ class CertificateResourceIT {
             .andExpect(jsonPath("$.issuer").value(DEFAULT_ISSUER))
             .andExpect(jsonPath("$.issueYear").value(DEFAULT_ISSUE_YEAR))
             .andExpect(jsonPath("$.expiryYear").value(DEFAULT_EXPIRY_YEAR))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
-            .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY))
-            .andExpect(jsonPath("$.createdAt").value(DEFAULT_CREATED_AT.toString()))
-            .andExpect(jsonPath("$.updatedBy").value(DEFAULT_UPDATED_BY))
-            .andExpect(jsonPath("$.updatedAt").value(DEFAULT_UPDATED_AT.toString()));
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION));
     }
 
     @Test
@@ -243,11 +209,7 @@ class CertificateResourceIT {
             .issuer(UPDATED_ISSUER)
             .issueYear(UPDATED_ISSUE_YEAR)
             .expiryYear(UPDATED_EXPIRY_YEAR)
-            .description(UPDATED_DESCRIPTION)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .description(UPDATED_DESCRIPTION);
         CertificateDTO certificateDTO = certificateMapper.toDto(updatedCertificate);
 
         restCertificateMockMvc
@@ -267,10 +229,6 @@ class CertificateResourceIT {
         assertThat(testCertificate.getIssueYear()).isEqualTo(UPDATED_ISSUE_YEAR);
         assertThat(testCertificate.getExpiryYear()).isEqualTo(UPDATED_EXPIRY_YEAR);
         assertThat(testCertificate.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testCertificate.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testCertificate.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testCertificate.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testCertificate.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test
@@ -350,11 +308,7 @@ class CertificateResourceIT {
         Certificate partialUpdatedCertificate = new Certificate();
         partialUpdatedCertificate.setId(certificate.getId());
 
-        partialUpdatedCertificate
-            .certificateName(UPDATED_CERTIFICATE_NAME)
-            .createdBy(UPDATED_CREATED_BY)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+        partialUpdatedCertificate.certificateName(UPDATED_CERTIFICATE_NAME);
 
         restCertificateMockMvc
             .perform(
@@ -373,10 +327,6 @@ class CertificateResourceIT {
         assertThat(testCertificate.getIssueYear()).isEqualTo(DEFAULT_ISSUE_YEAR);
         assertThat(testCertificate.getExpiryYear()).isEqualTo(DEFAULT_EXPIRY_YEAR);
         assertThat(testCertificate.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(testCertificate.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testCertificate.getCreatedAt()).isEqualTo(DEFAULT_CREATED_AT);
-        assertThat(testCertificate.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testCertificate.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test
@@ -396,11 +346,7 @@ class CertificateResourceIT {
             .issuer(UPDATED_ISSUER)
             .issueYear(UPDATED_ISSUE_YEAR)
             .expiryYear(UPDATED_EXPIRY_YEAR)
-            .description(UPDATED_DESCRIPTION)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .description(UPDATED_DESCRIPTION);
 
         restCertificateMockMvc
             .perform(
@@ -419,10 +365,6 @@ class CertificateResourceIT {
         assertThat(testCertificate.getIssueYear()).isEqualTo(UPDATED_ISSUE_YEAR);
         assertThat(testCertificate.getExpiryYear()).isEqualTo(UPDATED_EXPIRY_YEAR);
         assertThat(testCertificate.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testCertificate.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testCertificate.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testCertificate.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testCertificate.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test

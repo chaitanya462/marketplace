@@ -78,38 +78,6 @@ export const EmploymentDetail = (props: RouteComponentProps<{ id: string }>) => 
           </dt>
           <dd>{employmentEntity.description}</dd>
           <dt>
-            <span id="createdBy">
-              <Translate contentKey="simplifyMarketplaceApp.employment.createdBy">Created By</Translate>
-            </span>
-          </dt>
-          <dd>{employmentEntity.createdBy}</dd>
-          <dt>
-            <span id="createdAt">
-              <Translate contentKey="simplifyMarketplaceApp.employment.createdAt">Created At</Translate>
-            </span>
-          </dt>
-          <dd>
-            {employmentEntity.createdAt ? (
-              <TextFormat value={employmentEntity.createdAt} type="date" format={APP_LOCAL_DATE_FORMAT} />
-            ) : null}
-          </dd>
-          <dt>
-            <span id="updatedBy">
-              <Translate contentKey="simplifyMarketplaceApp.employment.updatedBy">Updated By</Translate>
-            </span>
-          </dt>
-          <dd>{employmentEntity.updatedBy}</dd>
-          <dt>
-            <span id="updatedAt">
-              <Translate contentKey="simplifyMarketplaceApp.employment.updatedAt">Updated At</Translate>
-            </span>
-          </dt>
-          <dd>
-            {employmentEntity.updatedAt ? (
-              <TextFormat value={employmentEntity.updatedAt} type="date" format={APP_LOCAL_DATE_FORMAT} />
-            ) : null}
-          </dd>
-          <dt>
             <Translate contentKey="simplifyMarketplaceApp.employment.company">Company</Translate>
           </dt>
           <dd>{employmentEntity.company ? employmentEntity.company.id : ''}</dd>

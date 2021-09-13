@@ -54,18 +54,6 @@ class EmploymentResourceIT {
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
-    private static final String DEFAULT_CREATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_CREATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_CREATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_CREATED_AT = LocalDate.now(ZoneId.systemDefault());
-
-    private static final String DEFAULT_UPDATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_UPDATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_UPDATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_UPDATED_AT = LocalDate.now(ZoneId.systemDefault());
-
     private static final String ENTITY_API_URL = "/api/employments";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -100,11 +88,7 @@ class EmploymentResourceIT {
             .endDate(DEFAULT_END_DATE)
             .isCurrent(DEFAULT_IS_CURRENT)
             .lastSalary(DEFAULT_LAST_SALARY)
-            .description(DEFAULT_DESCRIPTION)
-            .createdBy(DEFAULT_CREATED_BY)
-            .createdAt(DEFAULT_CREATED_AT)
-            .updatedBy(DEFAULT_UPDATED_BY)
-            .updatedAt(DEFAULT_UPDATED_AT);
+            .description(DEFAULT_DESCRIPTION);
         return employment;
     }
 
@@ -122,11 +106,7 @@ class EmploymentResourceIT {
             .endDate(UPDATED_END_DATE)
             .isCurrent(UPDATED_IS_CURRENT)
             .lastSalary(UPDATED_LAST_SALARY)
-            .description(UPDATED_DESCRIPTION)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .description(UPDATED_DESCRIPTION);
         return employment;
     }
 
@@ -156,10 +136,6 @@ class EmploymentResourceIT {
         assertThat(testEmployment.getIsCurrent()).isEqualTo(DEFAULT_IS_CURRENT);
         assertThat(testEmployment.getLastSalary()).isEqualTo(DEFAULT_LAST_SALARY);
         assertThat(testEmployment.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(testEmployment.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
-        assertThat(testEmployment.getCreatedAt()).isEqualTo(DEFAULT_CREATED_AT);
-        assertThat(testEmployment.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
-        assertThat(testEmployment.getUpdatedAt()).isEqualTo(DEFAULT_UPDATED_AT);
     }
 
     @Test
@@ -199,11 +175,7 @@ class EmploymentResourceIT {
             .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())))
             .andExpect(jsonPath("$.[*].isCurrent").value(hasItem(DEFAULT_IS_CURRENT.booleanValue())))
             .andExpect(jsonPath("$.[*].lastSalary").value(hasItem(DEFAULT_LAST_SALARY)))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
-            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
-            .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())))
-            .andExpect(jsonPath("$.[*].updatedBy").value(hasItem(DEFAULT_UPDATED_BY)))
-            .andExpect(jsonPath("$.[*].updatedAt").value(hasItem(DEFAULT_UPDATED_AT.toString())));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
     }
 
     @Test
@@ -224,11 +196,7 @@ class EmploymentResourceIT {
             .andExpect(jsonPath("$.endDate").value(DEFAULT_END_DATE.toString()))
             .andExpect(jsonPath("$.isCurrent").value(DEFAULT_IS_CURRENT.booleanValue()))
             .andExpect(jsonPath("$.lastSalary").value(DEFAULT_LAST_SALARY))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
-            .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY))
-            .andExpect(jsonPath("$.createdAt").value(DEFAULT_CREATED_AT.toString()))
-            .andExpect(jsonPath("$.updatedBy").value(DEFAULT_UPDATED_BY))
-            .andExpect(jsonPath("$.updatedAt").value(DEFAULT_UPDATED_AT.toString()));
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION));
     }
 
     @Test
@@ -257,11 +225,7 @@ class EmploymentResourceIT {
             .endDate(UPDATED_END_DATE)
             .isCurrent(UPDATED_IS_CURRENT)
             .lastSalary(UPDATED_LAST_SALARY)
-            .description(UPDATED_DESCRIPTION)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .description(UPDATED_DESCRIPTION);
         EmploymentDTO employmentDTO = employmentMapper.toDto(updatedEmployment);
 
         restEmploymentMockMvc
@@ -283,10 +247,6 @@ class EmploymentResourceIT {
         assertThat(testEmployment.getIsCurrent()).isEqualTo(UPDATED_IS_CURRENT);
         assertThat(testEmployment.getLastSalary()).isEqualTo(UPDATED_LAST_SALARY);
         assertThat(testEmployment.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testEmployment.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testEmployment.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testEmployment.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testEmployment.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test
@@ -370,10 +330,7 @@ class EmploymentResourceIT {
             .jobTitle(UPDATED_JOB_TITLE)
             .companyName(UPDATED_COMPANY_NAME)
             .startDate(UPDATED_START_DATE)
-            .lastSalary(UPDATED_LAST_SALARY)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .lastSalary(UPDATED_LAST_SALARY);
 
         restEmploymentMockMvc
             .perform(
@@ -394,10 +351,6 @@ class EmploymentResourceIT {
         assertThat(testEmployment.getIsCurrent()).isEqualTo(DEFAULT_IS_CURRENT);
         assertThat(testEmployment.getLastSalary()).isEqualTo(UPDATED_LAST_SALARY);
         assertThat(testEmployment.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(testEmployment.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testEmployment.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testEmployment.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
-        assertThat(testEmployment.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test
@@ -419,11 +372,7 @@ class EmploymentResourceIT {
             .endDate(UPDATED_END_DATE)
             .isCurrent(UPDATED_IS_CURRENT)
             .lastSalary(UPDATED_LAST_SALARY)
-            .description(UPDATED_DESCRIPTION)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .description(UPDATED_DESCRIPTION);
 
         restEmploymentMockMvc
             .perform(
@@ -444,10 +393,6 @@ class EmploymentResourceIT {
         assertThat(testEmployment.getIsCurrent()).isEqualTo(UPDATED_IS_CURRENT);
         assertThat(testEmployment.getLastSalary()).isEqualTo(UPDATED_LAST_SALARY);
         assertThat(testEmployment.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testEmployment.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testEmployment.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testEmployment.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testEmployment.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test

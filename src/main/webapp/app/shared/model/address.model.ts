@@ -1,5 +1,5 @@
 import { ILocation } from 'app/shared/model/location.model';
-import { ICustomUser } from 'app/shared/model/custom-user.model';
+import { IUser } from 'app/shared/model/user.model';
 
 export interface IAddress {
   id?: number;
@@ -7,7 +7,7 @@ export interface IAddress {
   line2?: string | null;
   tag?: string | null;
   location?: ILocation | null;
-  customUser?: ICustomUser | null;
+  user?: IUser | null;
 }
 
 export const defaultValue: Readonly<IAddress> = {};

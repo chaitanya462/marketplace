@@ -1,24 +1,55 @@
 package com.simplify.marketplace.web.rest;
 
-import com.simplify.marketplace.repository.WorkerRepository;
+import com.simplify.marketplace.domain.*;
+import com.simplify.marketplace.domain.Certificate;
+import com.simplify.marketplace.domain.Employment;
+import com.simplify.marketplace.domain.LocationPrefrence;
+import com.simplify.marketplace.domain.Portfolio;
+import com.simplify.marketplace.domain.SkillsMaster;
+import com.simplify.marketplace.repository.*;
+import com.simplify.marketplace.repository.*;
+import com.simplify.marketplace.repository.LocationPrefrenceRepository;
+import com.simplify.marketplace.repository.LocationPrefrenceRepository;
+import com.simplify.marketplace.repository.PortfolioRepository;
+import com.simplify.marketplace.repository.PortfolioRepository;
+import com.simplify.marketplace.service.CertificateService;
+import com.simplify.marketplace.service.EducationService;
+import com.simplify.marketplace.service.EmploymentService;
+import com.simplify.marketplace.service.JobPreferenceService;
+import com.simplify.marketplace.service.SkillsMasterService;
+import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.WorkerService;
+import com.simplify.marketplace.service.dto.SkillsMasterDTO;
 import com.simplify.marketplace.service.dto.WorkerDTO;
+import com.simplify.marketplace.service.mapper.SkillsMasterMapper;
+import com.simplify.marketplace.service.mapper.UserMapper;
+import com.simplify.marketplace.service.mapper.UserMapper;
+import com.simplify.marketplace.service.mapper.WorkerMapper;
+import com.simplify.marketplace.service.mapper.WorkerMapper;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
+import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
+import java.lang.Exception;
+//>>>>>>> 3b5d60ae34d9a7a0d4901db16867dad23f353ed3
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.json.simple.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
@@ -32,6 +63,32 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class WorkerResource {
 
+    private CategoryRepository categoryRepository;
+    private JobPreferenceRepository jobPreferenceRepository;
+    private EducationRepository educationRepository;
+    private CertificateRepository certificateRepository;
+    private EmploymentRepository employmentRepository;
+    private LocationPrefrenceRepository locationPrefrenceRepository;
+    private PortfolioRepository portfolioRepository;
+    private final WorkerMapper workerMapper;
+    private final UserMapper userMapper;
+    private SkillsMasterService skillsMasterService;
+    private SkillsMasterMapper skillsMasterMapper;
+
+    private UserService userService;
+    private JobPreferenceService jobPreferenceService;
+    private EmploymentService employmentService;
+    private EducationService educationService;
+
+    @Autowired
+    RabbitTemplate rabbit_msg;
+
+    @Autowired
+    WorkerRepository workerRepo;
+
+    @Autowired
+    RestHighLevelClient client;
+
     private final Logger log = LoggerFactory.getLogger(WorkerResource.class);
 
     private static final String ENTITY_NAME = "worker";
@@ -43,9 +100,46 @@ public class WorkerResource {
 
     private final WorkerRepository workerRepository;
 
-    public WorkerResource(WorkerService workerService, WorkerRepository workerRepository) {
+    private final FileRepository fileRepository;
+
+    public WorkerResource(
+        WorkerService workerService,
+        WorkerRepository workerRepository,
+        UserService userService,
+        FileRepository fileRepository,
+        CategoryRepository categoryRepository,
+        JobPreferenceRepository jobPreferenceRepositor,
+        EducationRepository educationRepository,
+        CertificateRepository certificateRepository,
+        EmploymentRepository employmentRepository,
+        WorkerMapper workerMapper,
+        JobPreferenceService jobPreferenceService,
+        EducationService educationService,
+        EmploymentService employmentService,
+        UserMapper userMapper,
+        LocationPrefrenceRepository locationPrefrenceRepository,
+        PortfolioRepository portfolioRepository,
+        SkillsMasterService skillsMasterService,
+        SkillsMasterMapper skillsMasterMapper
+    ) {
         this.workerService = workerService;
         this.workerRepository = workerRepository;
+        this.userService = userService;
+        this.fileRepository = fileRepository;
+        this.categoryRepository = categoryRepository;
+
+        this.educationRepository = educationRepository;
+        this.certificateRepository = certificateRepository;
+        this.employmentRepository = employmentRepository;
+        this.workerMapper = workerMapper;
+        this.jobPreferenceService = jobPreferenceService;
+        this.educationService = educationService;
+        this.employmentService = employmentService;
+        this.userMapper = userMapper;
+        this.locationPrefrenceRepository = locationPrefrenceRepository;
+        this.portfolioRepository = portfolioRepository;
+        this.skillsMasterService = skillsMasterService;
+        this.skillsMasterMapper = skillsMasterMapper;
     }
 
     /**
@@ -61,7 +155,37 @@ public class WorkerResource {
         if (workerDTO.getId() != null) {
             throw new BadRequestAlertException("A new worker cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        workerDTO.setUser(userMapper.userToUserDTO(userService.getUserWithAuthorities().get()));
+        workerDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        workerDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        workerDTO.setUpdatedAt(LocalDate.now());
+        workerDTO.setCreatedAt(LocalDate.now());
         WorkerDTO result = workerService.save(workerDTO);
+
+        ElasticWorker ew = new ElasticWorker();
+        Worker arr = workerRepository.findOneWithEagerRelationships(result.getId()).get();
+        ew.setId(result.getId().toString());
+        ew.setFirstName(arr.getFirstName());
+        ew.setMiddleName(arr.getMiddleName());
+        ew.setLastName(arr.getLastName());
+        ew.setPrimaryPhone(arr.getPrimaryPhone());
+        ew.setDescription(arr.getDescription());
+        ew.setDateOfBirth(arr.getDateOfBirth());
+        ew.setIsActive(arr.getIsActive());
+        ew.setSkills(arr.getSkills());
+        rabbit_msg.convertAndSend("topicExchange1", "routingKey", ew);
+
+        //        IndexRequest request = new IndexRequest("elasticsearchworkerindex");
+        //		request.routing(obj.getCity());
+        //		Map<String,Object> source = new HashMap<>();
+        //		source.put("name", obj.getName());
+        //		source.put("city",obj.getCity());
+        //		request.source(source);
+        //		IndexResponse indexResponse = client.index(request, RequestOptions.DEFAULT);
+        //
+        //
+        //		System.out.println("\n\n\n\n\n\n\n\n\n\n"+indexResponse+"\n\n\n\n\n\n\n\n\n");
+
         return ResponseEntity
             .created(new URI("/api/workers/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -94,7 +218,8 @@ public class WorkerResource {
         if (!workerRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-
+        workerDTO.setUpdatedAt(LocalDate.now());
+        workerDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         WorkerDTO result = workerService.save(workerDTO);
         return ResponseEntity
             .ok()
@@ -125,11 +250,11 @@ public class WorkerResource {
         if (!Objects.equals(id, workerDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
-
         if (!workerRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-
+        workerDTO.setUpdatedAt(LocalDate.now());
+        workerDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         Optional<WorkerDTO> result = workerService.partialUpdate(workerDTO);
 
         return ResponseUtil.wrapOrNotFound(
@@ -174,6 +299,64 @@ public class WorkerResource {
         return ResponseUtil.wrapOrNotFound(workerDTO);
     }
 
+    @GetMapping("/workers/get/{id}")
+    public ResponseEntity<Worker> getWorkerByUserId(@PathVariable Long id) {
+        System.out.println("\n\n\n\n======>");
+        Worker worker = workerRepository.findByUserId(id).get();
+        if (worker != null) {
+            return ResponseEntity
+                .ok()
+                .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, worker.getId().toString()))
+                .body(worker);
+        }
+        return ResponseEntity.status(404).body(null);
+    }
+
+    @Transactional
+    @GetMapping("/workers/profile/{id}")
+    public JSONObject getProfile(@PathVariable Long id) {
+        log.debug("REST request to get Worker : {}", id);
+        JSONObject obj = new JSONObject();
+        Worker worker = workerMapper.toEntity(workerService.findOne(id).get());
+        obj.put("worker", workerService.findOne(id).get());
+        JSONArray job = new JSONArray();
+        JSONArray categArray = new JSONArray();
+        JSONArray locationprefs = new JSONArray();
+        if (jobPreferenceService.findOneWorker(id) != null) {
+            for (JobPreference temp : jobPreferenceService.findOneWorker(id)) {
+                if (locationPrefrenceRepository.findByJobPreferenceId(temp.getId()) != null) {
+                    for (LocationPrefrence x : locationPrefrenceRepository.findByJobPreferenceId(temp.getId())) {
+                        locationprefs.add(x);
+                    }
+                    locationprefs.add(locationPrefrenceRepository.findByJobPreferenceId(temp.getId()));
+                }
+                job.add(temp);
+                categArray.add(temp.getSubCategory());
+            }
+        }
+        obj.put("jobPreference", job);
+        obj.put("category", categArray);
+        obj.put("locationpreference", locationprefs);
+        JSONArray portArray = new JSONArray();
+        if (portfolioRepository.findByWorkerId(id) != null) {
+            for (Portfolio temp : portfolioRepository.findByWorkerId(id)) {
+                portArray.add(temp);
+            }
+        }
+        obj.put("portfolio", portArray);
+        JSONArray educaArray = new JSONArray();
+        if (educationService.findOneWorker(id) != null) {
+            for (Education temp : educationService.findOneWorker(id)) educaArray.add(temp);
+        }
+        obj.put("Education", educaArray);
+        JSONArray EmpArray = new JSONArray();
+        if (employmentService.findOneWorker(id) != null) {
+            for (Employment temp : employmentService.findOneWorker(id)) EmpArray.add(temp);
+        }
+        obj.put("Employment", EmpArray);
+        return obj;
+    }
+
     /**
      * {@code DELETE  /workers/:id} : delete the "id" worker.
      *
@@ -188,5 +371,40 @@ public class WorkerResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @PatchMapping(value = "/worker/skills/{id}", consumes = "application/merge-patch+json")
+    public ResponseEntity<WorkerDTO> UpdateWorkerSkill(
+        @PathVariable(value = "id", required = false) final Long id,
+        @NotNull @RequestBody SkillsMaster skillsMaster
+    ) throws URISyntaxException {
+        if (!workerRepository.existsById(id)) {
+            throw new BadRequestAlertException("Entity not found", "worker", "idnotfound");
+        }
+        if (skillsMaster.getId() == null) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+        Worker worker = workerMapper.toEntity(workerService.findOne(id).get());
+        worker = worker.addSkill(skillsMaster);
+        Set<SkillsMasterDTO> temp = new HashSet<>();
+        for (SkillsMaster skill : worker.getSkills()) {
+            temp.add(skillsMasterMapper.toDto(skill));
+        }
+        System.out.println("\n\n\n1---\n" + temp);
+        System.out.print("\n\n\n" + worker + "\n\n\n");
+        System.out.print("-----------------------------\n");
+        System.out.print("\n\n\n" + skillsMaster + "\n\n\n");
+        WorkerDTO workerDTO = workerMapper.toDtoId(worker);
+        workerDTO.setSkills(temp);
+        System.out.print("\n\n\n" + workerDTO + "\n\n\n");
+        workerDTO.setUpdatedAt(LocalDate.now());
+        workerDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // skillsMasterService.save(skillsMasterMapper.toDto(skillsMaster));
+        Optional<WorkerDTO> result = workerService.partialUpdate(workerDTO);
+
+        return ResponseUtil.wrapOrNotFound(
+            result,
+            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, workerDTO.getId().toString())
+        );
     }
 }

@@ -1,14 +1,21 @@
 package com.simplify.marketplace.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.simplify.marketplace.domain.enumeration.FieldType;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
 
 /**
  * A Field.
@@ -16,6 +23,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "field")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Data
 public class Field implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -40,12 +48,26 @@ public class Field implements Serializable {
     @Column(name = "created_by")
     private String createdBy;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @org.springframework.data.elasticsearch.annotations.Field(
+        type = org.springframework.data.elasticsearch.annotations.FieldType.Date,
+        format = DateFormat.date
+    )
     @Column(name = "created_at")
     private LocalDate createdAt;
 
     @Column(name = "updated_by")
     private String updatedBy;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @org.springframework.data.elasticsearch.annotations.Field(
+        type = org.springframework.data.elasticsearch.annotations.FieldType.Date,
+        format = DateFormat.date
+    )
     @Column(name = "updated_at")
     private LocalDate updatedAt;
 
@@ -58,22 +80,9 @@ public class Field implements Serializable {
     @JsonIgnoreProperties(value = { "categories", "fields", "parent" }, allowSetters = true)
     private Category category;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Field id(Long id) {
         this.id = id;
         return this;
-    }
-
-    public String getFieldName() {
-        return this.fieldName;
     }
 
     public Field fieldName(String fieldName) {
@@ -81,25 +90,9 @@ public class Field implements Serializable {
         return this;
     }
 
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
-    }
-
-    public String getFieldLabel() {
-        return this.fieldLabel;
-    }
-
     public Field fieldLabel(String fieldLabel) {
         this.fieldLabel = fieldLabel;
         return this;
-    }
-
-    public void setFieldLabel(String fieldLabel) {
-        this.fieldLabel = fieldLabel;
-    }
-
-    public FieldType getFieldType() {
-        return this.fieldType;
     }
 
     public Field fieldType(FieldType fieldType) {
@@ -107,77 +100,9 @@ public class Field implements Serializable {
         return this;
     }
 
-    public void setFieldType(FieldType fieldType) {
-        this.fieldType = fieldType;
-    }
-
-    public Boolean getIsActive() {
-        return this.isActive;
-    }
-
     public Field isActive(Boolean isActive) {
         this.isActive = isActive;
         return this;
-    }
-
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
-    }
-
-    public String getCreatedBy() {
-        return this.createdBy;
-    }
-
-    public Field createdBy(String createdBy) {
-        this.createdBy = createdBy;
-        return this;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public LocalDate getCreatedAt() {
-        return this.createdAt;
-    }
-
-    public Field createdAt(LocalDate createdAt) {
-        this.createdAt = createdAt;
-        return this;
-    }
-
-    public void setCreatedAt(LocalDate createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public String getUpdatedBy() {
-        return this.updatedBy;
-    }
-
-    public Field updatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-        return this;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
-    public LocalDate getUpdatedAt() {
-        return this.updatedAt;
-    }
-
-    public Field updatedAt(LocalDate updatedAt) {
-        this.updatedAt = updatedAt;
-        return this;
-    }
-
-    public void setUpdatedAt(LocalDate updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public Set<FieldValue> getFieldValues() {
-        return this.fieldValues;
     }
 
     public Field fieldValues(Set<FieldValue> fieldValues) {
@@ -197,61 +122,28 @@ public class Field implements Serializable {
         return this;
     }
 
-    public void setFieldValues(Set<FieldValue> fieldValues) {
-        if (this.fieldValues != null) {
-            this.fieldValues.forEach(i -> i.setField(null));
-        }
-        if (fieldValues != null) {
-            fieldValues.forEach(i -> i.setField(this));
-        }
-        this.fieldValues = fieldValues;
-    }
-
-    public Category getCategory() {
-        return this.category;
-    }
-
     public Field category(Category category) {
         this.setCategory(category);
         return this;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public Field createdBy(String createdBy) {
+        this.createdBy = createdBy;
+        return this;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Field)) {
-            return false;
-        }
-        return id != null && id.equals(((Field) o).id);
+    public Field createdAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+        return this;
     }
 
-    @Override
-    public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
-        return getClass().hashCode();
+    public Field updatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+        return this;
     }
 
-    // prettier-ignore
-    @Override
-    public String toString() {
-        return "Field{" +
-            "id=" + getId() +
-            ", fieldName='" + getFieldName() + "'" +
-            ", fieldLabel='" + getFieldLabel() + "'" +
-            ", fieldType='" + getFieldType() + "'" +
-            ", isActive='" + getIsActive() + "'" +
-            ", createdBy='" + getCreatedBy() + "'" +
-            ", createdAt='" + getCreatedAt() + "'" +
-            ", updatedBy='" + getUpdatedBy() + "'" +
-            ", updatedAt='" + getUpdatedAt() + "'" +
-            "}";
+    public Field updatedAt(LocalDate updatedAt) {
+        this.updatedAt = updatedAt;
+        return this;
     }
 }

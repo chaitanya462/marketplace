@@ -25,10 +25,6 @@
       "isDefault": "Is Default",
       "isResume": "Is Resume",
       "isProfilePic": "Is Profile Pic",
-      "createdBy": "Created By",
-      "createdAt": "Created At",
-      "updatedBy": "Updated By",
-      "updatedAt": "Updated At",
       "worker": "Worker"
     }
   }

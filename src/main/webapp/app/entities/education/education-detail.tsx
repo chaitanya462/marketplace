@@ -100,34 +100,6 @@ export const EducationDetail = (props: RouteComponentProps<{ id: string }>) => {
           </dt>
           <dd>{educationEntity.description}</dd>
           <dt>
-            <span id="createdBy">
-              <Translate contentKey="simplifyMarketplaceApp.education.createdBy">Created By</Translate>
-            </span>
-          </dt>
-          <dd>{educationEntity.createdBy}</dd>
-          <dt>
-            <span id="createdAt">
-              <Translate contentKey="simplifyMarketplaceApp.education.createdAt">Created At</Translate>
-            </span>
-          </dt>
-          <dd>
-            {educationEntity.createdAt ? <TextFormat value={educationEntity.createdAt} type="date" format={APP_LOCAL_DATE_FORMAT} /> : null}
-          </dd>
-          <dt>
-            <span id="updatedBy">
-              <Translate contentKey="simplifyMarketplaceApp.education.updatedBy">Updated By</Translate>
-            </span>
-          </dt>
-          <dd>{educationEntity.updatedBy}</dd>
-          <dt>
-            <span id="updatedAt">
-              <Translate contentKey="simplifyMarketplaceApp.education.updatedAt">Updated At</Translate>
-            </span>
-          </dt>
-          <dd>
-            {educationEntity.updatedAt ? <TextFormat value={educationEntity.updatedAt} type="date" format={APP_LOCAL_DATE_FORMAT} /> : null}
-          </dd>
-          <dt>
             <Translate contentKey="simplifyMarketplaceApp.education.majorSubject">Major Subject</Translate>
           </dt>
           <dd>{educationEntity.majorSubject ? educationEntity.majorSubject.id : ''}</dd>

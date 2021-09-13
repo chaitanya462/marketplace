@@ -1,16 +1,23 @@
 package com.simplify.marketplace.web.rest;
 
+import com.simplify.marketplace.domain.*;
 import com.simplify.marketplace.repository.CertificateRepository;
+import com.simplify.marketplace.repository.ESearchWorkerRepository;
 import com.simplify.marketplace.service.CertificateService;
+import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.dto.CertificateDTO;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +37,17 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class CertificateResource {
 
+    private UserService userService;
+
+    @Autowired
+    ESearchWorkerRepository wrep;
+
+    @Autowired
+    RabbitTemplate rabbit_msg;
+
+    @Autowired
+    CertificateRepository crep;
+
     private final Logger log = LoggerFactory.getLogger(CertificateResource.class);
 
     private static final String ENTITY_NAME = "certificate";
@@ -41,9 +59,14 @@ public class CertificateResource {
 
     private final CertificateRepository certificateRepository;
 
-    public CertificateResource(CertificateService certificateService, CertificateRepository certificateRepository) {
+    public CertificateResource(
+        CertificateService certificateService,
+        CertificateRepository certificateRepository,
+        UserService userService
+    ) {
         this.certificateService = certificateService;
         this.certificateRepository = certificateRepository;
+        this.userService = userService;
     }
 
     /**
@@ -59,7 +82,20 @@ public class CertificateResource {
         if (certificateDTO.getId() != null) {
             throw new BadRequestAlertException("A new certificate cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        certificateDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        certificateDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        certificateDTO.setCreatedAt(LocalDate.now());
         CertificateDTO result = certificateService.save(certificateDTO);
+
+        Certificate certificate = certificateRepository.findById(result.getId()).get();
+        if (certificate.getWorker() != null) {
+            Long workerid = certificate.getWorker().getId();
+            ElasticWorker elasticworker = wrep.findById(workerid.toString()).get();
+            elasticworker.addCertificate(certificate);
+
+            rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+        }
+
         return ResponseEntity
             .created(new URI("/api/certificates/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -93,7 +129,30 @@ public class CertificateResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
+        certificateDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        certificateDTO.setUpdatedAt(LocalDate.now());
+
+        Certificate prevCertificate = certificateRepository.findById(certificateDTO.getId()).get();
+
         CertificateDTO result = certificateService.save(certificateDTO);
+        Certificate updatedCertificate = certificateRepository.findById(result.getId()).get();
+
+        if (
+            prevCertificate.getWorker() != null &&
+            !Objects.equals(updatedCertificate.getWorker().getId(), prevCertificate.getWorker().getId())
+        ) {
+            ElasticWorker prevElasticWorker = wrep.findById(prevCertificate.getWorker().getId().toString()).get();
+            prevCertificate.setWorker(null);
+            prevElasticWorker = prevElasticWorker.removeCertificate(prevCertificate);
+            rabbit_msg.convertAndSend("topicExchange1", "routingKey", prevElasticWorker);
+        }
+
+        prevCertificate.setWorker(null);
+
+        ElasticWorker elasticworker = wrep.findById(updatedCertificate.getWorker().getId().toString()).get();
+        elasticworker.removeCertificate(prevCertificate);
+        elasticworker.addCertificate(updatedCertificate);
+        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, certificateDTO.getId().toString()))
@@ -127,6 +186,8 @@ public class CertificateResource {
         if (!certificateRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        certificateDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        certificateDTO.setUpdatedAt(LocalDate.now());
 
         Optional<CertificateDTO> result = certificateService.partialUpdate(certificateDTO);
 
@@ -163,6 +224,13 @@ public class CertificateResource {
         return ResponseUtil.wrapOrNotFound(certificateDTO);
     }
 
+    @GetMapping("/certificates/worker/{workerid}")
+    public List<Certificate> getworkerCertificate(@PathVariable Long workerid) {
+        log.debug("REST request to get Certificate : {}", workerid);
+        List<Certificate> certificate = certificateService.findOneWorker(workerid);
+        return certificate;
+    }
+
     /**
      * {@code DELETE  /certificates/:id} : delete the "id" certificate.
      *
@@ -172,7 +240,17 @@ public class CertificateResource {
     @DeleteMapping("/certificates/{id}")
     public ResponseEntity<Void> deleteCertificate(@PathVariable Long id) {
         log.debug("REST request to delete Certificate : {}", id);
+        Certificate certificate = crep.findById(id).get();
         certificateService.delete(id);
+
+        Long e_id = certificate.getWorker().getId();
+        ElasticWorker e = wrep.findById(e_id.toString()).get();
+
+        certificate.setWorker(null);
+        e.removeCertificate(certificate);
+
+        rabbit_msg.convertAndSend("topicExchange1", "routingKey", e);
+
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

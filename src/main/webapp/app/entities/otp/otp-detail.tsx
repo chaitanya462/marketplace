@@ -48,6 +48,12 @@ export const OtpDetail = (props: RouteComponentProps<{ id: string }>) => {
           </dt>
           <dd>{otpEntity.email}</dd>
           <dt>
+            <span id="isActive">
+              <Translate contentKey="simplifyMarketplaceApp.otp.isActive">Is Active</Translate>
+            </span>
+          </dt>
+          <dd>{otpEntity.isActive ? 'true' : 'false'}</dd>
+          <dt>
             <span id="phone">
               <Translate contentKey="simplifyMarketplaceApp.otp.phone">Phone</Translate>
             </span>
@@ -71,30 +77,6 @@ export const OtpDetail = (props: RouteComponentProps<{ id: string }>) => {
             </span>
           </dt>
           <dd>{otpEntity.status}</dd>
-          <dt>
-            <span id="createdBy">
-              <Translate contentKey="simplifyMarketplaceApp.otp.createdBy">Created By</Translate>
-            </span>
-          </dt>
-          <dd>{otpEntity.createdBy}</dd>
-          <dt>
-            <span id="createdAt">
-              <Translate contentKey="simplifyMarketplaceApp.otp.createdAt">Created At</Translate>
-            </span>
-          </dt>
-          <dd>{otpEntity.createdAt ? <TextFormat value={otpEntity.createdAt} type="date" format={APP_LOCAL_DATE_FORMAT} /> : null}</dd>
-          <dt>
-            <span id="updatedBy">
-              <Translate contentKey="simplifyMarketplaceApp.otp.updatedBy">Updated By</Translate>
-            </span>
-          </dt>
-          <dd>{otpEntity.updatedBy}</dd>
-          <dt>
-            <span id="updatedAt">
-              <Translate contentKey="simplifyMarketplaceApp.otp.updatedAt">Updated At</Translate>
-            </span>
-          </dt>
-          <dd>{otpEntity.updatedAt ? <TextFormat value={otpEntity.updatedAt} type="date" format={APP_LOCAL_DATE_FORMAT} /> : null}</dd>
         </dl>
         <Button tag={Link} to="/otp" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

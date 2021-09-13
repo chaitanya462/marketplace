@@ -97,6 +97,14 @@ export const OtpAttemptUpdate = (props: RouteComponentProps<{ id: string }>) => 
                 type="text"
               />
               <ValidatedField
+                label={translate('simplifyMarketplaceApp.otpAttempt.isActive')}
+                id="otp-attempt-isActive"
+                name="isActive"
+                data-cy="isActive"
+                check
+                type="checkbox"
+              />
+              <ValidatedField
                 label={translate('simplifyMarketplaceApp.otpAttempt.status')}
                 id="otp-attempt-status"
                 name="status"
@@ -121,20 +129,6 @@ export const OtpAttemptUpdate = (props: RouteComponentProps<{ id: string }>) => 
                 name="coookie"
                 data-cy="coookie"
                 type="text"
-              />
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.otpAttempt.createdBy')}
-                id="otp-attempt-createdBy"
-                name="createdBy"
-                data-cy="createdBy"
-                type="text"
-              />
-              <ValidatedField
-                label={translate('simplifyMarketplaceApp.otpAttempt.createdAt')}
-                id="otp-attempt-createdAt"
-                name="createdAt"
-                data-cy="createdAt"
-                type="date"
               />
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/otp-attempt" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />

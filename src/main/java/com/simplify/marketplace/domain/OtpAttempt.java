@@ -1,11 +1,19 @@
 package com.simplify.marketplace.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.simplify.marketplace.domain.enumeration.OtpStatus;
 import java.io.Serializable;
 import java.time.LocalDate;
 import javax.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  * A OtpAttempt.
@@ -13,6 +21,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "otp_attempt")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Data
 public class OtpAttempt implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -27,6 +36,9 @@ public class OtpAttempt implements Serializable {
     @Column(name = "otp")
     private Integer otp;
 
+    @Column(name = "is_active")
+    private Boolean isActive;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private OtpStatus status;
@@ -40,25 +52,16 @@ public class OtpAttempt implements Serializable {
     @Column(name = "created_by")
     private String createdBy;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
     @Column(name = "created_at")
     private LocalDate createdAt;
-
-    // jhipster-needle-entity-add-field - JHipster will add fields here
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public OtpAttempt id(Long id) {
         this.id = id;
         return this;
-    }
-
-    public String getContextId() {
-        return this.contextId;
     }
 
     public OtpAttempt contextId(String contextId) {
@@ -66,25 +69,14 @@ public class OtpAttempt implements Serializable {
         return this;
     }
 
-    public void setContextId(String contextId) {
-        this.contextId = contextId;
-    }
-
-    public Integer getOtp() {
-        return this.otp;
-    }
-
     public OtpAttempt otp(Integer otp) {
         this.otp = otp;
         return this;
     }
 
-    public void setOtp(Integer otp) {
-        this.otp = otp;
-    }
-
-    public OtpStatus getStatus() {
-        return this.status;
+    public OtpAttempt isActive(Boolean isActive) {
+        this.isActive = isActive;
+        return this;
     }
 
     public OtpAttempt status(OtpStatus status) {
@@ -92,25 +84,9 @@ public class OtpAttempt implements Serializable {
         return this;
     }
 
-    public void setStatus(OtpStatus status) {
-        this.status = status;
-    }
-
-    public String getIp() {
-        return this.ip;
-    }
-
     public OtpAttempt ip(String ip) {
         this.ip = ip;
         return this;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public String getCoookie() {
-        return this.coookie;
     }
 
     public OtpAttempt coookie(String coookie) {
@@ -118,67 +94,13 @@ public class OtpAttempt implements Serializable {
         return this;
     }
 
-    public void setCoookie(String coookie) {
-        this.coookie = coookie;
-    }
-
-    public String getCreatedBy() {
-        return this.createdBy;
-    }
-
     public OtpAttempt createdBy(String createdBy) {
         this.createdBy = createdBy;
         return this;
     }
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public LocalDate getCreatedAt() {
-        return this.createdAt;
-    }
-
     public OtpAttempt createdAt(LocalDate createdAt) {
         this.createdAt = createdAt;
         return this;
-    }
-
-    public void setCreatedAt(LocalDate createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof OtpAttempt)) {
-            return false;
-        }
-        return id != null && id.equals(((OtpAttempt) o).id);
-    }
-
-    @Override
-    public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
-        return getClass().hashCode();
-    }
-
-    // prettier-ignore
-    @Override
-    public String toString() {
-        return "OtpAttempt{" +
-            "id=" + getId() +
-            ", contextId='" + getContextId() + "'" +
-            ", otp=" + getOtp() +
-            ", status='" + getStatus() + "'" +
-            ", ip='" + getIp() + "'" +
-            ", coookie='" + getCoookie() + "'" +
-            ", createdBy='" + getCreatedBy() + "'" +
-            ", createdAt='" + getCreatedAt() + "'" +
-            "}";
     }
 }

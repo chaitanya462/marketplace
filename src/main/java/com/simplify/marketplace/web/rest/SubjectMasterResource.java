@@ -2,10 +2,12 @@ package com.simplify.marketplace.web.rest;
 
 import com.simplify.marketplace.repository.SubjectMasterRepository;
 import com.simplify.marketplace.service.SubjectMasterService;
+import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.dto.SubjectMasterDTO;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,6 +32,8 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class SubjectMasterResource {
 
+    private UserService userService;
+
     private final Logger log = LoggerFactory.getLogger(SubjectMasterResource.class);
 
     private static final String ENTITY_NAME = "subjectMaster";
@@ -41,9 +45,14 @@ public class SubjectMasterResource {
 
     private final SubjectMasterRepository subjectMasterRepository;
 
-    public SubjectMasterResource(SubjectMasterService subjectMasterService, SubjectMasterRepository subjectMasterRepository) {
+    public SubjectMasterResource(
+        SubjectMasterService subjectMasterService,
+        SubjectMasterRepository subjectMasterRepository,
+        UserService userService
+    ) {
         this.subjectMasterService = subjectMasterService;
         this.subjectMasterRepository = subjectMasterRepository;
+        this.userService = userService;
     }
 
     /**
@@ -59,6 +68,10 @@ public class SubjectMasterResource {
         if (subjectMasterDTO.getId() != null) {
             throw new BadRequestAlertException("A new subjectMaster cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        subjectMasterDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        subjectMasterDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        subjectMasterDTO.setUpdatedAt(LocalDate.now());
+        subjectMasterDTO.setCreatedAt(LocalDate.now());
         SubjectMasterDTO result = subjectMasterService.save(subjectMasterDTO);
         return ResponseEntity
             .created(new URI("/api/subject-masters/" + result.getId()))
@@ -92,7 +105,8 @@ public class SubjectMasterResource {
         if (!subjectMasterRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-
+        subjectMasterDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        subjectMasterDTO.setUpdatedAt(LocalDate.now());
         SubjectMasterDTO result = subjectMasterService.save(subjectMasterDTO);
         return ResponseEntity
             .ok()
@@ -127,6 +141,8 @@ public class SubjectMasterResource {
         if (!subjectMasterRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        subjectMasterDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        subjectMasterDTO.setUpdatedAt(LocalDate.now());
 
         Optional<SubjectMasterDTO> result = subjectMasterService.partialUpdate(subjectMasterDTO);
 

@@ -1,6 +1,11 @@
 package com.simplify.marketplace.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.simplify.marketplace.domain.enumeration.EmploymentType;
 import com.simplify.marketplace.domain.enumeration.EngagementType;
 import com.simplify.marketplace.domain.enumeration.LocationType;
@@ -9,8 +14,11 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  * A JobPreference.
@@ -18,7 +26,16 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "job_preference")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Data
 public class JobPreference implements Serializable {
+
+    //    public Category getSubCategory() {
+    //		return subCategory;
+    //	}
+    //
+    //	public void setSubCategory(Category subCategory) {
+    //		this.subCategory = subCategory;
+    //	}
 
     private static final long serialVersionUID = 1L;
 
@@ -53,9 +70,17 @@ public class JobPreference implements Serializable {
     @Column(name = "location_type")
     private LocationType locationType;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
     @Column(name = "available_from")
     private LocalDate availableFrom;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
     @Column(name = "available_to")
     private LocalDate availableTo;
 
@@ -65,12 +90,20 @@ public class JobPreference implements Serializable {
     @Column(name = "created_by")
     private String createdBy;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
     @Column(name = "created_at")
     private LocalDate createdAt;
 
     @Column(name = "updated_by")
     private String updatedBy;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
     @Column(name = "updated_at")
     private LocalDate updatedAt;
 
@@ -90,29 +123,14 @@ public class JobPreference implements Serializable {
 
     @ManyToOne
     @JsonIgnoreProperties(
-        value = {
-            "customUser", "files", "educations", "certificates", "employments", "portfolios", "refereces", "jobPreferences", "skills",
-        },
+        value = { "user", "files", "educations", "certificates", "employments", "portfolios", "refereces", "jobPreferences", "skills" },
         allowSetters = true
     )
     private Worker worker;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public JobPreference id(Long id) {
         this.id = id;
         return this;
-    }
-
-    public Integer getHourlyRate() {
-        return this.hourlyRate;
     }
 
     public JobPreference hourlyRate(Integer hourlyRate) {
@@ -120,25 +138,9 @@ public class JobPreference implements Serializable {
         return this;
     }
 
-    public void setHourlyRate(Integer hourlyRate) {
-        this.hourlyRate = hourlyRate;
-    }
-
-    public Integer getDailyRate() {
-        return this.dailyRate;
-    }
-
     public JobPreference dailyRate(Integer dailyRate) {
         this.dailyRate = dailyRate;
         return this;
-    }
-
-    public void setDailyRate(Integer dailyRate) {
-        this.dailyRate = dailyRate;
-    }
-
-    public Integer getMonthlyRate() {
-        return this.monthlyRate;
     }
 
     public JobPreference monthlyRate(Integer monthlyRate) {
@@ -146,25 +148,9 @@ public class JobPreference implements Serializable {
         return this;
     }
 
-    public void setMonthlyRate(Integer monthlyRate) {
-        this.monthlyRate = monthlyRate;
-    }
-
-    public Integer getHourPerDay() {
-        return this.hourPerDay;
-    }
-
     public JobPreference hourPerDay(Integer hourPerDay) {
         this.hourPerDay = hourPerDay;
         return this;
-    }
-
-    public void setHourPerDay(Integer hourPerDay) {
-        this.hourPerDay = hourPerDay;
-    }
-
-    public Integer getHourPerWeek() {
-        return this.hourPerWeek;
     }
 
     public JobPreference hourPerWeek(Integer hourPerWeek) {
@@ -172,25 +158,9 @@ public class JobPreference implements Serializable {
         return this;
     }
 
-    public void setHourPerWeek(Integer hourPerWeek) {
-        this.hourPerWeek = hourPerWeek;
-    }
-
-    public EngagementType getEngagementType() {
-        return this.engagementType;
-    }
-
     public JobPreference engagementType(EngagementType engagementType) {
         this.engagementType = engagementType;
         return this;
-    }
-
-    public void setEngagementType(EngagementType engagementType) {
-        this.engagementType = engagementType;
-    }
-
-    public EmploymentType getEmploymentType() {
-        return this.employmentType;
     }
 
     public JobPreference employmentType(EmploymentType employmentType) {
@@ -198,25 +168,9 @@ public class JobPreference implements Serializable {
         return this;
     }
 
-    public void setEmploymentType(EmploymentType employmentType) {
-        this.employmentType = employmentType;
-    }
-
-    public LocationType getLocationType() {
-        return this.locationType;
-    }
-
     public JobPreference locationType(LocationType locationType) {
         this.locationType = locationType;
         return this;
-    }
-
-    public void setLocationType(LocationType locationType) {
-        this.locationType = locationType;
-    }
-
-    public LocalDate getAvailableFrom() {
-        return this.availableFrom;
     }
 
     public JobPreference availableFrom(LocalDate availableFrom) {
@@ -224,90 +178,14 @@ public class JobPreference implements Serializable {
         return this;
     }
 
-    public void setAvailableFrom(LocalDate availableFrom) {
-        this.availableFrom = availableFrom;
-    }
-
-    public LocalDate getAvailableTo() {
-        return this.availableTo;
-    }
-
     public JobPreference availableTo(LocalDate availableTo) {
         this.availableTo = availableTo;
         return this;
     }
 
-    public void setAvailableTo(LocalDate availableTo) {
-        this.availableTo = availableTo;
-    }
-
-    public Boolean getIsActive() {
-        return this.isActive;
-    }
-
     public JobPreference isActive(Boolean isActive) {
         this.isActive = isActive;
         return this;
-    }
-
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
-    }
-
-    public String getCreatedBy() {
-        return this.createdBy;
-    }
-
-    public JobPreference createdBy(String createdBy) {
-        this.createdBy = createdBy;
-        return this;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public LocalDate getCreatedAt() {
-        return this.createdAt;
-    }
-
-    public JobPreference createdAt(LocalDate createdAt) {
-        this.createdAt = createdAt;
-        return this;
-    }
-
-    public void setCreatedAt(LocalDate createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public String getUpdatedBy() {
-        return this.updatedBy;
-    }
-
-    public JobPreference updatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-        return this;
-    }
-
-    public void setUpdatedBy(String updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
-    public LocalDate getUpdatedAt() {
-        return this.updatedAt;
-    }
-
-    public JobPreference updatedAt(LocalDate updatedAt) {
-        this.updatedAt = updatedAt;
-        return this;
-    }
-
-    public void setUpdatedAt(LocalDate updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public Set<LocationPrefrence> getLocationPrefrences() {
-        return this.locationPrefrences;
     }
 
     public JobPreference locationPrefrences(Set<LocationPrefrence> locationPrefrences) {
@@ -327,20 +205,6 @@ public class JobPreference implements Serializable {
         return this;
     }
 
-    public void setLocationPrefrences(Set<LocationPrefrence> locationPrefrences) {
-        if (this.locationPrefrences != null) {
-            this.locationPrefrences.forEach(i -> i.setWorker(null));
-        }
-        if (locationPrefrences != null) {
-            locationPrefrences.forEach(i -> i.setWorker(this));
-        }
-        this.locationPrefrences = locationPrefrences;
-    }
-
-    public Set<FieldValue> getFieldValues() {
-        return this.fieldValues;
-    }
-
     public JobPreference fieldValues(Set<FieldValue> fieldValues) {
         this.setFieldValues(fieldValues);
         return this;
@@ -358,31 +222,9 @@ public class JobPreference implements Serializable {
         return this;
     }
 
-    public void setFieldValues(Set<FieldValue> fieldValues) {
-        if (this.fieldValues != null) {
-            this.fieldValues.forEach(i -> i.setJobpreference(null));
-        }
-        if (fieldValues != null) {
-            fieldValues.forEach(i -> i.setJobpreference(this));
-        }
-        this.fieldValues = fieldValues;
-    }
-
-    public Category getSubCategory() {
-        return this.subCategory;
-    }
-
     public JobPreference subCategory(Category category) {
         this.setSubCategory(category);
         return this;
-    }
-
-    public void setSubCategory(Category category) {
-        this.subCategory = category;
-    }
-
-    public Worker getWorker() {
-        return this.worker;
     }
 
     public JobPreference worker(Worker worker) {
@@ -390,49 +232,93 @@ public class JobPreference implements Serializable {
         return this;
     }
 
-    public void setWorker(Worker worker) {
-        this.worker = worker;
+    public JobPreference createdBy(String createdBy) {
+        this.createdBy = createdBy;
+        return this;
     }
 
-    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+    public JobPreference createdAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+        return this;
+    }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof JobPreference)) {
-            return false;
-        }
-        return id != null && id.equals(((JobPreference) o).id);
+    public JobPreference updatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+        return this;
+    }
+
+    public JobPreference updatedAt(LocalDate updatedAt) {
+        this.updatedAt = updatedAt;
+        return this;
     }
 
     @Override
     public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
-        return getClass().hashCode();
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((availableFrom == null) ? 0 : availableFrom.hashCode());
+        result = prime * result + ((availableTo == null) ? 0 : availableTo.hashCode());
+        result = prime * result + ((createdAt == null) ? 0 : createdAt.hashCode());
+        result = prime * result + ((createdBy == null) ? 0 : createdBy.hashCode());
+        result = prime * result + ((dailyRate == null) ? 0 : dailyRate.hashCode());
+        result = prime * result + ((employmentType == null) ? 0 : employmentType.hashCode());
+        result = prime * result + ((engagementType == null) ? 0 : engagementType.hashCode());
+        result = prime * result + ((fieldValues == null) ? 0 : fieldValues.hashCode());
+        result = prime * result + ((hourPerDay == null) ? 0 : hourPerDay.hashCode());
+        result = prime * result + ((hourPerWeek == null) ? 0 : hourPerWeek.hashCode());
+        result = prime * result + ((hourlyRate == null) ? 0 : hourlyRate.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((isActive == null) ? 0 : isActive.hashCode());
+        result = prime * result + ((locationType == null) ? 0 : locationType.hashCode());
+        result = prime * result + ((monthlyRate == null) ? 0 : monthlyRate.hashCode());
+        result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
+        result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
+        result = prime * result + ((worker == null) ? 0 : worker.hashCode());
+        return result;
     }
 
-    // prettier-ignore
     @Override
     public String toString() {
-        return "JobPreference{" +
-            "id=" + getId() +
-            ", hourlyRate=" + getHourlyRate() +
-            ", dailyRate=" + getDailyRate() +
-            ", monthlyRate=" + getMonthlyRate() +
-            ", hourPerDay=" + getHourPerDay() +
-            ", hourPerWeek=" + getHourPerWeek() +
-            ", engagementType='" + getEngagementType() + "'" +
-            ", employmentType='" + getEmploymentType() + "'" +
-            ", locationType='" + getLocationType() + "'" +
-            ", availableFrom='" + getAvailableFrom() + "'" +
-            ", availableTo='" + getAvailableTo() + "'" +
-            ", isActive='" + getIsActive() + "'" +
-            ", createdBy='" + getCreatedBy() + "'" +
-            ", createdAt='" + getCreatedAt() + "'" +
-            ", updatedBy='" + getUpdatedBy() + "'" +
-            ", updatedAt='" + getUpdatedAt() + "'" +
-            "}";
+        return (
+            "JobPreference [id=" +
+            id +
+            ", hourlyRate=" +
+            hourlyRate +
+            ", dailyRate=" +
+            dailyRate +
+            ", monthlyRate=" +
+            monthlyRate +
+            ", hourPerDay=" +
+            hourPerDay +
+            ", hourPerWeek=" +
+            hourPerWeek +
+            ", engagementType=" +
+            engagementType +
+            ", employmentType=" +
+            employmentType +
+            ", locationType=" +
+            locationType +
+            ", availableFrom=" +
+            availableFrom +
+            ", availableTo=" +
+            availableTo +
+            ", isActive=" +
+            isActive +
+            ", createdBy=" +
+            createdBy +
+            ", createdAt=" +
+            createdAt +
+            ", updatedBy=" +
+            updatedBy +
+            ", updatedAt=" +
+            updatedAt +
+            ", fieldValues=" +
+            fieldValues +
+            ", subCategory=" +
+            subCategory +
+            ", worker=" +
+            worker +
+            "]"
+        );
     }
 }

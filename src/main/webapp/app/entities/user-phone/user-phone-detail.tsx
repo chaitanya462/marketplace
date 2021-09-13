@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Button, Row, Col } from 'reactstrap';
-import { Translate, TextFormat } from 'react-jhipster';
+import { Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { getEntity } from './user-phone.reducer';
@@ -54,37 +54,9 @@ export const UserPhoneDetail = (props: RouteComponentProps<{ id: string }>) => {
           </dt>
           <dd>{userPhoneEntity.tag}</dd>
           <dt>
-            <span id="createdBy">
-              <Translate contentKey="simplifyMarketplaceApp.userPhone.createdBy">Created By</Translate>
-            </span>
+            <Translate contentKey="simplifyMarketplaceApp.userPhone.user">User</Translate>
           </dt>
-          <dd>{userPhoneEntity.createdBy}</dd>
-          <dt>
-            <span id="createdAt">
-              <Translate contentKey="simplifyMarketplaceApp.userPhone.createdAt">Created At</Translate>
-            </span>
-          </dt>
-          <dd>
-            {userPhoneEntity.createdAt ? <TextFormat value={userPhoneEntity.createdAt} type="date" format={APP_LOCAL_DATE_FORMAT} /> : null}
-          </dd>
-          <dt>
-            <span id="updatedBy">
-              <Translate contentKey="simplifyMarketplaceApp.userPhone.updatedBy">Updated By</Translate>
-            </span>
-          </dt>
-          <dd>{userPhoneEntity.updatedBy}</dd>
-          <dt>
-            <span id="updatedAt">
-              <Translate contentKey="simplifyMarketplaceApp.userPhone.updatedAt">Updated At</Translate>
-            </span>
-          </dt>
-          <dd>
-            {userPhoneEntity.updatedAt ? <TextFormat value={userPhoneEntity.updatedAt} type="date" format={APP_LOCAL_DATE_FORMAT} /> : null}
-          </dd>
-          <dt>
-            <Translate contentKey="simplifyMarketplaceApp.userPhone.customUser">Custom User</Translate>
-          </dt>
-          <dd>{userPhoneEntity.customUser ? userPhoneEntity.customUser.id : ''}</dd>
+          <dd>{userPhoneEntity.user ? userPhoneEntity.user.id : ''}</dd>
         </dl>
         <Button tag={Link} to="/user-phone" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

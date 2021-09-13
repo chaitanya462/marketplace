@@ -20,10 +20,6 @@ export interface IJobPreference {
   availableFrom?: string | null;
   availableTo?: string | null;
   isActive?: boolean | null;
-  createdBy?: string | null;
-  createdAt?: string | null;
-  updatedBy?: string | null;
-  updatedAt?: string | null;
   locationPrefrences?: ILocationPrefrence[] | null;
   fieldValues?: IFieldValue[] | null;
   subCategory?: ICategory | null;

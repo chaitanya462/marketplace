@@ -10,8 +10,6 @@ import com.simplify.marketplace.domain.UserEmail;
 import com.simplify.marketplace.repository.UserEmailRepository;
 import com.simplify.marketplace.service.dto.UserEmailDTO;
 import com.simplify.marketplace.service.mapper.UserEmailMapper;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -45,18 +43,6 @@ class UserEmailResourceIT {
     private static final String DEFAULT_TAG = "AAAAAAAAAA";
     private static final String UPDATED_TAG = "BBBBBBBBBB";
 
-    private static final String DEFAULT_CREATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_CREATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_CREATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_CREATED_AT = LocalDate.now(ZoneId.systemDefault());
-
-    private static final String DEFAULT_UPDATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_UPDATED_BY = "BBBBBBBBBB";
-
-    private static final LocalDate DEFAULT_UPDATED_AT = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_UPDATED_AT = LocalDate.now(ZoneId.systemDefault());
-
     private static final String ENTITY_API_URL = "/api/user-emails";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -88,11 +74,7 @@ class UserEmailResourceIT {
             .email(DEFAULT_EMAIL)
             .isActive(DEFAULT_IS_ACTIVE)
             .isPrimary(DEFAULT_IS_PRIMARY)
-            .tag(DEFAULT_TAG)
-            .createdBy(DEFAULT_CREATED_BY)
-            .createdAt(DEFAULT_CREATED_AT)
-            .updatedBy(DEFAULT_UPDATED_BY)
-            .updatedAt(DEFAULT_UPDATED_AT);
+            .tag(DEFAULT_TAG);
         return userEmail;
     }
 
@@ -107,11 +89,7 @@ class UserEmailResourceIT {
             .email(UPDATED_EMAIL)
             .isActive(UPDATED_IS_ACTIVE)
             .isPrimary(UPDATED_IS_PRIMARY)
-            .tag(UPDATED_TAG)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+            .tag(UPDATED_TAG);
         return userEmail;
     }
 
@@ -138,10 +116,6 @@ class UserEmailResourceIT {
         assertThat(testUserEmail.getIsActive()).isEqualTo(DEFAULT_IS_ACTIVE);
         assertThat(testUserEmail.getIsPrimary()).isEqualTo(DEFAULT_IS_PRIMARY);
         assertThat(testUserEmail.getTag()).isEqualTo(DEFAULT_TAG);
-        assertThat(testUserEmail.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
-        assertThat(testUserEmail.getCreatedAt()).isEqualTo(DEFAULT_CREATED_AT);
-        assertThat(testUserEmail.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
-        assertThat(testUserEmail.getUpdatedAt()).isEqualTo(DEFAULT_UPDATED_AT);
     }
 
     @Test
@@ -196,11 +170,7 @@ class UserEmailResourceIT {
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
             .andExpect(jsonPath("$.[*].isActive").value(hasItem(DEFAULT_IS_ACTIVE.booleanValue())))
             .andExpect(jsonPath("$.[*].isPrimary").value(hasItem(DEFAULT_IS_PRIMARY.booleanValue())))
-            .andExpect(jsonPath("$.[*].tag").value(hasItem(DEFAULT_TAG)))
-            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
-            .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())))
-            .andExpect(jsonPath("$.[*].updatedBy").value(hasItem(DEFAULT_UPDATED_BY)))
-            .andExpect(jsonPath("$.[*].updatedAt").value(hasItem(DEFAULT_UPDATED_AT.toString())));
+            .andExpect(jsonPath("$.[*].tag").value(hasItem(DEFAULT_TAG)));
     }
 
     @Test
@@ -218,11 +188,7 @@ class UserEmailResourceIT {
             .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
             .andExpect(jsonPath("$.isActive").value(DEFAULT_IS_ACTIVE.booleanValue()))
             .andExpect(jsonPath("$.isPrimary").value(DEFAULT_IS_PRIMARY.booleanValue()))
-            .andExpect(jsonPath("$.tag").value(DEFAULT_TAG))
-            .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY))
-            .andExpect(jsonPath("$.createdAt").value(DEFAULT_CREATED_AT.toString()))
-            .andExpect(jsonPath("$.updatedBy").value(DEFAULT_UPDATED_BY))
-            .andExpect(jsonPath("$.updatedAt").value(DEFAULT_UPDATED_AT.toString()));
+            .andExpect(jsonPath("$.tag").value(DEFAULT_TAG));
     }
 
     @Test
@@ -244,15 +210,7 @@ class UserEmailResourceIT {
         UserEmail updatedUserEmail = userEmailRepository.findById(userEmail.getId()).get();
         // Disconnect from session so that the updates on updatedUserEmail are not directly saved in db
         em.detach(updatedUserEmail);
-        updatedUserEmail
-            .email(UPDATED_EMAIL)
-            .isActive(UPDATED_IS_ACTIVE)
-            .isPrimary(UPDATED_IS_PRIMARY)
-            .tag(UPDATED_TAG)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+        updatedUserEmail.email(UPDATED_EMAIL).isActive(UPDATED_IS_ACTIVE).isPrimary(UPDATED_IS_PRIMARY).tag(UPDATED_TAG);
         UserEmailDTO userEmailDTO = userEmailMapper.toDto(updatedUserEmail);
 
         restUserEmailMockMvc
@@ -271,10 +229,6 @@ class UserEmailResourceIT {
         assertThat(testUserEmail.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);
         assertThat(testUserEmail.getIsPrimary()).isEqualTo(UPDATED_IS_PRIMARY);
         assertThat(testUserEmail.getTag()).isEqualTo(UPDATED_TAG);
-        assertThat(testUserEmail.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testUserEmail.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testUserEmail.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testUserEmail.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test
@@ -354,7 +308,7 @@ class UserEmailResourceIT {
         UserEmail partialUpdatedUserEmail = new UserEmail();
         partialUpdatedUserEmail.setId(userEmail.getId());
 
-        partialUpdatedUserEmail.email(UPDATED_EMAIL).isPrimary(UPDATED_IS_PRIMARY).createdAt(UPDATED_CREATED_AT);
+        partialUpdatedUserEmail.email(UPDATED_EMAIL).isPrimary(UPDATED_IS_PRIMARY);
 
         restUserEmailMockMvc
             .perform(
@@ -372,10 +326,6 @@ class UserEmailResourceIT {
         assertThat(testUserEmail.getIsActive()).isEqualTo(DEFAULT_IS_ACTIVE);
         assertThat(testUserEmail.getIsPrimary()).isEqualTo(UPDATED_IS_PRIMARY);
         assertThat(testUserEmail.getTag()).isEqualTo(DEFAULT_TAG);
-        assertThat(testUserEmail.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
-        assertThat(testUserEmail.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testUserEmail.getUpdatedBy()).isEqualTo(DEFAULT_UPDATED_BY);
-        assertThat(testUserEmail.getUpdatedAt()).isEqualTo(DEFAULT_UPDATED_AT);
     }
 
     @Test
@@ -390,15 +340,7 @@ class UserEmailResourceIT {
         UserEmail partialUpdatedUserEmail = new UserEmail();
         partialUpdatedUserEmail.setId(userEmail.getId());
 
-        partialUpdatedUserEmail
-            .email(UPDATED_EMAIL)
-            .isActive(UPDATED_IS_ACTIVE)
-            .isPrimary(UPDATED_IS_PRIMARY)
-            .tag(UPDATED_TAG)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdAt(UPDATED_CREATED_AT)
-            .updatedBy(UPDATED_UPDATED_BY)
-            .updatedAt(UPDATED_UPDATED_AT);
+        partialUpdatedUserEmail.email(UPDATED_EMAIL).isActive(UPDATED_IS_ACTIVE).isPrimary(UPDATED_IS_PRIMARY).tag(UPDATED_TAG);
 
         restUserEmailMockMvc
             .perform(
@@ -416,10 +358,6 @@ class UserEmailResourceIT {
         assertThat(testUserEmail.getIsActive()).isEqualTo(UPDATED_IS_ACTIVE);
         assertThat(testUserEmail.getIsPrimary()).isEqualTo(UPDATED_IS_PRIMARY);
         assertThat(testUserEmail.getTag()).isEqualTo(UPDATED_TAG);
-        assertThat(testUserEmail.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testUserEmail.getCreatedAt()).isEqualTo(UPDATED_CREATED_AT);
-        assertThat(testUserEmail.getUpdatedBy()).isEqualTo(UPDATED_UPDATED_BY);
-        assertThat(testUserEmail.getUpdatedAt()).isEqualTo(UPDATED_UPDATED_AT);
     }
 
     @Test
