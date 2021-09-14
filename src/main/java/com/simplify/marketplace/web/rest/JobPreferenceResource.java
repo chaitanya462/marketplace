@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -100,14 +101,13 @@ public class JobPreferenceResource {
         jobPreferenceDTO.setCreatedAt(LocalDate.now());
         JobPreferenceDTO result = jobPreferenceService.save(jobPreferenceDTO);
 
-        System.out.println("\n\n\n\n\n" + jobPreferenceDTO + "\n\n\n\n\n\n");
         if (jobPreferenceDTO.getWorker() != null) {
             String Workerid = jobPreferenceDTO.getWorker().getId().toString();
 
             ElasticWorker elasticworker = rep1.findById(Workerid).get();
 
             Category subCategory = categoryMapper.toEntity(jobPreferenceDTO.getSubCategory());
-            System.out.println("\n\n\n\n\n\n\n" + subCategory + "\n\n\n\n\n");
+            //            System.out.println("\n\n\n\n\n\n\n" + subCategory + "\n\n\n\n\n");
             Category ParentCategory = categoryRepository.findById(subCategory.getParent().getId()).get();
             elasticworker.setCategory(ParentCategory.getName());
             jobPreferenceDTO.setId(result.getId());
@@ -152,6 +152,23 @@ public class JobPreferenceResource {
         jobPreferenceDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         jobPreferenceDTO.setUpdatedAt(LocalDate.now());
         JobPreferenceDTO result = jobPreferenceService.save(jobPreferenceDTO);
+
+        JobPreferenceDTO jobpreference = jobPreferenceService.findOne(id).get();
+
+        Long workerId = jobpreference.getWorker().getId();
+        ElasticWorker elasticWorker = rep1.findById(workerId.toString()).get();
+        Set<JobPreference> jobpreferenceset = elasticWorker.getJobPreferences();
+        jobpreferenceset.remove(null);
+        for (JobPreference jobpreferencei : jobpreferenceset) {
+            if (jobpreferencei != null && jobpreferencei.getId() != null && jobpreferencei.getId() == id) {
+                elasticWorker.removeJobPreference(jobpreferencei);
+                jobpreferenceset.add(jobpreferencesMapper.toEntity(jobPreferenceDTO));
+                elasticWorker.setJobPreferences(jobpreferenceset);
+                rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticWorker);
+                break;
+            }
+        }
+
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, jobPreferenceDTO.getId().toString()))
@@ -239,7 +256,24 @@ public class JobPreferenceResource {
     @DeleteMapping("/job-preferences/{id}")
     public ResponseEntity<Void> deleteJobPreference(@PathVariable Long id) {
         log.debug("REST request to delete JobPreference : {}", id);
+
+        JobPreferenceDTO jobpreference = jobPreferenceService.findOne(id).get();
+
         jobPreferenceService.delete(id);
+
+        Long workerId = jobpreference.getWorker().getId();
+        ElasticWorker elasticWorker = rep1.findById(workerId.toString()).get();
+        Set<JobPreference> jobpreferenceset = elasticWorker.getJobPreferences();
+        jobpreferenceset.remove(null);
+        for (JobPreference jobpreferencei : jobpreferenceset) {
+            if (jobpreferencei != null && jobpreferencei.getId() != null && jobpreferencei.getId() == id) {
+                elasticWorker.removeJobPreference(jobpreferencei);
+
+                rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticWorker);
+                break;
+            }
+        }
+
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
