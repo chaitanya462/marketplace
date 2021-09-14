@@ -88,9 +88,12 @@ public class SkillsMasterResource {
         skillsMasterDTO.setUpdatedAt(LocalDate.now());
         skillsMasterDTO.setCreatedAt(LocalDate.now());
         SkillsMasterDTO result = null;
-        if (skillsMasterRepository.findBySkillName(skillsMasterDTO.getSkillName()) == null) result =
-            skillsMasterService.save(skillsMasterDTO); else result =
-            skillsMasterMapper.toDto(skillsMasterRepository.findBySkillName(skillsMasterDTO.getSkillName()));
+        if (skillsMasterRepository.findBySkillName(skillsMasterDTO.getSkillName()) == null) {
+            result = skillsMasterService.save(skillsMasterDTO);
+        } else {
+            result = skillsMasterMapper.toDto(skillsMasterRepository.findBySkillName(skillsMasterDTO.getSkillName()));
+        }
+
         return ResponseEntity
             .created(new URI("/api/skills-masters/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))

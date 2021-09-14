@@ -1,9 +1,16 @@
 package com.simplify.marketplace.web.rest;
 
+import com.simplify.marketplace.domain.ElasticWorker;
+import com.simplify.marketplace.domain.JobPreference;
+import com.simplify.marketplace.domain.LocationPrefrence;
+import com.simplify.marketplace.repository.ESearchWorkerRepository;
 import com.simplify.marketplace.repository.LocationPrefrenceRepository;
+import com.simplify.marketplace.service.JobPreferenceService;
 import com.simplify.marketplace.service.LocationPrefrenceService;
 import com.simplify.marketplace.service.UserService;
+import com.simplify.marketplace.service.dto.JobPreferenceDTO;
 import com.simplify.marketplace.service.dto.LocationPrefrenceDTO;
+import com.simplify.marketplace.service.mapper.LocationPrefrenceMapper;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -11,8 +18,11 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +43,18 @@ import tech.jhipster.web.util.ResponseUtil;
 public class LocationPrefrenceResource {
 
     private UserService userService;
+
+    @Autowired
+    ESearchWorkerRepository elasticsearchRepo;
+
+    @Autowired
+    JobPreferenceService jobpreferenceService;
+
+    @Autowired
+    LocationPrefrenceMapper locationPreferenceMapper;
+
+    @Autowired
+    RabbitTemplate rabbit_msg;
 
     private final Logger log = LoggerFactory.getLogger(LocationPrefrenceResource.class);
 
@@ -74,6 +96,24 @@ public class LocationPrefrenceResource {
         locationPrefrenceDTO.setUpdatedAt(LocalDate.now());
         locationPrefrenceDTO.setCreatedAt(LocalDate.now());
         LocationPrefrenceDTO result = locationPrefrenceService.save(locationPrefrenceDTO);
+
+        System.out.println("\n\n\n\n\n\n" + locationPrefrenceDTO + "\n\n\n\n\n\n");
+        locationPrefrenceDTO.setId(result.getId());
+        Long jobPreferenceId = locationPrefrenceDTO.getWorker().getId();
+        Long workerId = locationPrefrenceDTO.getWorker().getWorker().getId();
+        ElasticWorker elasticworker = elasticsearchRepo.findById(workerId.toString()).get();
+        Set<JobPreference> jobPreferenceSet = elasticworker.getJobPreferences();
+        for (JobPreference jobpreference : jobPreferenceSet) {
+            if (jobpreference.getId() == jobPreferenceId) {
+                elasticworker.removeJobPreference(jobpreference);
+                LocationPrefrence newlocationpreference = locationPreferenceMapper.toEntity(locationPrefrenceDTO);
+                jobpreference.addLocationPrefrence(newlocationpreference);
+                jobPreferenceSet.add(jobpreference);
+                elasticworker.setJobPreferences(jobPreferenceSet);
+                rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+            }
+        }
+
         return ResponseEntity
             .created(new URI("/api/location-prefrences/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -109,6 +149,30 @@ public class LocationPrefrenceResource {
         locationPrefrenceDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         locationPrefrenceDTO.setUpdatedAt(LocalDate.now());
         LocationPrefrenceDTO result = locationPrefrenceService.save(locationPrefrenceDTO);
+
+        System.out.println("\n\n\n\n\n\n" + locationPrefrenceDTO + "\n\n\n\n\n");
+        locationPrefrenceDTO.setId(result.getId());
+        Long jobPreferenceId = locationPrefrenceDTO.getWorker().getId();
+        Long workerId = locationPrefrenceDTO.getWorker().getWorker().getId();
+        ElasticWorker elasticworker = elasticsearchRepo.findById(workerId.toString()).get();
+        Set<JobPreference> jobPreferenceSet = elasticworker.getJobPreferences();
+        for (JobPreference jobpreference : jobPreferenceSet) {
+            if (jobpreference.getId() == jobPreferenceId) {
+                elasticworker.removeJobPreference(jobpreference);
+                Set<LocationPrefrence> locationpreferenceset = jobpreference.getLocationPrefrences();
+                for (LocationPrefrence locationpreference : locationpreferenceset) {
+                    if (locationpreference.getId() == locationPrefrenceDTO.getId()) {
+                        jobpreference.removeLocationPrefrence(locationpreference);
+                        LocationPrefrence newlocationpreference = locationPreferenceMapper.toEntity(locationPrefrenceDTO);
+                        jobpreference.addLocationPrefrence(newlocationpreference);
+                        jobPreferenceSet.add(jobpreference);
+                        elasticworker.setJobPreferences(jobPreferenceSet);
+                        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+                    }
+                }
+            }
+        }
+
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, locationPrefrenceDTO.getId().toString()))
@@ -188,7 +252,37 @@ public class LocationPrefrenceResource {
     @DeleteMapping("/location-prefrences/{id}")
     public ResponseEntity<Void> deleteLocationPrefrence(@PathVariable Long id) {
         log.debug("REST request to delete LocationPrefrence : {}", id);
+
+        LocationPrefrenceDTO locationPrefrenceDTO = locationPrefrenceService.findOne(id).get();
+
+        System.out.println("\n\n\n\n\n\n" + locationPrefrenceDTO + "\n\n\n\n\n");
+
         locationPrefrenceService.delete(id);
+
+        Long jobPreferenceId = locationPrefrenceDTO.getWorker().getId();
+        JobPreferenceDTO job = jobpreferenceService.findOne(jobPreferenceId).get();
+
+        System.out.println("\n\n\n\n\n\n" + job + "\n\n\n\n\n");
+
+        Long workerId = job.getWorker().getId();
+        ElasticWorker elasticworker = elasticsearchRepo.findById(workerId.toString()).get();
+        Set<JobPreference> jobPreferenceSet = elasticworker.getJobPreferences();
+        for (JobPreference jobpreference : jobPreferenceSet) {
+            if (jobpreference.getId() == jobPreferenceId) {
+                elasticworker.removeJobPreference(jobpreference);
+                Set<LocationPrefrence> locationpreferenceset = jobpreference.getLocationPrefrences();
+                for (LocationPrefrence locationpreference : locationpreferenceset) {
+                    if (locationpreference.getId() != null && locationpreference.getId() == locationPrefrenceDTO.getId()) {
+                        jobpreference.removeLocationPrefrence(locationpreference);
+
+                        jobPreferenceSet.add(jobpreference);
+                        elasticworker.setJobPreferences(jobPreferenceSet);
+                        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+                    }
+                }
+            }
+        }
+
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
