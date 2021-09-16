@@ -109,4 +109,31 @@ public class ESearchWorker {
     ) {
         return workerRepo.searchByLocationText(searchText, location);
     }
+
+    @GetMapping("/searchByDesignationAndlocation/{designation}/{location}")
+    public ArrayList<ElasticWorker> searchByDesignationAndLocation(
+        @PathVariable("designation") String designation,
+        @PathVariable("location") String location
+    ) {
+        return workerRepo.searchByDesignationAndLocation(designation, location);
+    }
+
+    @GetMapping("/searchByDesignationAndLocationAndCategory/{designation}/{location}/{category}")
+    public ArrayList<ElasticWorker> searchByDesignationAndLocationAndCategory(
+        @PathVariable("designation") String designation,
+        @PathVariable("location") String location,
+        @PathVariable("category") String Category
+    ) {
+        return workerRepo.searchByDesignationAndLocationAndCategory(designation, location, Category);
+    }
+
+    @GetMapping("/searchByDesignationLocationAndCategorySub/{designation}/{location}/{category}/{subcategory}")
+    public ArrayList<ElasticWorker> searchByDesignationLocationAndCategorySub(
+        @PathVariable("designation") String designation,
+        @PathVariable("location") String location,
+        @PathVariable("category") String Category,
+        @PathVariable("subcategory") String subcategory
+    ) {
+        return workerRepo.searchByDesignationLocationAndCategorySub(designation, location, Category, subcategory);
+    }
 }
