@@ -103,6 +103,7 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
             source.registerCorsConfiguration("/v3/api-docs", config);
             source.registerCorsConfiguration("/swagger-resources", config);
             source.registerCorsConfiguration("/swagger-ui/**", config);
+            source.registerCorsConfiguration("/search/**", config);
         }
         return new CorsFilter(source);
     }
