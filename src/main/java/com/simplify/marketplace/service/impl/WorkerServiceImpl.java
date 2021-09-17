@@ -75,6 +75,13 @@ public class WorkerServiceImpl implements WorkerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Optional<Worker> findBySkillsId(Long id) {
+        log.debug("Request to get Worker : {}", id);
+        return workerRepository.findBySkillsId(id);
+    }
+
+    @Override
     public void delete(Long id) {
         log.debug("Request to delete Worker : {}", id);
         workerRepository.deleteById(id);

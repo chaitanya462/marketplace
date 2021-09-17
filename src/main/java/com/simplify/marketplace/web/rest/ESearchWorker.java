@@ -162,7 +162,9 @@ public class ESearchWorker {
     public ArrayList<SuggestionEntity> getSuggestions(@PathVariable("prefix") String prefix) throws IOException {
         CompletionSuggestionBuilder completionSuggestionFuzzyBuilder = SuggestBuilders
             .completionSuggestion("employments.jobTitle")
-            .prefix(prefix, Fuzziness.ZERO);
+            .prefix(prefix, Fuzziness.ZERO)
+            .size(10)
+            .skipDuplicates(true);
 
         SuggestBuilder suggestBuilder = new SuggestBuilder();
         suggestBuilder.addSuggestion("suggest_user", completionSuggestionFuzzyBuilder);

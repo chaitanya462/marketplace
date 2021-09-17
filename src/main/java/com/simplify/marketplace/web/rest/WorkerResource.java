@@ -177,6 +177,13 @@ public class WorkerResource {
         ew.setCreatedAt(arr.getCreatedAt());
         ew.setUpdatedBy(arr.getUpdatedBy());
         ew.setCreatedBy(arr.getCreatedBy());
+        ew.setEmail(arr.getEmail());
+        ew.setGender(arr.getGender());
+        ew.setIdProof(arr.getIdProof());
+        ew.setIdCode(arr.getIdCode());
+        ew.setStatus(arr.getStatus());
+        ew.setLanguage(arr.getLanguage());
+        ew.setWorkerLocation(arr.getWorkerLocation());
         rabbit_msg.convertAndSend("topicExchange1", "routingKey", ew);
 
         //        IndexRequest request = new IndexRequest("elasticsearchworkerindex");

@@ -9,6 +9,7 @@ import com.simplify.marketplace.repository.LocationRepository;
 import com.simplify.marketplace.service.EmploymentService;
 import com.simplify.marketplace.service.LocationService;
 import com.simplify.marketplace.service.UserService;
+import com.simplify.marketplace.service.dto.EmploymentDTO;
 import com.simplify.marketplace.service.dto.LocationDTO;
 import com.simplify.marketplace.service.mapper.EmploymentMapper;
 import com.simplify.marketplace.service.mapper.LocationMapper;
@@ -30,7 +31,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+//import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -159,9 +160,33 @@ public class LocationResource {
         locationDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         locationDTO.setUpdatedAt(LocalDate.now());
         LocationDTO result = locationService.save(locationDTO);
-        //        Long Emp_id = locationDTO.getEmployment().getId();
-        //        Employment employment = employmentService.getEmploymentById(Emp_id);
-        //        Set<Location> emplocation = locationService.fineONEEMP(locationDTO.getEmployment().getId());
+        locationDTO.setId(result.getId());
+
+        System.out.println("\n\n\n\n\n\n" + locationDTO + "\n\n\n\n\n\n");
+        Long employmentId = locationDTO.getEmployment().getId();
+        String workerId = locationDTO.getEmployment().getWorker().getId().toString();
+        ElasticWorker elasticworker = elasticworkerRepo.findById(workerId).get();
+        Set<Employment> employmentSet = elasticworker.getEmployments();
+        for (Employment e : employmentSet) {
+            if (e.getId() == employmentId) {
+                employmentSet.remove(e);
+                Set<Location> locationSet = e.getLocations();
+
+                for (Location l : locationSet) {
+                    if (l.getId() == locationDTO.getId()) {
+                        locationSet.remove(l);
+                        locationSet.add(locationMapper.toEntity(locationDTO));
+                        e.setLocations(locationSet);
+                        employmentSet.add(e);
+                        elasticworker.setEmployments(employmentSet);
+                        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+                        break;
+                    }
+                }
+
+                break;
+            }
+        }
 
         return ResponseEntity
             .ok()
@@ -242,7 +267,43 @@ public class LocationResource {
     @DeleteMapping("/locations/{id}")
     public ResponseEntity<Void> deleteLocation(@PathVariable Long id) {
         log.debug("REST request to delete Location : {}", id);
+
+        LocationDTO locationDto = locationService.findOne(id).get();
         locationService.delete(id);
+
+        EmploymentDTO employment = employmentService.findOne(locationDto.getEmployment().getId()).get();
+
+        String workerId = employment.getWorker().getId().toString();
+
+        ElasticWorker elasticworker = elasticworkerRepo.findById(workerId).get();
+
+        Long employmentId = employment.getId();
+
+        Set<Employment> employmentSet = elasticworker.getEmployments();
+
+        for (Employment e : employmentSet) {
+            if (e.getId() == employmentId) {
+                employmentSet.remove(e);
+                Set<Location> locationSet = e.getLocations();
+
+                for (Location l : locationSet) {
+                    if (l.getId() == id) {
+                        locationSet.remove(l);
+
+                        e.setLocations(locationSet);
+                        employmentSet.add(e);
+                        elasticworker.setEmployments(employmentSet);
+                        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+                        break;
+                    }
+                }
+
+                break;
+            }
+        }
+
+        System.out.println("\n\n\n\n\n" + locationDto + "\n\n\n\n");
+
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
