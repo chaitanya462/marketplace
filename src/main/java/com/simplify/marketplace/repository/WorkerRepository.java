@@ -27,4 +27,6 @@ public interface WorkerRepository extends JpaRepository<Worker, Long> {
     Optional<Worker> findOneWithEagerRelationships(@Param("id") Long id);
 
     Optional<Worker> findByUserId(Long id);
+
+    Optional<Worker> findBySkillsId(Long id);
 }

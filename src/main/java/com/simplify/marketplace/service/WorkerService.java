@@ -1,5 +1,6 @@
 package com.simplify.marketplace.service;
 
+import com.simplify.marketplace.domain.Worker;
 import com.simplify.marketplace.service.dto.WorkerDTO;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -55,4 +56,6 @@ public interface WorkerService {
      * @param id the id of the entity.
      */
     void delete(Long id);
+
+    Optional<Worker> findBySkillsId(Long id);
 }

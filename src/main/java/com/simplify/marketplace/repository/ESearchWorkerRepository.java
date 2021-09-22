@@ -374,4 +374,85 @@ public interface ESearchWorkerRepository extends ElasticsearchRepository<Elastic
         "  }"
     )
     public ArrayList<ElasticWorker> searchByLocationText(String searchText, String location);
+
+    @Query(
+        "{\r\n" +
+        "    \"bool\": {\r\n" +
+        "      \"must\": [\r\n" +
+        "        {\r\n" +
+        "          \"match_phrase\": {\r\n" +
+        "            \"employments.jobTitle\": \"?0\"\r\n" +
+        "          }\r\n" +
+        "        },\r\n" +
+        "        {\r\n" +
+        "          \"match\": {\r\n" +
+        "            \"jobPreferences.locationPrefrences.location.city\": \"?1\"\r\n" +
+        "          }\r\n" +
+        "        }\r\n" +
+        "      ]\r\n" +
+        "    }\r\n" +
+        "  }"
+    )
+    public ArrayList<ElasticWorker> searchByDesignationAndLocation(String designation, String location);
+
+    @Query(
+        "{\r\n" +
+        "    \"bool\": {\r\n" +
+        "      \"must\": [\r\n" +
+        "        {\r\n" +
+        "          \"match_phrase\": {\r\n" +
+        "            \"employments.jobTitle\": \"?0\"\r\n" +
+        "          }\r\n" +
+        "        },\r\n" +
+        "        {\r\n" +
+        "          \"match\": {\r\n" +
+        "            \"jobPreferences.locationPrefrences.location.city\": \"?1\"\r\n" +
+        "          }\r\n" +
+        "        },\r\n" +
+        "        {\r\n" +
+        "          \"match\": {\r\n" +
+        "            \"Category\": \"?2\"\r\n" +
+        "          }\r\n" +
+        "        }\r\n" +
+        "      ]\r\n" +
+        "    }\r\n" +
+        "  }"
+    )
+    public ArrayList<ElasticWorker> searchByDesignationAndLocationAndCategory(String designation, String location, String Category);
+
+    @Query(
+        "{\r\n" +
+        "    \"bool\": {\r\n" +
+        "      \"must\": [\r\n" +
+        "        {\r\n" +
+        "          \"match_phrase\": {\r\n" +
+        "            \"employments.jobTitle\": \"?0\"\r\n" +
+        "          }\r\n" +
+        "        },\r\n" +
+        "        {\r\n" +
+        "          \"match\": {\r\n" +
+        "            \"jobPreferences.locationPrefrences.location.city\": \"?1\"\r\n" +
+        "          }\r\n" +
+        "        },\r\n" +
+        "        {\r\n" +
+        "          \"match\": {\r\n" +
+        "            \"Category\": \"?2\"\r\n" +
+        "          }\r\n" +
+        "        }\r\n" +
+        "        ,\r\n" +
+        "        {\r\n" +
+        "          \"match\": {\r\n" +
+        "            \"jobPreferences.subCategory.name\": \"?3\"\r\n" +
+        "          }\r\n" +
+        "        }\r\n" +
+        "      ]\r\n" +
+        "    }\r\n" +
+        "  }"
+    )
+    public ArrayList<ElasticWorker> searchByDesignationLocationAndCategorySub(
+        String designation,
+        String location,
+        String Category,
+        String sub
+    );
 }

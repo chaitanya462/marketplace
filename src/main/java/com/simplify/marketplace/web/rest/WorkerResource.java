@@ -155,7 +155,7 @@ public class WorkerResource {
         if (workerDTO.getId() != null) {
             throw new BadRequestAlertException("A new worker cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        workerDTO.setUser(userMapper.userToUserDTO(userService.getUserWithAuthorities().get()));
+        //        workerDTO.setUser(userMapper.userToUserDTO(userService.getUserWithAuthorities().get()));
         workerDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
         workerDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         workerDTO.setUpdatedAt(LocalDate.now());
@@ -173,6 +173,17 @@ public class WorkerResource {
         ew.setDateOfBirth(arr.getDateOfBirth());
         ew.setIsActive(arr.getIsActive());
         ew.setSkills(arr.getSkills());
+        ew.setUpdatedAt(arr.getUpdatedAt());
+        ew.setCreatedAt(arr.getCreatedAt());
+        ew.setUpdatedBy(arr.getUpdatedBy());
+        ew.setCreatedBy(arr.getCreatedBy());
+        ew.setEmail(arr.getEmail());
+        ew.setGender(arr.getGender());
+        ew.setIdProof(arr.getIdProof());
+        ew.setIdCode(arr.getIdCode());
+        ew.setStatus(arr.getStatus());
+        ew.setLanguage(arr.getLanguage());
+        ew.setWorkerLocation(arr.getWorkerLocation());
         rabbit_msg.convertAndSend("topicExchange1", "routingKey", ew);
 
         //        IndexRequest request = new IndexRequest("elasticsearchworkerindex");
