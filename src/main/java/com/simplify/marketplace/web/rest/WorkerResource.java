@@ -238,6 +238,8 @@ public class WorkerResource {
      * or with status {@code 500 (Internal Server Error)} if the workerDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+
+
     @PatchMapping(value = "/workers/{id}", consumes = "application/merge-patch+json")
     public ResponseEntity<WorkerDTO> partialUpdateWorker(
         @PathVariable(value = "id", required = false) final Long id,
@@ -363,6 +365,42 @@ public class WorkerResource {
      * @param id the id of the workerDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
+
+    @PatchMapping(value = "/workers/skillsremove/{id}", consumes = "application/merge-patch+json")
+    public ResponseEntity<WorkerDTO> RemoveWorkerSkill(
+        @PathVariable(value = "id", required = false) final Long id,
+        @NotNull @RequestBody SkillsMaster skillsMaster
+    ) throws URISyntaxException {
+        if (!workerRepository.existsById(id)) {
+            throw new BadRequestAlertException("Entity not found", "worker", "idnotfound");
+        }
+        if (skillsMaster.getId() == null) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+        Worker worker = workerMapper.toEntity(workerService.findOne(id).get());
+        worker = worker.removeSkill(skillsMaster);
+        Set<SkillsMasterDTO> temp = new HashSet<>();
+        for (SkillsMaster skill : worker.getSkills()) {
+            temp.add(skillsMasterMapper.toDto(skill));
+        }
+        System.out.println("\n\n\n1---\n" + temp);
+        System.out.print("\n\n\n" + worker + "\n\n\n");
+        System.out.print("-----------------------------\n");
+        System.out.print("\n\n\n" + skillsMaster + "\n\n\n");
+        WorkerDTO workerDTO = workerMapper.toDtoId(worker);
+        workerDTO.setSkills(temp);
+        System.out.print("\n\n\n" + workerDTO + "\n\n\n");
+        workerDTO.setUpdatedAt(LocalDate.now());
+        workerDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // skillsMasterService.save(skillsMasterMapper.toDto(skillsMaster));
+        Optional<WorkerDTO> result = workerService.partialUpdate(workerDTO);
+ 
+        return ResponseUtil.wrapOrNotFound(
+            result,
+            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, workerDTO.getId().toString())
+        );
+    }
+
     @DeleteMapping("/workers/{id}")
     public ResponseEntity<Void> deleteWorker(@PathVariable Long id) {
         log.debug("REST request to delete Worker : {}", id);
