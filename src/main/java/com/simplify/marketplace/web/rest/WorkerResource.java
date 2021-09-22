@@ -29,7 +29,6 @@ import com.simplify.marketplace.service.mapper.WorkerMapper;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.lang.Exception;
-//>>>>>>> 3b5d60ae34d9a7a0d4901db16867dad23f353ed3
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;

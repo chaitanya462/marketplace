@@ -72,7 +72,7 @@ public class AdminUserDTO {
 
     @Override
     public String toString() {
-        return "User{" + "login='" + login + '\'' + ", email='" + email + '\'' + "}";
+        return "User{" + "login='" + login + '\'' + ", email='" + email + '\'' + ", active='" +  activated+ '\''  + "}";
     }
 
     public String getEmail() {
