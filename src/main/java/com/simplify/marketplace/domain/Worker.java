@@ -114,6 +114,10 @@ public class Worker implements Serializable {
     @JoinColumn(unique = true)
     private User user;
 
+    @JsonIgnoreProperties(value = { "worker" }, allowSetters = true)
+    @OneToOne(mappedBy = "worker")
+    private Photo photo;
+
     @OneToMany(mappedBy = "worker")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "worker" }, allowSetters = true)
@@ -461,6 +465,25 @@ public class Worker implements Serializable {
             return false;
         }
         return id != null && id.equals(((Worker) o).id);
+    }
+
+    public Photo getPhoto() {
+        return this.photo;
+    }
+
+    public Worker photo(Photo photo) {
+        this.setPhoto(photo);
+        return this;
+    }
+
+    public void setPhoto(Photo photo) {
+        if (this.photo != null) {
+            this.photo.setWorker(null);
+        }
+        if (photo != null) {
+            photo.setWorker(this);
+        }
+        this.photo = photo;
     }
 
     @Override
