@@ -101,6 +101,15 @@ public class Worker implements Serializable {
     @Column(name = "updated_at")
     private LocalDate updatedAt;
 
+    @Column(name = "page1")
+    private Boolean page1;
+
+    @Column(name = "page2")
+    private Boolean page2;
+
+    @Column(name = "page3")
+    private Boolean page3;
+
     @OneToOne
     @JoinColumn(unique = true)
     private User user;
