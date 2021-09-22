@@ -11,6 +11,11 @@ import com.simplify.marketplace.service.dto.UserDTO;
 import com.simplify.marketplace.web.rest.errors.*;
 import com.simplify.marketplace.web.rest.vm.KeyAndPasswordVM;
 import com.simplify.marketplace.web.rest.vm.ManagedUserVM;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.ResponseEntity;
+import java.net.URISyntaxException;
+import java.net.URI;
 // import com.simplify.marketplace.service.UserService;
 import java.time.LocalDate;
 import java.util.*;
@@ -21,7 +26,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
+import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.PaginationUtil;
+import tech.jhipster.web.util.ResponseUtil;
+import org.json.simple.*;
 /**
  * REST controller for managing the current user's account.
  */
@@ -35,6 +43,10 @@ public class AccountResource {
             super(message);
         }
     }
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
+
+    private final PasswordEncoder passwordEncoder;
 
     private final Logger log = LoggerFactory.getLogger(AccountResource.class);
 
@@ -44,10 +56,11 @@ public class AccountResource {
 
     private final MailService mailService;
 
-    public AccountResource(UserRepository userRepository, UserService userService, MailService mailService) {
+    public AccountResource(UserRepository userRepository, UserService userService, MailService mailService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.mailService = mailService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -58,6 +71,93 @@ public class AccountResource {
      * @throws EmailAlreadyUsedException {@code 400 (Bad Request)} if the email is already used.
      * @throws LoginAlreadyUsedException {@code 400 (Bad Request)} if the login is already used.
      */
+
+    @PostMapping("/register/users")
+    public ResponseEntity<User> createUser(@Valid @RequestBody AdminUserDTO userDTO) throws URISyntaxException {
+        log.debug("REST request to save User : {}", userDTO);
+        User newUser;
+        System.out.print("\n\n\n---------"+userDTO+"\n\n\n");
+
+        if (userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).isPresent()) {
+            // Lowercase the user login before comparing with database
+            newUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).get();
+            if (!newUser.isActivated()) {
+                // SignUp Resend Condition
+                //System.out.println("\n\n\n\n\nI'm in resend\n\n\n\n\n");
+                mailService.sendActivationEmail(newUser);
+            } else {
+                //Login Condition
+                newUser.setResetKey(userService.generateOTP());
+                userRepository.save(newUser);
+                //System.out.println("\n\n\n\n\nhello I'm in login condition"+newUser.getResetKey()+"hello\n\n\n\n\n");
+                mailService.sendCreationEmail(newUser);
+            }
+        } else {
+            //Register Condition
+            //System.out.println("\n\n\n\n\nI'm in register\n\n\n\n\n");
+            newUser = userService.createUser(userDTO);
+            mailService.sendActivationEmail(newUser);
+        }
+        return ResponseEntity
+            .created(new URI("/api/users/" + newUser.getLogin()))
+            .headers(HeaderUtil.createAlert(applicationName, "userManagement.created", newUser.getLogin()))
+            .body(newUser);
+    }
+    
+    @PostMapping("/register/thirdparty")
+    public ResponseEntity<JSONObject> Loginforgoogle(@Valid @RequestBody AdminUserDTO userDTO) throws URISyntaxException {
+        log.debug("REST request to save User : {}", userDTO);
+        JSONObject obj = new JSONObject();
+        Boolean check=false;
+        User newUser;
+        if (userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).isPresent()) {
+            //signin condition
+            newUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).get();
+            check=true;
+        } 
+        else {
+            //Signup Condition
+            newUser = userService.createUser(userDTO);
+        }
+        obj.put("user",newUser);
+        obj.put("check",check);
+        return ResponseEntity
+            .created(new URI("/api/admin/users/" + newUser.getLogin()))
+            .headers(HeaderUtil.createAlert(applicationName, "userManagement.created", newUser.getLogin()))
+            .body(obj);
+    }
+
+    @PostMapping("/register/authenticate")
+    public ResponseEntity<Boolean> VadlidatingOtp(@RequestBody Map<String, String> map) throws URISyntaxException {
+        Boolean check = false;
+        Optional<User> existingUser;
+        if (!userRepository.findOneByEmailIgnoreCase(map.get("email")).isPresent()) {
+            throw new BadRequestAlertException("A new user cannot get Otp wihtout using email", "userManagement", "enter email");
+        } else {
+            existingUser = userRepository.findOneByEmailIgnoreCase(map.get("email"));
+            if (!existingUser.get().isActivated()) {
+                if (existingUser.get().getActivationKey().equals(map.get("otp"))) {
+                    existingUser.get().setPassword(passwordEncoder.encode("1234"));
+
+                    existingUser.get().setActivated(true);
+                    check = existingUser.get().isActivated();
+                    userRepository.save(existingUser.get());
+                }
+            } else {
+                if (existingUser.get().getResetKey().equals(map.get("otp"))) {
+                    existingUser.get().setPassword(passwordEncoder.encode("1234"));
+                    System.out.println("\n\n\n\n 5\n\n\n\n");
+                    check = true;
+                }
+            }
+            return ResponseEntity
+                .created(new URI("/api/users/authentiacte"))
+                .headers(HeaderUtil.createAlert(applicationName, "userManagement.created", existingUser.get().getLogin()))
+                .body(check);
+        }
+    }
+
+
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public void registerAccount(@Valid @RequestBody ManagedUserVM managedUserVM) {
