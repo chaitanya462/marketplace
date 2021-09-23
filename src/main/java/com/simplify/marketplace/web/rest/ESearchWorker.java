@@ -1,23 +1,43 @@
 package com.simplify.marketplace.web.rest;
 
 import com.simplify.marketplace.domain.ElasticWorker;
+import com.simplify.marketplace.domain.Employment;
+import com.simplify.marketplace.domain.SuggestionEntity;
 import com.simplify.marketplace.repository.ESearchWorkerRepository;
+import java.io.IOException;
 import java.util.ArrayList;
 //import java.util.ArrayList;
-
+import java.util.Map;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.unit.Fuzziness;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
+import org.elasticsearch.search.suggest.Suggest;
+import org.elasticsearch.search.suggest.SuggestBuilder;
+import org.elasticsearch.search.suggest.SuggestBuilders;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping(path = "/search")
 public class ESearchWorker {
 
     @Autowired
     ESearchWorkerRepository workerRepo;
+
+    @Autowired
+    RestHighLevelClient client;
 
     @GetMapping("/workers/{id}")
     public ElasticWorker getWorker(@PathVariable String id) {
@@ -108,5 +128,82 @@ public class ESearchWorker {
         @PathVariable("searchText") String searchText
     ) {
         return workerRepo.searchByLocationText(searchText, location);
+    }
+
+    @GetMapping("/searchByDesignationAndlocation/{designation}/{location}")
+    public ArrayList<ElasticWorker> searchByDesignationAndLocation(
+        @PathVariable("designation") String designation,
+        @PathVariable("location") String location
+    ) {
+        return workerRepo.searchByDesignationAndLocation(designation, location);
+    }
+
+    @GetMapping("/searchByDesignationAndLocationAndCategory/{designation}/{location}/{category}")
+    public ArrayList<ElasticWorker> searchByDesignationAndLocationAndCategory(
+        @PathVariable("designation") String designation,
+        @PathVariable("location") String location,
+        @PathVariable("category") String Category
+    ) {
+        return workerRepo.searchByDesignationAndLocationAndCategory(designation, location, Category);
+    }
+
+    @GetMapping("/searchByDesignationLocationAndCategorySub/{designation}/{location}/{category}/{subcategory}")
+    public ArrayList<ElasticWorker> searchByDesignationLocationAndCategorySub(
+        @PathVariable("designation") String designation,
+        @PathVariable("location") String location,
+        @PathVariable("category") String Category,
+        @PathVariable("subcategory") String subcategory
+    ) {
+        return workerRepo.searchByDesignationLocationAndCategorySub(designation, location, Category, subcategory);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/designationSuggestions/{prefix}")
+    public ArrayList<SuggestionEntity> getSuggestions(@PathVariable("prefix") String prefix) throws IOException {
+        CompletionSuggestionBuilder completionSuggestionFuzzyBuilder = SuggestBuilders
+            .completionSuggestion("employments.jobTitle")
+            .prefix(prefix, Fuzziness.ZERO)
+            .size(10)
+            .skipDuplicates(true);
+
+        SuggestBuilder suggestBuilder = new SuggestBuilder();
+        suggestBuilder.addSuggestion("suggest_user", completionSuggestionFuzzyBuilder);
+
+        SearchRequest searchRequest = new SearchRequest();
+        searchRequest.indices("elasticsearchworkerindex");
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.suggest(suggestBuilder);
+        searchRequest.source(searchSourceBuilder);
+
+        SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+        Suggest suggest = searchResponse.getSuggest();
+
+        //		 System.out.println("\n\n\n\n\n\n"+suggest+"\n\n\n\n\n\n");
+
+        CompletionSuggestion termSuggestion = suggest.getSuggestion("suggest_user");
+
+        ArrayList<SuggestionEntity> ans = new ArrayList<>();
+
+        for (CompletionSuggestion.Entry entry : termSuggestion.getEntries()) {
+            for (CompletionSuggestion.Entry.Option option : entry) {
+                Map<String, Object> val = option.getHit().getSourceAsMap();
+
+                //		        	Employment emp  =(Employment)val.get("employments");
+
+                //		        	System.out.println("\n\n\n\n\n"+val.get("employments")+"\n\n\n\n\n");
+                SuggestionEntity val1 = new SuggestionEntity();
+
+                val1.setId(option.getHit().getId());
+                //		        	val1.setDesignation(emp.getJobTitle());
+                //		        	val1.setId(option.getHit().getId());
+                val1.setDesignation(option.getText().string());
+                //
+                //		        	val1.setSubCategory((String)val.get("subCategory"));
+                //		        	val1.setSuggest((ArrayList<String>)val.get("suggest"));
+                ans.add(val1);
+            }
+        }
+
+        return ans;
     }
 }

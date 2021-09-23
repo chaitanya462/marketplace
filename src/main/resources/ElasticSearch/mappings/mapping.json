@@ -1,0 +1,7 @@
+{
+  "properties": {
+    "employments.jobTitle": {
+      "type": "completion"
+    }
+  }
+}

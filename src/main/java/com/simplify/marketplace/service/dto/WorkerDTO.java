@@ -57,5 +57,11 @@ public class WorkerDTO implements Serializable {
 
     private LocalDate updatedAt;
 
+    private Boolean page1;
+
+    private Boolean page2;
+
+    private Boolean page3;
+
     private Set<SkillsMasterDTO> skills = new HashSet<>();
 }

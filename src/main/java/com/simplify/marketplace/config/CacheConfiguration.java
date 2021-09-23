@@ -49,6 +49,7 @@ public class CacheConfiguration {
             createCache(cm, com.simplify.marketplace.domain.Authority.class.getName());
             createCache(cm, com.simplify.marketplace.domain.User.class.getName() + ".authorities");
             createCache(cm, com.simplify.marketplace.domain.Otp.class.getName());
+            createCache(cm, com.simplify.marketplace.domain.Photo.class.getName());
             createCache(cm, com.simplify.marketplace.domain.OtpAttempt.class.getName());
             createCache(cm, com.simplify.marketplace.domain.CustomUser.class.getName());
             createCache(cm, com.simplify.marketplace.domain.CustomUser.class.getName() + ".userEmails");

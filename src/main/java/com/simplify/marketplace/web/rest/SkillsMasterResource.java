@@ -13,9 +13,12 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,6 +42,12 @@ public class SkillsMasterResource {
     private final WorkerMapper workerMapper;
     private final WorkerService workerService;
     private final WorkerRepository workerRepository;
+
+    @Autowired
+    ESearchWorkerRepository elasticworkerRepo;
+
+    @Autowired
+    RabbitTemplate rabbit_msg;
 
     private final Logger log = LoggerFactory.getLogger(SkillsMasterResource.class);
 
@@ -88,9 +97,12 @@ public class SkillsMasterResource {
         skillsMasterDTO.setUpdatedAt(LocalDate.now());
         skillsMasterDTO.setCreatedAt(LocalDate.now());
         SkillsMasterDTO result = null;
-        if (skillsMasterRepository.findBySkillName(skillsMasterDTO.getSkillName()) == null) result =
-            skillsMasterService.save(skillsMasterDTO); else result =
-            skillsMasterMapper.toDto(skillsMasterRepository.findBySkillName(skillsMasterDTO.getSkillName()));
+        if (skillsMasterRepository.findBySkillName(skillsMasterDTO.getSkillName()) == null) {
+            result = skillsMasterService.save(skillsMasterDTO);
+        } else {
+            result = skillsMasterMapper.toDto(skillsMasterRepository.findBySkillName(skillsMasterDTO.getSkillName()));
+        }
+
         return ResponseEntity
             .created(new URI("/api/skills-masters/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -127,6 +139,25 @@ public class SkillsMasterResource {
         skillsMasterDTO.setUpdatedAt(LocalDate.now());
 
         SkillsMasterDTO result = skillsMasterService.save(skillsMasterDTO);
+        System.out.println("\n\n\n\n\n" + skillsMasterDTO + "\n\n\n\n\n\n");
+
+        Worker worker = workerService.findBySkillsId(skillsMasterDTO.getId()).get();
+
+        System.out.println("\n\n\n\n\n" + worker + "\n\n\n\n\n\n");
+
+        String workerId = worker.getId().toString();
+        ElasticWorker elasticworker = elasticworkerRepo.findById(workerId).get();
+        Set<SkillsMaster> skillsmaster = elasticworker.getSkills();
+        for (SkillsMaster s : skillsmaster) {
+            if (s.getId() == result.getId()) {
+                skillsmaster.remove(s);
+                skillsmaster.add(skillsMasterMapper.toEntity(skillsMasterDTO));
+                elasticworker.setSkills(skillsmaster);
+                rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+                break;
+            }
+        }
+
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, skillsMasterDTO.getId().toString()))
@@ -215,7 +246,27 @@ public class SkillsMasterResource {
     @DeleteMapping("/skills-masters/{id}")
     public ResponseEntity<Void> deleteSkillsMaster(@PathVariable Long id) {
         log.debug("REST request to delete SkillsMaster : {}", id);
+
         skillsMasterService.delete(id);
+
+        //        SkillsMasterDTO skillsMasterDTO = skillsMasterService.findOne(id).get();
+
+        Worker worker = workerService.findBySkillsId(id).get();
+
+        System.out.println("\n\n\n\n\n" + worker + "\n\n\n\n\n\n");
+
+        String workerId = worker.getId().toString();
+        ElasticWorker elasticworker = elasticworkerRepo.findById(workerId).get();
+        Set<SkillsMaster> skillsmaster = elasticworker.getSkills();
+        for (SkillsMaster s : skillsmaster) {
+            if (s.getId() == id) {
+                skillsmaster.remove(s);
+
+                elasticworker.setSkills(skillsmaster);
+                rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+                break;
+            }
+        }
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

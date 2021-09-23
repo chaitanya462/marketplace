@@ -109,7 +109,7 @@ public class JobPreference implements Serializable {
 
     @OneToMany(mappedBy = "worker")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "worker", "location" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "worker" }, allowSetters = true) //location should also be shown so removed location
     private Set<LocationPrefrence> locationPrefrences = new HashSet<>();
 
     @OneToMany(mappedBy = "jobpreference")

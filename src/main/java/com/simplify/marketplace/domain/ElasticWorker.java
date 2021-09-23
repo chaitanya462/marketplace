@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
@@ -42,6 +43,8 @@ public class ElasticWorker implements Serializable {
 
     private String primaryPhone;
 
+    private String email;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
@@ -51,6 +54,18 @@ public class ElasticWorker implements Serializable {
     private String description;
 
     private Boolean isActive;
+
+    private String gender;
+
+    private String idProof;
+
+    private String idCode;
+
+    private String status;
+
+    private String language;
+
+    private String workerLocation;
 
     private String createdBy;
 
@@ -87,7 +102,6 @@ public class ElasticWorker implements Serializable {
     private LocalDate updatedAt;
 
     @JsonIgnoreProperties(value = { "userEmails", "userPhones", "addresses" }, allowSetters = true)
-    @OneToOne
     private User user;
 
     @JsonIgnoreProperties(value = { "workers" }, allowSetters = true)
@@ -349,6 +363,62 @@ public class ElasticWorker implements Serializable {
         this.jobPreferences.remove(jobPreference);
         jobPreference.setWorker(null);
         return this;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getIdProof() {
+        return idProof;
+    }
+
+    public void setIdProof(String idProof) {
+        this.idProof = idProof;
+    }
+
+    public String getIdCode() {
+        return idCode;
+    }
+
+    public void setIdCode(String idCode) {
+        this.idCode = idCode;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getWorkerLocation() {
+        return workerLocation;
+    }
+
+    public void setWorkerLocation(String workerLocation) {
+        this.workerLocation = workerLocation;
     }
 
     public Set<SkillsMaster> getSkills() {

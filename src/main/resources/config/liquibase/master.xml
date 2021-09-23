@@ -16,6 +16,8 @@
 
     <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210812094802_added_entity_Otp.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20210908131541_added_entity_Photo.xml" relativeToChangelogFile="false"/>
+
     <include file="config/liquibase/changelog/20210812094902_added_entity_OtpAttempt.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210812095002_added_entity_CustomUser.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210812095102_added_entity_UserEmail.xml" relativeToChangelogFile="false"/>

@@ -29,7 +29,6 @@ import com.simplify.marketplace.service.mapper.WorkerMapper;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.lang.Exception;
-//>>>>>>> 3b5d60ae34d9a7a0d4901db16867dad23f353ed3
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
@@ -155,7 +154,7 @@ public class WorkerResource {
         if (workerDTO.getId() != null) {
             throw new BadRequestAlertException("A new worker cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        workerDTO.setUser(userMapper.userToUserDTO(userService.getUserWithAuthorities().get()));
+        //        workerDTO.setUser(userMapper.userToUserDTO(userService.getUserWithAuthorities().get()));
         workerDTO.setCreatedBy(userService.getUserWithAuthorities().get().getId() + "");
         workerDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         workerDTO.setUpdatedAt(LocalDate.now());
@@ -173,6 +172,17 @@ public class WorkerResource {
         ew.setDateOfBirth(arr.getDateOfBirth());
         ew.setIsActive(arr.getIsActive());
         ew.setSkills(arr.getSkills());
+        ew.setUpdatedAt(arr.getUpdatedAt());
+        ew.setCreatedAt(arr.getCreatedAt());
+        ew.setUpdatedBy(arr.getUpdatedBy());
+        ew.setCreatedBy(arr.getCreatedBy());
+        ew.setEmail(arr.getEmail());
+        ew.setGender(arr.getGender());
+        ew.setIdProof(arr.getIdProof());
+        ew.setIdCode(arr.getIdCode());
+        ew.setStatus(arr.getStatus());
+        ew.setLanguage(arr.getLanguage());
+        ew.setWorkerLocation(arr.getWorkerLocation());
         rabbit_msg.convertAndSend("topicExchange1", "routingKey", ew);
 
         //        IndexRequest request = new IndexRequest("elasticsearchworkerindex");
@@ -238,6 +248,7 @@ public class WorkerResource {
      * or with status {@code 500 (Internal Server Error)} if the workerDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+
     @PatchMapping(value = "/workers/{id}", consumes = "application/merge-patch+json")
     public ResponseEntity<WorkerDTO> partialUpdateWorker(
         @PathVariable(value = "id", required = false) final Long id,
@@ -253,6 +264,8 @@ public class WorkerResource {
         if (!workerRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        //if(workerDTO.getSkills() == null)
+        workerDTO.setSkills(workerService.findOne(id).get().getSkills());
         workerDTO.setUpdatedAt(LocalDate.now());
         workerDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         Optional<WorkerDTO> result = workerService.partialUpdate(workerDTO);
@@ -363,6 +376,42 @@ public class WorkerResource {
      * @param id the id of the workerDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
+
+    @PatchMapping(value = "/workers/skillsremove/{id}", consumes = "application/merge-patch+json")
+    public ResponseEntity<WorkerDTO> RemoveWorkerSkill(
+        @PathVariable(value = "id", required = false) final Long id,
+        @NotNull @RequestBody SkillsMaster skillsMaster
+    ) throws URISyntaxException {
+        if (!workerRepository.existsById(id)) {
+            throw new BadRequestAlertException("Entity not found", "worker", "idnotfound");
+        }
+        if (skillsMaster.getId() == null) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+        Worker worker = workerMapper.toEntity(workerService.findOne(id).get());
+        worker = worker.removeSkill(skillsMaster);
+        Set<SkillsMasterDTO> temp = new HashSet<>();
+        for (SkillsMaster skill : worker.getSkills()) {
+            temp.add(skillsMasterMapper.toDto(skill));
+        }
+        System.out.println("\n\n\n1---\n" + temp);
+        System.out.print("\n\n\n" + worker + "\n\n\n");
+        System.out.print("-----------------------------\n");
+        System.out.print("\n\n\n" + skillsMaster + "\n\n\n");
+        WorkerDTO workerDTO = workerMapper.toDtoId(worker);
+        workerDTO.setSkills(temp);
+        System.out.print("\n\n\n" + workerDTO + "\n\n\n");
+        workerDTO.setUpdatedAt(LocalDate.now());
+        workerDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+        // skillsMasterService.save(skillsMasterMapper.toDto(skillsMaster));
+        Optional<WorkerDTO> result = workerService.partialUpdate(workerDTO);
+
+        return ResponseUtil.wrapOrNotFound(
+            result,
+            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, workerDTO.getId().toString())
+        );
+    }
+
     @DeleteMapping("/workers/{id}")
     public ResponseEntity<Void> deleteWorker(@PathVariable Long id) {
         log.debug("REST request to delete Worker : {}", id);
