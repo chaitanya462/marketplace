@@ -49,4 +49,10 @@ public class JobPreferenceDTO implements Serializable {
     private String updatedBy;
 
     private LocalDate updatedAt;
+
+    private String currencyType;
+
+    private String jobSearchStatus;
+
+    private String availabilityStatus;
 }
