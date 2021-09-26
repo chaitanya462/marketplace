@@ -19,6 +19,7 @@ import java.util.*;
 import java.util.Collections;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
+import org.json.simple.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +36,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
-import org.json.simple.*;
 
 /**
  * REST controller for managing users.
@@ -117,7 +117,7 @@ public class UserResource {
     public ResponseEntity<User> createUser(@Valid @RequestBody AdminUserDTO userDTO) throws URISyntaxException {
         log.debug("REST request to save User : {}", userDTO);
         User newUser;
-        System.out.print("\n\n\n---------"+userDTO+"\n\n\n");
+        System.out.print("\n\n\n---------" + userDTO + "\n\n\n");
         if (userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).isPresent()) {
             // Lowercase the user login before comparing with database
             newUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).get();
@@ -144,24 +144,22 @@ public class UserResource {
             .body(newUser);
     }
 
-
     @PostMapping("/googleusers")
     public ResponseEntity<JSONObject> Loginforgoogle(@Valid @RequestBody AdminUserDTO userDTO) throws URISyntaxException {
         log.debug("REST request to save User : {}", userDTO);
         JSONObject obj = new JSONObject();
-        Boolean check=false;
+        Boolean check = false;
         User newUser;
         if (userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).isPresent()) {
             //signin condition
             newUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).get();
-            check=true;
-        } 
-        else {
+            check = true;
+        } else {
             //Signup Condition
             newUser = userService.createUser(userDTO);
         }
-        obj.put("user",newUser);
-        obj.put("check",check);
+        obj.put("user", newUser);
+        obj.put("check", check);
         return ResponseEntity
             .created(new URI("/api/admin/users/" + newUser.getLogin()))
             .headers(HeaderUtil.createAlert(applicationName, "userManagement.created", newUser.getLogin()))

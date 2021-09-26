@@ -249,7 +249,6 @@ public class WorkerResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
 
-
     @PatchMapping(value = "/workers/{id}", consumes = "application/merge-patch+json")
     public ResponseEntity<WorkerDTO> partialUpdateWorker(
         @PathVariable(value = "id", required = false) final Long id,
@@ -265,6 +264,8 @@ public class WorkerResource {
         if (!workerRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
+        //if(workerDTO.getSkills() == null)
+        workerDTO.setSkills(workerService.findOne(id).get().getSkills());
         workerDTO.setUpdatedAt(LocalDate.now());
         workerDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         Optional<WorkerDTO> result = workerService.partialUpdate(workerDTO);
@@ -404,7 +405,7 @@ public class WorkerResource {
         workerDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
         // skillsMasterService.save(skillsMasterMapper.toDto(skillsMaster));
         Optional<WorkerDTO> result = workerService.partialUpdate(workerDTO);
- 
+
         return ResponseUtil.wrapOrNotFound(
             result,
             HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, workerDTO.getId().toString())

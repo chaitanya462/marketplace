@@ -107,6 +107,15 @@ public class JobPreference implements Serializable {
     @Column(name = "updated_at")
     private LocalDate updatedAt;
 
+    @Column(name = "currency_type")
+    private String currencyType;
+
+    @Column(name = "job_search_status")
+    private String jobSearchStatus;
+
+    @Column(name = "availability_status")
+    private String availabilityStatus;
+
     @OneToMany(mappedBy = "worker")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "worker" }, allowSetters = true) //location should also be shown so removed location
