@@ -6,11 +6,12 @@ import com.simplify.marketplace.domain.Employment;
 import com.simplify.marketplace.domain.LocationPrefrence;
 import com.simplify.marketplace.domain.Portfolio;
 import com.simplify.marketplace.domain.SkillsMaster;
-import com.simplify.marketplace.repository.*;
+import com.simplify.marketplace.domain.Photo;
+import com.simplify.marketplace.domain.File;
 import com.simplify.marketplace.repository.*;
 import com.simplify.marketplace.repository.LocationPrefrenceRepository;
-import com.simplify.marketplace.repository.LocationPrefrenceRepository;
-import com.simplify.marketplace.repository.PortfolioRepository;
+import com.simplify.marketplace.repository.FileRepository;
+import com.simplify.marketplace.repository.PhotoRepository;
 import com.simplify.marketplace.repository.PortfolioRepository;
 import com.simplify.marketplace.service.CertificateService;
 import com.simplify.marketplace.service.EducationService;
@@ -23,10 +24,7 @@ import com.simplify.marketplace.service.dto.SkillsMasterDTO;
 import com.simplify.marketplace.service.dto.WorkerDTO;
 import com.simplify.marketplace.service.mapper.SkillsMasterMapper;
 import com.simplify.marketplace.service.mapper.UserMapper;
-import com.simplify.marketplace.service.mapper.UserMapper;
 import com.simplify.marketplace.service.mapper.WorkerMapper;
-import com.simplify.marketplace.service.mapper.WorkerMapper;
-import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.lang.Exception;
 import java.net.URI;
@@ -62,6 +60,7 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api")
 public class WorkerResource {
 
+    private PhotoRepository photoRepository;
     private CategoryRepository categoryRepository;
     private JobPreferenceRepository jobPreferenceRepository;
     private EducationRepository educationRepository;
@@ -105,6 +104,7 @@ public class WorkerResource {
         WorkerService workerService,
         WorkerRepository workerRepository,
         UserService userService,
+        PhotoRepository photoRepository,
         FileRepository fileRepository,
         CategoryRepository categoryRepository,
         JobPreferenceRepository jobPreferenceRepositor,
@@ -126,7 +126,7 @@ public class WorkerResource {
         this.userService = userService;
         this.fileRepository = fileRepository;
         this.categoryRepository = categoryRepository;
-
+        this.photoRepository = photoRepository;
         this.educationRepository = educationRepository;
         this.certificateRepository = certificateRepository;
         this.employmentRepository = employmentRepository;
@@ -362,6 +362,15 @@ public class WorkerResource {
             for (Education temp : educationService.findOneWorker(id)) educaArray.add(temp);
         }
         obj.put("Education", educaArray);
+        JSONArray fileArray = new JSONArray();
+        if (fileRepository.findByWorkerId(id) != null) {
+            for (File temp : fileRepository.findByWorkerId(id)) {
+                fileArray.add(temp);
+            }
+        }
+        obj.put("files",fileArray);
+        Photo photo = photoRepository.findByWorkerId(id);
+        obj.put("photo",photo);
         JSONArray EmpArray = new JSONArray();
         if (employmentService.findOneWorker(id) != null) {
             for (Employment temp : employmentService.findOneWorker(id)) EmpArray.add(temp);
