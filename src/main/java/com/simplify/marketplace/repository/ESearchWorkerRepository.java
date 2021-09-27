@@ -455,4 +455,76 @@ public interface ESearchWorkerRepository extends ElasticsearchRepository<Elastic
         String Category,
         String sub
     );
+
+    @Query(
+        "{\r\n" +
+        "    \"bool\": {\r\n" +
+        "      \"must\": [\r\n" +
+        "        {\r\n" +
+        "          \"match_phrase\": {\r\n" +
+        "            \"employments.jobTitle\": \"0?\"\r\n" +
+        "          }\r\n" +
+        "        },\r\n" +
+        "        {\r\n" +
+        "          \"match\": {\r\n" +
+        "            \"jobPreferences.locationPrefrences.location.city\": \"?1\"\r\n" +
+        "          }\r\n" +
+        "        },\r\n" +
+        "        {\r\n" +
+        "          \"match\": {\r\n" +
+        "            \"Category\": \"?2\"\r\n" +
+        "          }\r\n" +
+        "        }\r\n" +
+        "        ,\r\n" +
+        "        {\r\n" +
+        "          \"match\": {\r\n" +
+        "            \"jobPreferences.subCategory.name\": \"?3\"\r\n" +
+        "          }\r\n" +
+        "        }\r\n" +
+        "        ,\r\n" +
+        "        {\r\n" +
+        "          \"match\": {\r\n" +
+        "            \"skills.skillName\": \"?4\"\r\n" +
+        "          }\r\n" +
+        "        }\r\n" +
+        "      ]\r\n" +
+        "    }\r\n" +
+        "  }\r\n" +
+        ""
+    )
+    public ArrayList<ElasticWorker> searchByDesignationLocationAndCategorySubAndSkill(
+        String designation,
+        String location,
+        String Category,
+        String sub,
+        String Skill
+    );
+
+    @Query(
+        "{\r\n" +
+        "    \"bool\": {\r\n" +
+        "      \"must\": [\r\n" +
+        "        {\r\n" +
+        "          \"match_phrase\": {\r\n" +
+        "            \"employments.jobTitle\": \"0?\"\r\n" +
+        "          }\r\n" +
+        "        },\r\n" +
+        "        {\r\n" +
+        "          \"match\": {\r\n" +
+        "            \"jobPreferences.locationPrefrences.location.city\": \"1?\"\r\n" +
+        "          }\r\n" +
+        "        },\r\n" +
+        "        \r\n" +
+        "        {\r\n" +
+        "          \"match\": {\r\n" +
+        "            \"skills.skillName\": \"2?\"\r\n" +
+        "          }\r\n" +
+        "        }\r\n" +
+        "      ]\r\n" +
+        "    }\r\n" +
+        "  }\r\n" +
+        "\r\n" +
+        ""
+    )
+    public ArrayList<ElasticWorker> searchByDesignationLocationAndSkill(String designation, String location, String Skill);
 }

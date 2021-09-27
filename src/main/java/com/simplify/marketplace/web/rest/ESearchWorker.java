@@ -2,6 +2,7 @@ package com.simplify.marketplace.web.rest;
 
 import com.simplify.marketplace.domain.ElasticWorker;
 import com.simplify.marketplace.domain.Employment;
+import com.simplify.marketplace.domain.SkillsSuggestionEntity;
 import com.simplify.marketplace.domain.SuggestionEntity;
 import com.simplify.marketplace.repository.ESearchWorkerRepository;
 import java.io.IOException;
@@ -157,7 +158,6 @@ public class ESearchWorker {
         return workerRepo.searchByDesignationLocationAndCategorySub(designation, location, Category, subcategory);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/designationSuggestions/{prefix}")
     public ArrayList<SuggestionEntity> getSuggestions(@PathVariable("prefix") String prefix) throws IOException {
         CompletionSuggestionBuilder completionSuggestionFuzzyBuilder = SuggestBuilders
@@ -205,5 +205,74 @@ public class ESearchWorker {
         }
 
         return ans;
+    }
+
+    @GetMapping("/skillsSuggestions/{prefix}")
+    public ArrayList<SkillsSuggestionEntity> skillsgetSuggestions(@PathVariable("prefix") String prefix) throws IOException {
+        CompletionSuggestionBuilder completionSuggestionFuzzyBuilder = SuggestBuilders
+            .completionSuggestion("skills.skillName")
+            .prefix(prefix, Fuzziness.ZERO)
+            .size(10)
+            .skipDuplicates(true);
+
+        SuggestBuilder suggestBuilder = new SuggestBuilder();
+        suggestBuilder.addSuggestion("suggest_skills_user", completionSuggestionFuzzyBuilder);
+
+        SearchRequest searchRequest = new SearchRequest();
+        searchRequest.indices("elasticsearchworkerindex");
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.suggest(suggestBuilder);
+        searchRequest.source(searchSourceBuilder);
+
+        SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+        Suggest suggest = searchResponse.getSuggest();
+
+        //		 System.out.println("\n\n\n\n\n\n"+suggest+"\n\n\n\n\n\n");
+
+        CompletionSuggestion termSuggestion = suggest.getSuggestion("suggest_skills_user");
+
+        ArrayList<SkillsSuggestionEntity> ans = new ArrayList<>();
+
+        for (CompletionSuggestion.Entry entry : termSuggestion.getEntries()) {
+            for (CompletionSuggestion.Entry.Option option : entry) {
+                Map<String, Object> val = option.getHit().getSourceAsMap();
+
+                //		        	Employment emp  =(Employment)val.get("employments");
+
+                //		        	System.out.println("\n\n\n\n\n"+val.get("employments")+"\n\n\n\n\n");
+                SkillsSuggestionEntity val1 = new SkillsSuggestionEntity();
+
+                val1.setId(option.getHit().getId());
+                //		        	val1.setDesignation(emp.getJobTitle());
+                //		        	val1.setId(option.getHit().getId());
+                val1.setSkillSuggestion(option.getText().string());
+                //
+                //		        	val1.setSubCategory((String)val.get("subCategory"));
+                //		        	val1.setSuggest((ArrayList<String>)val.get("suggest"));
+                ans.add(val1);
+            }
+        }
+
+        return ans;
+    }
+
+    @GetMapping("/searchByDesignationLocationAndCategorySubAndSkill/{designation}/{location}/{category}/{subcategory}/{skill}")
+    public ArrayList<ElasticWorker> searchByDesignationLocationAndCategorySubAndSkill(
+        @PathVariable("designation") String designation,
+        @PathVariable("location") String location,
+        @PathVariable("category") String Category,
+        @PathVariable("subcategory") String subcategory,
+        @PathVariable("skill") String skill
+    ) {
+        return workerRepo.searchByDesignationLocationAndCategorySubAndSkill(designation, location, Category, subcategory, skill);
+    }
+
+    @GetMapping("/searchByDesignationLocationAndSkill/{designation}/{subcategory}/{skill}")
+    public ArrayList<ElasticWorker> searchByDesignationLocationAndSkill(
+        @PathVariable("designation") String designation,
+        @PathVariable("location") String location,
+        @PathVariable("skill") String skill
+    ) {
+        return workerRepo.searchByDesignationLocationAndSkill(designation, location, skill);
     }
 }
