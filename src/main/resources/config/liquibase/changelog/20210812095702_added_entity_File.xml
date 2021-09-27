@@ -23,6 +23,12 @@
             <column name="filetype" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+             <column name="filename" type="longblob">
+                <constraints nullable="true" />
+            </column>
+             <column name="filename_content_type" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
             <column name="tag" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
@@ -73,6 +79,8 @@
             <column name="path" type="string"/>
             <column name="fileformat" type="string"/>
             <column name="filetype" type="string"/>
+            <column name="filename" type="blob"/>
+            <column name="filename_content_type" type="string"/>
             <column name="tag" type="string"/>
             <column name="is_default" type="boolean"/>
             <column name="is_resume" type="boolean"/>
