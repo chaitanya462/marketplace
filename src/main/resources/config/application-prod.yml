@@ -35,7 +35,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:mysql://localhost:3306/SimplifyMarketplace?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
     username: root
-    password:
+    password: password
     hikari:
       poolName: Hikari
       auto-commit: false
@@ -49,10 +49,29 @@ spring:
   liquibase:
     contexts: prod
   mail:
-    host: localhost
-    port: 25
-    username:
-    password:
+    host: smtp.gmail.com
+
+    port: 587
+
+    username: simplifyvms.marketplace@gmail.com #Replace this field with your Gmail username.
+
+    password: xthdhqgoppxagyaf #Replace this field with your Gmail password/App password.
+
+    protocol: smtp
+
+    tls: true
+
+    properties.mail.smtp:
+      auth: true
+
+      starttls.enable: true
+
+      ssl.trust: smtp.gmail.com
+  # mail:
+  #   host: localhost
+  #   port: 25
+  #   username:
+  #   password:
   thymeleaf:
     cache: true
 
