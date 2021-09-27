@@ -14,7 +14,7 @@ import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -278,5 +278,21 @@ public class JobPreferenceResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/job-preferences/Currency")
+    public ResponseEntity<List<String>> getAllCurrencyTypes() {
+        String a[] = new String[] {
+            "Canadian Dollar($)",
+            " Chinese Renminbi Yuan(¥)",
+            " Euro(€)",
+            "British Pound(£)",
+            "Indian Rupees(₹)",
+            "Japanese Yen(¥)",
+            "Singaporean Dollars($)",
+            "United States Dollars($)",
+        };
+        List<String> list = Arrays.asList(a);
+        return ResponseEntity.ok().body(list);
     }
 }

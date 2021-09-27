@@ -11,25 +11,26 @@ import com.simplify.marketplace.service.dto.UserDTO;
 import com.simplify.marketplace.web.rest.errors.*;
 import com.simplify.marketplace.web.rest.vm.KeyAndPasswordVM;
 import com.simplify.marketplace.web.rest.vm.ManagedUserVM;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.http.ResponseEntity;
-import java.net.URISyntaxException;
 import java.net.URI;
+import java.net.URISyntaxException;
 // import com.simplify.marketplace.service.UserService;
 import java.time.LocalDate;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
+import org.json.simple.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
-import org.json.simple.*;
+
 /**
  * REST controller for managing the current user's account.
  */
@@ -43,6 +44,7 @@ public class AccountResource {
             super(message);
         }
     }
+
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
@@ -56,7 +58,12 @@ public class AccountResource {
 
     private final MailService mailService;
 
-    public AccountResource(UserRepository userRepository, UserService userService, MailService mailService, PasswordEncoder passwordEncoder) {
+    public AccountResource(
+        UserRepository userRepository,
+        UserService userService,
+        MailService mailService,
+        PasswordEncoder passwordEncoder
+    ) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.mailService = mailService;
@@ -76,7 +83,7 @@ public class AccountResource {
     public ResponseEntity<User> createUser(@Valid @RequestBody AdminUserDTO userDTO) throws URISyntaxException {
         log.debug("REST request to save User : {}", userDTO);
         User newUser;
-        System.out.print("\n\n\n---------"+userDTO+"\n\n\n");
+        System.out.print("\n\n\n---------" + userDTO + "\n\n\n");
 
         if (userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).isPresent()) {
             // Lowercase the user login before comparing with database
@@ -103,24 +110,23 @@ public class AccountResource {
             .headers(HeaderUtil.createAlert(applicationName, "userManagement.created", newUser.getLogin()))
             .body(newUser);
     }
-    
+
     @PostMapping("/register/thirdparty")
     public ResponseEntity<JSONObject> Loginforgoogle(@Valid @RequestBody AdminUserDTO userDTO) throws URISyntaxException {
         log.debug("REST request to save User : {}", userDTO);
         JSONObject obj = new JSONObject();
-        Boolean check=false;
+        Boolean check = false;
         User newUser;
         if (userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).isPresent()) {
             //signin condition
             newUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).get();
-            check=true;
-        } 
-        else {
+            check = true;
+        } else {
             //Signup Condition
             newUser = userService.createUser(userDTO);
         }
-        obj.put("user",newUser);
-        obj.put("check",check);
+        obj.put("user", newUser);
+        obj.put("check", check);
         return ResponseEntity
             .created(new URI("/api/admin/users/" + newUser.getLogin()))
             .headers(HeaderUtil.createAlert(applicationName, "userManagement.created", newUser.getLogin()))
@@ -156,7 +162,6 @@ public class AccountResource {
                 .body(check);
         }
     }
-
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)

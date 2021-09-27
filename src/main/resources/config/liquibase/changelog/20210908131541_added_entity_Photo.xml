@@ -26,7 +26,6 @@
             <column name="pic_content_type" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            
             <column name="worker_id" type="bigint">
                 <constraints nullable="true" unique="true" uniqueConstraintName="ux_photo__worker_id" />
             </column>
