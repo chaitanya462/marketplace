@@ -256,7 +256,7 @@ public class ESearchWorker {
         return ans;
     }
 
-    @GetMapping("/searchByDesignationLocationAndCategorySubAndSkill")
+    @GetMapping("/searchByDesignationLocationAndCategorySubAndSkill/{a}/{b}/{c}/{d}")
     public ArrayList<ElasticWorker> searchByDesignationLocationAndCategorySubAndSkill(@RequestBody Map<String, String> filters) {
         //    	System.out.println("\n\n\n\n\n\n"+filters+"\n\n\n\n\n\n");
 
@@ -276,5 +276,15 @@ public class ESearchWorker {
         @PathVariable("skill") String skill
     ) {
         return workerRepo.searchByDesignationLocationAndSkill(designation, location, skill);
+    }
+
+    @GetMapping("/searchByDesignationLocationAndCategoryAndSkill/{designation}/{location}/{Category}/{skill}")
+    public ArrayList<ElasticWorker> searchByDesignationLocationAndCategoryAndSkill(
+        @PathVariable("designation") String designation,
+        @PathVariable("location") String location,
+        @PathVariable("skill") String skill,
+        @PathVariable("Category") String Category
+    ) {
+        return workerRepo.searchByDesignationLocationAndCategoryAndSkill(designation, location, Category, skill);
     }
 }

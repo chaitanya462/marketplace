@@ -466,24 +466,24 @@ public interface ESearchWorkerRepository extends ElasticsearchRepository<Elastic
         "          }\r\n" +
         "        },\r\n" +
         "        {\r\n" +
-        "          \"match\": {\r\n" +
+        "          \"match_phrase\": {\r\n" +
         "            \"jobPreferences.locationPrefrences.location.city\": \"?1\"\r\n" +
         "          }\r\n" +
         "        },\r\n" +
         "        {\r\n" +
-        "          \"match\": {\r\n" +
+        "          \"match_phrase\": {\r\n" +
         "            \"Category\": \"?2\"\r\n" +
         "          }\r\n" +
         "        }\r\n" +
         "        ,\r\n" +
         "        {\r\n" +
-        "          \"match\": {\r\n" +
+        "          \"match_phrase\": {\r\n" +
         "            \"jobPreferences.subCategory.name\": \"?3\"\r\n" +
         "          }\r\n" +
         "        }\r\n" +
         "        ,\r\n" +
         "        {\r\n" +
-        "          \"match\": {\r\n" +
+        "          \"match_phrase\": {\r\n" +
         "            \"skills.skillName\": \"?4\"\r\n" +
         "          }\r\n" +
         "        }\r\n" +
@@ -510,13 +510,13 @@ public interface ESearchWorkerRepository extends ElasticsearchRepository<Elastic
         "          }\r\n" +
         "        },\r\n" +
         "        {\r\n" +
-        "          \"match\": {\r\n" +
+        "          \"match_phrase\": {\r\n" +
         "            \"jobPreferences.locationPrefrences.location.city\": \"?1\"\r\n" +
         "          }\r\n" +
         "        },\r\n" +
         "        \r\n" +
         "        {\r\n" +
-        "          \"match\": {\r\n" +
+        "          \"match_phrase\": {\r\n" +
         "            \"skills.skillName\": \"?2\"\r\n" +
         "          }\r\n" +
         "        }\r\n" +
@@ -527,4 +527,41 @@ public interface ESearchWorkerRepository extends ElasticsearchRepository<Elastic
         ""
     )
     public ArrayList<ElasticWorker> searchByDesignationLocationAndSkill(String designation, String location, String Skill);
+
+    @Query(
+        "{\n" +
+        "    \"bool\": {\n" +
+        "      \"must\": [\n" +
+        "        {\n" +
+        "          \"match_phrase\": {\n" +
+        "            \"employments.jobTitle\": \"?0\"\n" +
+        "          }\n" +
+        "        },\n" +
+        "        {\n" +
+        "          \"match_phrase\": {\n" +
+        "            \"jobPreferences.locationPrefrences.location.city\": \"?1\"\n" +
+        "          }\n" +
+        "        },\n" +
+        "        {\n" +
+        "          \"match_phrase\": {\n" +
+        "            \"Category\": \"?2\"\n" +
+        "          }\n" +
+        "        }\n" +
+        "        \n" +
+        "        ,\n" +
+        "        {\n" +
+        "          \"match_phrase\": {\n" +
+        "            \"skills.skillName\": \"?3\"\n" +
+        "          }\n" +
+        "        }\n" +
+        "      ]\n" +
+        "    }\n" +
+        "  }"
+    )
+    public ArrayList<ElasticWorker> searchByDesignationLocationAndCategoryAndSkill(
+        String designation,
+        String location,
+        String category,
+        String skill
+    );
 }
