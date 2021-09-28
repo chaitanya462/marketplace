@@ -49,6 +49,9 @@ public class SkillsMasterResource {
     @Autowired
     RabbitTemplate rabbit_msg;
 
+    @Autowired
+    SkillsSuggestionRepo skillsuggestionrepo;
+
     private final Logger log = LoggerFactory.getLogger(SkillsMasterResource.class);
 
     private static final String ENTITY_NAME = "skillsMaster";
@@ -98,6 +101,9 @@ public class SkillsMasterResource {
         skillsMasterDTO.setCreatedAt(LocalDate.now());
         SkillsMasterDTO result = null;
         if (skillsMasterRepository.findBySkillName(skillsMasterDTO.getSkillName()) == null) {
+            SkillSuggestionDomain skillsuggestion = new SkillSuggestionDomain();
+            skillsuggestion.setSkillName(skillsMasterDTO.getSkillName());
+            skillsuggestionrepo.save(skillsuggestion);
             result = skillsMasterService.save(skillsMasterDTO);
         } else {
             result = skillsMasterMapper.toDto(skillsMasterRepository.findBySkillName(skillsMasterDTO.getSkillName()));

@@ -161,7 +161,7 @@ public class ESearchWorker {
     @GetMapping("/designationSuggestions/{prefix}")
     public ArrayList<SuggestionEntity> getSuggestions(@PathVariable("prefix") String prefix) throws IOException {
         CompletionSuggestionBuilder completionSuggestionFuzzyBuilder = SuggestBuilders
-            .completionSuggestion("employments.jobTitle")
+            .completionSuggestion("Name")
             .prefix(prefix, Fuzziness.ZERO)
             .size(10)
             .skipDuplicates(true);
@@ -170,7 +170,7 @@ public class ESearchWorker {
         suggestBuilder.addSuggestion("suggest_user", completionSuggestionFuzzyBuilder);
 
         SearchRequest searchRequest = new SearchRequest();
-        searchRequest.indices("elasticsearchworkerindex");
+        searchRequest.indices("suggestionindex");
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.suggest(suggestBuilder);
         searchRequest.source(searchSourceBuilder);
@@ -178,7 +178,7 @@ public class ESearchWorker {
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
         Suggest suggest = searchResponse.getSuggest();
 
-        //		 System.out.println("\n\n\n\n\n\n"+suggest+"\n\n\n\n\n\n");
+        System.out.println("\n\n\n\n\n\n" + suggest + "\n\n\n\n\n\n");
 
         CompletionSuggestion termSuggestion = suggest.getSuggestion("suggest_user");
 
@@ -210,7 +210,7 @@ public class ESearchWorker {
     @GetMapping("/skillsSuggestions/{prefix}")
     public ArrayList<SkillsSuggestionEntity> skillsgetSuggestions(@PathVariable("prefix") String prefix) throws IOException {
         CompletionSuggestionBuilder completionSuggestionFuzzyBuilder = SuggestBuilders
-            .completionSuggestion("skills.skillName")
+            .completionSuggestion("SkillName")
             .prefix(prefix, Fuzziness.ZERO)
             .size(10)
             .skipDuplicates(true);
@@ -219,7 +219,7 @@ public class ESearchWorker {
         suggestBuilder.addSuggestion("suggest_skills_user", completionSuggestionFuzzyBuilder);
 
         SearchRequest searchRequest = new SearchRequest();
-        searchRequest.indices("elasticsearchworkerindex");
+        searchRequest.indices("skillsuggestion");
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.suggest(suggestBuilder);
         searchRequest.source(searchSourceBuilder);
@@ -256,18 +256,20 @@ public class ESearchWorker {
         return ans;
     }
 
-    @GetMapping("/searchByDesignationLocationAndCategorySubAndSkill/{designation}/{location}/{category}/{subcategory}/{skill}")
-    public ArrayList<ElasticWorker> searchByDesignationLocationAndCategorySubAndSkill(
-        @PathVariable("designation") String designation,
-        @PathVariable("location") String location,
-        @PathVariable("category") String Category,
-        @PathVariable("subcategory") String subcategory,
-        @PathVariable("skill") String skill
-    ) {
-        return workerRepo.searchByDesignationLocationAndCategorySubAndSkill(designation, location, Category, subcategory, skill);
+    @GetMapping("/searchByDesignationLocationAndCategorySubAndSkill")
+    public ArrayList<ElasticWorker> searchByDesignationLocationAndCategorySubAndSkill(@RequestBody Map<String, String> filters) {
+        //    	System.out.println("\n\n\n\n\n\n"+filters+"\n\n\n\n\n\n");
+
+        return workerRepo.searchByDesignationLocationAndCategorySubAndSkill(
+            filters.get("designation"),
+            filters.get("location"),
+            filters.get("category"),
+            filters.get("subcategory"),
+            filters.get("skill")
+        );
     }
 
-    @GetMapping("/searchByDesignationLocationAndSkill/{designation}/{subcategory}/{skill}")
+    @GetMapping("/searchByDesignationLocationAndSkill/{designation}/{location}/{skill}")
     public ArrayList<ElasticWorker> searchByDesignationLocationAndSkill(
         @PathVariable("designation") String designation,
         @PathVariable("location") String location,

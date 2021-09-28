@@ -462,7 +462,7 @@ public interface ESearchWorkerRepository extends ElasticsearchRepository<Elastic
         "      \"must\": [\r\n" +
         "        {\r\n" +
         "          \"match_phrase\": {\r\n" +
-        "            \"employments.jobTitle\": \"0?\"\r\n" +
+        "            \"employments.jobTitle\": \"?0\"\r\n" +
         "          }\r\n" +
         "        },\r\n" +
         "        {\r\n" +
@@ -506,18 +506,18 @@ public interface ESearchWorkerRepository extends ElasticsearchRepository<Elastic
         "      \"must\": [\r\n" +
         "        {\r\n" +
         "          \"match_phrase\": {\r\n" +
-        "            \"employments.jobTitle\": \"0?\"\r\n" +
+        "            \"employments.jobTitle\": \"?0\"\r\n" +
         "          }\r\n" +
         "        },\r\n" +
         "        {\r\n" +
         "          \"match\": {\r\n" +
-        "            \"jobPreferences.locationPrefrences.location.city\": \"1?\"\r\n" +
+        "            \"jobPreferences.locationPrefrences.location.city\": \"?1\"\r\n" +
         "          }\r\n" +
         "        },\r\n" +
         "        \r\n" +
         "        {\r\n" +
         "          \"match\": {\r\n" +
-        "            \"skills.skillName\": \"2?\"\r\n" +
+        "            \"skills.skillName\": \"?2\"\r\n" +
         "          }\r\n" +
         "        }\r\n" +
         "      ]\r\n" +

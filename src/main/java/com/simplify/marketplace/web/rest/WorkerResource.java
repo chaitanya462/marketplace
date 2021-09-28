@@ -83,6 +83,9 @@ public class WorkerResource {
     RabbitTemplate rabbit_msg;
 
     @Autowired
+    SkillsSuggestionRepo skillsuggestionrepo;
+
+    @Autowired
     WorkerRepository workerRepo;
 
     @Autowired
@@ -183,6 +186,15 @@ public class WorkerResource {
         ew.setStatus(arr.getStatus());
         ew.setLanguage(arr.getLanguage());
         ew.setWorkerLocation(arr.getWorkerLocation());
+
+        //        SkillSuggestionDomain skillsuggestion;
+        //        for(SkillsMaster skill : arr.getSkills())
+        //        {
+        //        	skillsuggestion = new SkillSuggestionDomain();
+        //        	skillsuggestion.setSkillName(skill.getSkillName());
+        //        	skillsuggestionrepo.save(skillsuggestion);
+        //        }
+
         rabbit_msg.convertAndSend("topicExchange1", "routingKey", ew);
 
         //        IndexRequest request = new IndexRequest("elasticsearchworkerindex");
