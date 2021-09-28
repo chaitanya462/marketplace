@@ -256,7 +256,7 @@ public class ESearchWorker {
         return ans;
     }
 
-    @GetMapping("/searchByDesignationLocationAndCategorySubAndSkill/{a}/{b}/{c}/{d}")
+    @GetMapping("/searchByDesignationLocationAndCategorySubAndSkill/")
     public ArrayList<ElasticWorker> searchByDesignationLocationAndCategorySubAndSkill(@RequestBody Map<String, String> filters) {
         //    	System.out.println("\n\n\n\n\n\n"+filters+"\n\n\n\n\n\n");
 

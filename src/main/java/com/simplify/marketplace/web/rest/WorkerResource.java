@@ -46,6 +46,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,6 +79,9 @@ public class WorkerResource {
     private JobPreferenceService jobPreferenceService;
     private EmploymentService employmentService;
     private EducationService educationService;
+
+    @Autowired
+    ESearchWorkerRepository elasticrepo;
 
     @Autowired
     RabbitTemplate rabbit_msg;
@@ -460,8 +464,15 @@ public class WorkerResource {
         System.out.print("\n\n\n" + workerDTO + "\n\n\n");
         workerDTO.setUpdatedAt(LocalDate.now());
         workerDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+
+        ElasticWorker elasticworker = elasticrepo.findById(workerDTO.getId().toString());
+
+        Set<SkillsMaster> skillset = worker.getSkills();
+        elasticworker.setSkills(skillset);
+
         // skillsMasterService.save(skillsMasterMapper.toDto(skillsMaster));
         Optional<WorkerDTO> result = workerService.partialUpdate(workerDTO);
+        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
 
         return ResponseUtil.wrapOrNotFound(
             result,
