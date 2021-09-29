@@ -22,6 +22,8 @@ public class JobPreferenceDTO implements Serializable {
 
     private Integer monthlyRate;
 
+    private Integer yearlyRate;
+
     private Integer hourPerDay;
 
     private Integer hourPerWeek;

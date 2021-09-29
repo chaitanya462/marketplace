@@ -23,6 +23,9 @@
             <column name="monthly_rate" type="integer">
                 <constraints nullable="true" />
             </column>
+             <column name="yearly_rate" type="integer">
+                <constraints nullable="true" />
+            </column>
             <column name="hour_per_day" type="integer">
                 <constraints nullable="true" />
             </column>
@@ -97,6 +100,7 @@
             <column name="hourly_rate" type="numeric"/>
             <column name="daily_rate" type="numeric"/>
             <column name="monthly_rate" type="numeric"/>
+            <column name="yearly_rate" type="numeric"/>
             <column name="hour_per_day" type="numeric"/>
             <column name="hour_per_week" type="numeric"/>
             <column name="engagement_type" type="string"/>

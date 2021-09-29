@@ -52,6 +52,9 @@ public class JobPreference implements Serializable {
     @Column(name = "monthly_rate")
     private Integer monthlyRate;
 
+    @Column(name = "yearly_rate")
+    private Integer yearlyRate;
+
     @Column(name = "hour_per_day")
     private Integer hourPerDay;
 
@@ -154,6 +157,11 @@ public class JobPreference implements Serializable {
 
     public JobPreference monthlyRate(Integer monthlyRate) {
         this.monthlyRate = monthlyRate;
+        return this;
+    }
+
+    public JobPreference yearlyRate(Integer yearlyRate) {
+        this.yearlyRate = yearlyRate;
         return this;
     }
 
@@ -283,6 +291,7 @@ public class JobPreference implements Serializable {
         result = prime * result + ((updatedAt == null) ? 0 : updatedAt.hashCode());
         result = prime * result + ((updatedBy == null) ? 0 : updatedBy.hashCode());
         result = prime * result + ((worker == null) ? 0 : worker.hashCode());
+        result = prime * result + ((yearlyRate == null) ? 0 : yearlyRate.hashCode());
         return result;
     }
 
@@ -297,6 +306,8 @@ public class JobPreference implements Serializable {
             dailyRate +
             ", monthlyRate=" +
             monthlyRate +
+            ", yearlyRate=" +
+            yearlyRate +
             ", hourPerDay=" +
             hourPerDay +
             ", hourPerWeek=" +
