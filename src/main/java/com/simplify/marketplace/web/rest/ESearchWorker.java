@@ -1,9 +1,10 @@
 package com.simplify.marketplace.web.rest;
 
 import com.simplify.marketplace.domain.ElasticWorker;
-import com.simplify.marketplace.domain.Employment;
+//import com.simplify.marketplace.domain.Employment;
+import com.simplify.marketplace.domain.EmploymentSuggestionEntity;
 import com.simplify.marketplace.domain.SkillsSuggestionEntity;
-import com.simplify.marketplace.domain.SuggestionEntity;
+//import com.simplify.marketplace.domain.SuggestionEntity;
 import com.simplify.marketplace.repository.ESearchWorkerRepository;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ import org.elasticsearch.search.suggest.SuggestBuilders;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
+//import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -159,7 +160,7 @@ public class ESearchWorker {
     }
 
     @GetMapping("/designationSuggestions/{prefix}")
-    public ArrayList<SuggestionEntity> getSuggestions(@PathVariable("prefix") String prefix) throws IOException {
+    public ArrayList<EmploymentSuggestionEntity> getSuggestions(@PathVariable("prefix") String prefix) throws IOException {
         CompletionSuggestionBuilder completionSuggestionFuzzyBuilder = SuggestBuilders
             .completionSuggestion("Name")
             .prefix(prefix, Fuzziness.ZERO)
@@ -178,11 +179,11 @@ public class ESearchWorker {
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
         Suggest suggest = searchResponse.getSuggest();
 
-        System.out.println("\n\n\n\n\n\n" + suggest + "\n\n\n\n\n\n");
+        //        System.out.println("\n\n\n\n\n\n" + suggest + "\n\n\n\n\n\n");
 
         CompletionSuggestion termSuggestion = suggest.getSuggestion("suggest_user");
 
-        ArrayList<SuggestionEntity> ans = new ArrayList<>();
+        ArrayList<EmploymentSuggestionEntity> ans = new ArrayList<>();
 
         for (CompletionSuggestion.Entry entry : termSuggestion.getEntries()) {
             for (CompletionSuggestion.Entry.Option option : entry) {
@@ -191,7 +192,7 @@ public class ESearchWorker {
                 //		        	Employment emp  =(Employment)val.get("employments");
 
                 //		        	System.out.println("\n\n\n\n\n"+val.get("employments")+"\n\n\n\n\n");
-                SuggestionEntity val1 = new SuggestionEntity();
+                EmploymentSuggestionEntity val1 = new EmploymentSuggestionEntity();
 
                 val1.setId(option.getHit().getId());
                 //		        	val1.setDesignation(emp.getJobTitle());
