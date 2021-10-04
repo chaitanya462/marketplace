@@ -1,6 +1,6 @@
 package com.simplify.marketplace.domain;
 
-public class SuggestionEntity {
+public class EmploymentSuggestionEntity {
 
     private String Id;
     private String Designation;
@@ -21,7 +21,7 @@ public class SuggestionEntity {
         Designation = designation;
     }
 
-    public SuggestionEntity() {
+    public EmploymentSuggestionEntity() {
         super();
     }
 }
