@@ -2,11 +2,9 @@ package com.simplify.marketplace.web.rest;
 
 import com.simplify.marketplace.config.Constants;
 import com.simplify.marketplace.domain.User;
-import com.simplify.marketplace.domain.User;
 import com.simplify.marketplace.repository.UserRepository;
 import com.simplify.marketplace.security.AuthoritiesConstants;
 import com.simplify.marketplace.service.MailService;
-import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.dto.AdminUserDTO;
 import com.simplify.marketplace.web.rest.errors.BadRequestAlertException;

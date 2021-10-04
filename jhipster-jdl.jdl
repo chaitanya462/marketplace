@@ -114,6 +114,7 @@ entity File {
     path String,
     fileformat FileFormat,
     filetype FileType,
+    filename Blob,
     tag String,
     isDefault Boolean,
     isResume Boolean,
