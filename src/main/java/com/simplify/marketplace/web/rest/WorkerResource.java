@@ -465,7 +465,7 @@ public class WorkerResource {
         workerDTO.setUpdatedAt(LocalDate.now());
         workerDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
 
-        ElasticWorker elasticworker = elasticrepo.findById(workerDTO.getId().toString());
+        ElasticWorker elasticworker = elasticrepo.findById(workerDTO.getId().toString()).get();
 
         Set<SkillsMaster> skillset = worker.getSkills();
         elasticworker.setSkills(skillset);
