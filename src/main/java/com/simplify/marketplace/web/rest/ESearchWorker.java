@@ -1,13 +1,11 @@
 package com.simplify.marketplace.web.rest;
 
 import com.simplify.marketplace.domain.ElasticWorker;
-import com.simplify.marketplace.domain.Employment;
 import com.simplify.marketplace.domain.EmploymentSuggestionEntity;
 import com.simplify.marketplace.domain.SkillsSuggestionEntity;
 import com.simplify.marketplace.repository.ESearchWorkerRepository;
 import java.io.IOException;
 import java.util.ArrayList;
-//import java.util.ArrayList;
 import java.util.Map;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -21,7 +19,6 @@ import org.elasticsearch.search.suggest.SuggestBuilders;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -178,8 +175,6 @@ public class ESearchWorker {
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
         Suggest suggest = searchResponse.getSuggest();
 
-        //        System.out.println("\n\n\n\n\n\n" + suggest + "\n\n\n\n\n\n");
-
         CompletionSuggestion termSuggestion = suggest.getSuggestion("suggest_user");
 
         ArrayList<EmploymentSuggestionEntity> ans = new ArrayList<>();
@@ -188,18 +183,12 @@ public class ESearchWorker {
             for (CompletionSuggestion.Entry.Option option : entry) {
                 Map<String, Object> val = option.getHit().getSourceAsMap();
 
-                //		        	Employment emp  =(Employment)val.get("employments");
-
-                //		        	System.out.println("\n\n\n\n\n"+val.get("employments")+"\n\n\n\n\n");
                 EmploymentSuggestionEntity val1 = new EmploymentSuggestionEntity();
 
                 val1.setId(option.getHit().getId());
-                //		        	val1.setDesignation(emp.getJobTitle());
-                //		        	val1.setId(option.getHit().getId());
+
                 val1.setDesignation(option.getText().string());
-                //
-                //		        	val1.setSubCategory((String)val.get("subCategory"));
-                //		        	val1.setSuggest((ArrayList<String>)val.get("suggest"));
+
                 ans.add(val1);
             }
         }
@@ -227,8 +216,6 @@ public class ESearchWorker {
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
         Suggest suggest = searchResponse.getSuggest();
 
-        //		 System.out.println("\n\n\n\n\n\n"+suggest+"\n\n\n\n\n\n");
-
         CompletionSuggestion termSuggestion = suggest.getSuggestion("suggest_skills_user");
 
         ArrayList<SkillsSuggestionEntity> ans = new ArrayList<>();
@@ -237,18 +224,12 @@ public class ESearchWorker {
             for (CompletionSuggestion.Entry.Option option : entry) {
                 Map<String, Object> val = option.getHit().getSourceAsMap();
 
-                //		        	Employment emp  =(Employment)val.get("employments");
-
-                //		        	System.out.println("\n\n\n\n\n"+val.get("employments")+"\n\n\n\n\n");
                 SkillsSuggestionEntity val1 = new SkillsSuggestionEntity();
 
                 val1.setId(option.getHit().getId());
-                //		        	val1.setDesignation(emp.getJobTitle());
-                //		        	val1.setId(option.getHit().getId());
+
                 val1.setSkillSuggestion(option.getText().string());
-                //
-                //		        	val1.setSubCategory((String)val.get("subCategory"));
-                //		        	val1.setSuggest((ArrayList<String>)val.get("suggest"));
+
                 ans.add(val1);
             }
         }
@@ -256,10 +237,8 @@ public class ESearchWorker {
         return ans;
     }
 
-    @PostMapping("/searchByDesignationLocationAndCategorySubAndSkill/")
+    @PostMapping("/searchByDesignationLocationAndCategorySubAndSkill")
     public ArrayList<ElasticWorker> searchByDesignationLocationAndCategorySubAndSkill(@RequestBody Map<String, String> filters) {
-        //    	System.out.println("\n\n\n\n\n\n"+filters+"\n\n\n\n\n\n");
-
         return workerRepo.searchByDesignationLocationAndCategorySubAndSkill(
             filters.get("designation"),
             filters.get("location"),
