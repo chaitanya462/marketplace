@@ -1,9 +1,9 @@
 package com.simplify.marketplace.repository;
 
-import com.simplify.marketplace.domain.*;
-import java.util.List;
+import com.simplify.marketplace.domain.File;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
+import java.util.List;
 
 /**
  * Spring Data SQL repository for the File entity.

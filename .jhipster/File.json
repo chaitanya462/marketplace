@@ -16,6 +16,11 @@
       "fieldValues": "Resume,Profile_Pic,Other_Pic,Cover_Letter,Other"
     },
     {
+      "fieldName": "filename",
+      "fieldType": "byte[]",
+      "fieldTypeBlobContent": "any"
+    },
+    {
       "fieldName": "tag",
       "fieldType": "String"
     },
@@ -30,22 +35,6 @@
     {
       "fieldName": "isProfilePic",
       "fieldType": "Boolean"
-    },
-    {
-      "fieldName": "createdBy",
-      "fieldType": "String"
-    },
-    {
-      "fieldName": "createdAt",
-      "fieldType": "LocalDate"
-    },
-    {
-      "fieldName": "updatedBy",
-      "fieldType": "String"
-    },
-    {
-      "fieldName": "updatedAt",
-      "fieldType": "LocalDate"
     }
   ],
   "relationships": [
@@ -65,5 +54,5 @@
   "readOnly": false,
   "embedded": false,
   "applications": ["SimplifyMarketplace"],
-  "changelogDate": "20210809071243"
+  "changelogDate": "20210924111757"
 }

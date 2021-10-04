@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Base64Utils;
 
 /**
  * Integration tests for the {@link FileResource} REST controller.
@@ -41,6 +42,11 @@ class FileResourceIT {
 
     private static final FileType DEFAULT_FILETYPE = FileType.Resume;
     private static final FileType UPDATED_FILETYPE = FileType.Profile_Pic;
+
+    private static final byte[] DEFAULT_FILENAME = TestUtil.createByteArray(1, "0");
+    private static final byte[] UPDATED_FILENAME = TestUtil.createByteArray(1, "1");
+    private static final String DEFAULT_FILENAME_CONTENT_TYPE = "image/jpg";
+    private static final String UPDATED_FILENAME_CONTENT_TYPE = "image/png";
 
     private static final String DEFAULT_TAG = "AAAAAAAAAA";
     private static final String UPDATED_TAG = "BBBBBBBBBB";
@@ -85,6 +91,8 @@ class FileResourceIT {
             .path(DEFAULT_PATH)
             .fileformat(DEFAULT_FILEFORMAT)
             .filetype(DEFAULT_FILETYPE)
+            .filename(DEFAULT_FILENAME)
+            .filenameContentType(DEFAULT_FILENAME_CONTENT_TYPE)
             .tag(DEFAULT_TAG)
             .isDefault(DEFAULT_IS_DEFAULT)
             .isResume(DEFAULT_IS_RESUME)
@@ -103,6 +111,8 @@ class FileResourceIT {
             .path(UPDATED_PATH)
             .fileformat(UPDATED_FILEFORMAT)
             .filetype(UPDATED_FILETYPE)
+            .filename(UPDATED_FILENAME)
+            .filenameContentType(UPDATED_FILENAME_CONTENT_TYPE)
             .tag(UPDATED_TAG)
             .isDefault(UPDATED_IS_DEFAULT)
             .isResume(UPDATED_IS_RESUME)
@@ -132,6 +142,8 @@ class FileResourceIT {
         assertThat(testFile.getPath()).isEqualTo(DEFAULT_PATH);
         assertThat(testFile.getFileformat()).isEqualTo(DEFAULT_FILEFORMAT);
         assertThat(testFile.getFiletype()).isEqualTo(DEFAULT_FILETYPE);
+        assertThat(testFile.getFilename()).isEqualTo(DEFAULT_FILENAME);
+        assertThat(testFile.getFilenameContentType()).isEqualTo(DEFAULT_FILENAME_CONTENT_TYPE);
         assertThat(testFile.getTag()).isEqualTo(DEFAULT_TAG);
         assertThat(testFile.getIsDefault()).isEqualTo(DEFAULT_IS_DEFAULT);
         assertThat(testFile.getIsResume()).isEqualTo(DEFAULT_IS_RESUME);
@@ -172,6 +184,8 @@ class FileResourceIT {
             .andExpect(jsonPath("$.[*].path").value(hasItem(DEFAULT_PATH)))
             .andExpect(jsonPath("$.[*].fileformat").value(hasItem(DEFAULT_FILEFORMAT.toString())))
             .andExpect(jsonPath("$.[*].filetype").value(hasItem(DEFAULT_FILETYPE.toString())))
+            .andExpect(jsonPath("$.[*].filenameContentType").value(hasItem(DEFAULT_FILENAME_CONTENT_TYPE)))
+            .andExpect(jsonPath("$.[*].filename").value(hasItem(Base64Utils.encodeToString(DEFAULT_FILENAME))))
             .andExpect(jsonPath("$.[*].tag").value(hasItem(DEFAULT_TAG)))
             .andExpect(jsonPath("$.[*].isDefault").value(hasItem(DEFAULT_IS_DEFAULT.booleanValue())))
             .andExpect(jsonPath("$.[*].isResume").value(hasItem(DEFAULT_IS_RESUME.booleanValue())))
@@ -193,6 +207,8 @@ class FileResourceIT {
             .andExpect(jsonPath("$.path").value(DEFAULT_PATH))
             .andExpect(jsonPath("$.fileformat").value(DEFAULT_FILEFORMAT.toString()))
             .andExpect(jsonPath("$.filetype").value(DEFAULT_FILETYPE.toString()))
+            .andExpect(jsonPath("$.filenameContentType").value(DEFAULT_FILENAME_CONTENT_TYPE))
+            .andExpect(jsonPath("$.filename").value(Base64Utils.encodeToString(DEFAULT_FILENAME)))
             .andExpect(jsonPath("$.tag").value(DEFAULT_TAG))
             .andExpect(jsonPath("$.isDefault").value(DEFAULT_IS_DEFAULT.booleanValue()))
             .andExpect(jsonPath("$.isResume").value(DEFAULT_IS_RESUME.booleanValue()))
@@ -222,6 +238,8 @@ class FileResourceIT {
             .path(UPDATED_PATH)
             .fileformat(UPDATED_FILEFORMAT)
             .filetype(UPDATED_FILETYPE)
+            .filename(UPDATED_FILENAME)
+            .filenameContentType(UPDATED_FILENAME_CONTENT_TYPE)
             .tag(UPDATED_TAG)
             .isDefault(UPDATED_IS_DEFAULT)
             .isResume(UPDATED_IS_RESUME)
@@ -243,6 +261,8 @@ class FileResourceIT {
         assertThat(testFile.getPath()).isEqualTo(UPDATED_PATH);
         assertThat(testFile.getFileformat()).isEqualTo(UPDATED_FILEFORMAT);
         assertThat(testFile.getFiletype()).isEqualTo(UPDATED_FILETYPE);
+        assertThat(testFile.getFilename()).isEqualTo(UPDATED_FILENAME);
+        assertThat(testFile.getFilenameContentType()).isEqualTo(UPDATED_FILENAME_CONTENT_TYPE);
         assertThat(testFile.getTag()).isEqualTo(UPDATED_TAG);
         assertThat(testFile.getIsDefault()).isEqualTo(UPDATED_IS_DEFAULT);
         assertThat(testFile.getIsResume()).isEqualTo(UPDATED_IS_RESUME);
@@ -326,7 +346,7 @@ class FileResourceIT {
         File partialUpdatedFile = new File();
         partialUpdatedFile.setId(file.getId());
 
-        partialUpdatedFile.path(UPDATED_PATH).isResume(UPDATED_IS_RESUME).isProfilePic(UPDATED_IS_PROFILE_PIC);
+        partialUpdatedFile.path(UPDATED_PATH).isDefault(UPDATED_IS_DEFAULT).isResume(UPDATED_IS_RESUME);
 
         restFileMockMvc
             .perform(
@@ -343,10 +363,12 @@ class FileResourceIT {
         assertThat(testFile.getPath()).isEqualTo(UPDATED_PATH);
         assertThat(testFile.getFileformat()).isEqualTo(DEFAULT_FILEFORMAT);
         assertThat(testFile.getFiletype()).isEqualTo(DEFAULT_FILETYPE);
+        assertThat(testFile.getFilename()).isEqualTo(DEFAULT_FILENAME);
+        assertThat(testFile.getFilenameContentType()).isEqualTo(DEFAULT_FILENAME_CONTENT_TYPE);
         assertThat(testFile.getTag()).isEqualTo(DEFAULT_TAG);
-        assertThat(testFile.getIsDefault()).isEqualTo(DEFAULT_IS_DEFAULT);
+        assertThat(testFile.getIsDefault()).isEqualTo(UPDATED_IS_DEFAULT);
         assertThat(testFile.getIsResume()).isEqualTo(UPDATED_IS_RESUME);
-        assertThat(testFile.getIsProfilePic()).isEqualTo(UPDATED_IS_PROFILE_PIC);
+        assertThat(testFile.getIsProfilePic()).isEqualTo(DEFAULT_IS_PROFILE_PIC);
     }
 
     @Test
@@ -365,6 +387,8 @@ class FileResourceIT {
             .path(UPDATED_PATH)
             .fileformat(UPDATED_FILEFORMAT)
             .filetype(UPDATED_FILETYPE)
+            .filename(UPDATED_FILENAME)
+            .filenameContentType(UPDATED_FILENAME_CONTENT_TYPE)
             .tag(UPDATED_TAG)
             .isDefault(UPDATED_IS_DEFAULT)
             .isResume(UPDATED_IS_RESUME)
@@ -385,6 +409,8 @@ class FileResourceIT {
         assertThat(testFile.getPath()).isEqualTo(UPDATED_PATH);
         assertThat(testFile.getFileformat()).isEqualTo(UPDATED_FILEFORMAT);
         assertThat(testFile.getFiletype()).isEqualTo(UPDATED_FILETYPE);
+        assertThat(testFile.getFilename()).isEqualTo(UPDATED_FILENAME);
+        assertThat(testFile.getFilenameContentType()).isEqualTo(UPDATED_FILENAME_CONTENT_TYPE);
         assertThat(testFile.getTag()).isEqualTo(UPDATED_TAG);
         assertThat(testFile.getIsDefault()).isEqualTo(UPDATED_IS_DEFAULT);
         assertThat(testFile.getIsResume()).isEqualTo(UPDATED_IS_RESUME);
