@@ -8,14 +8,15 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.simple.*;
+import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 
 @RestController
 @RequestMapping("/api")
 public class LinkedinResource{
 
-    @GetMapping("/token/{code}")
-    public JSONObject  Gettoken(@PathVariable String code) throws Exception{
+    @GetMapping("/linkedin/{code}")
+    public JSONArray  Getlinkedin_details(@PathVariable String code) throws Exception{
         HttpGet get = new HttpGet("https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&client_id=78sw6g7e4nfe3e&client_secret=VasF4U08tYJMZbRE&code="+code+"&redirect_uri=http://marketplace.simplifysandbox.net/");
         HttpClient httpClient = HttpClientBuilder.create().build();
         HttpResponse getresponse = httpClient.execute(get);
@@ -28,7 +29,17 @@ public class LinkedinResource{
         HttpResponse emailresponse = httpClient.execute(email);
         String emailresult = EntityUtils.toString(emailresponse.getEntity());
         JSONObject emailjson = (JSONObject) getparser.parse(emailresult);
-        return emailjson;
+
+        HttpGet localdetails = new HttpGet("https://api.linkedin.com/v2/me");
+        localdetails.addHeader("Authorization", "Bearer " + token.get("access_token"));
+        HttpResponse localdetails_response = httpClient.execute(localdetails);
+        String localdetails_result = EntityUtils.toString(localdetails_response.getEntity());
+        JSONObject localdetails_json = (JSONObject) getparser.parse(localdetails_result);
+
+        JSONArray details = new JSONArray();
+        details.add(emailjson);
+        details.add(localdetails_json);
+        return details;
     
     }
 }
