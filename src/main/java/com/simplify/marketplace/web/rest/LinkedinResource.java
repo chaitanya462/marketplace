@@ -22,7 +22,13 @@ public class LinkedinResource{
         String getresult = EntityUtils.toString(getresponse.getEntity());
         JSONParser getparser = new JSONParser();  
         JSONObject token = (JSONObject) getparser.parse(getresult);  
-        return token;
+
+        HttpGet email = new HttpGet("https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))");
+        email.addHeader("Authorization", "Bearer " + token.get("access_token"));
+        HttpResponse emailresponse = httpClient.execute(email);
+        String emailresult = EntityUtils.toString(emailresponse.getEntity());
+        JSONObject emailjson = (JSONObject) getparser.parse(emailresult);
+        return emailjson;
     
     }
 }
