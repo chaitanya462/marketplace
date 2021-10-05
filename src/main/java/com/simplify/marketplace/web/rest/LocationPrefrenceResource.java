@@ -112,6 +112,7 @@ public class LocationPrefrenceResource {
                 jobPreferenceSet.add(jobpreference);
                 elasticworker.setJobPreferences(jobPreferenceSet);
                 rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+                break;
             }
         }
 
