@@ -1,12 +1,11 @@
 package com.simplify.marketplace.web.rest;
 
 import com.simplify.marketplace.domain.ElasticWorker;
-import com.simplify.marketplace.domain.Employment;
-import com.simplify.marketplace.domain.SuggestionEntity;
+import com.simplify.marketplace.domain.EmploymentSuggestionEntity;
+import com.simplify.marketplace.domain.SkillsSuggestionEntity;
 import com.simplify.marketplace.repository.ESearchWorkerRepository;
 import java.io.IOException;
 import java.util.ArrayList;
-//import java.util.ArrayList;
 import java.util.Map;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
@@ -20,7 +19,6 @@ import org.elasticsearch.search.suggest.SuggestBuilders;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -157,11 +155,10 @@ public class ESearchWorker {
         return workerRepo.searchByDesignationLocationAndCategorySub(designation, location, Category, subcategory);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/designationSuggestions/{prefix}")
-    public ArrayList<SuggestionEntity> getSuggestions(@PathVariable("prefix") String prefix) throws IOException {
+    public ArrayList<EmploymentSuggestionEntity> getSuggestions(@PathVariable("prefix") String prefix) throws IOException {
         CompletionSuggestionBuilder completionSuggestionFuzzyBuilder = SuggestBuilders
-            .completionSuggestion("employments.jobTitle")
+            .completionSuggestion("Name")
             .prefix(prefix, Fuzziness.ZERO)
             .size(10)
             .skipDuplicates(true);
@@ -170,7 +167,7 @@ public class ESearchWorker {
         suggestBuilder.addSuggestion("suggest_user", completionSuggestionFuzzyBuilder);
 
         SearchRequest searchRequest = new SearchRequest();
-        searchRequest.indices("elasticsearchworkerindex");
+        searchRequest.indices("suggestionindex");
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.suggest(suggestBuilder);
         searchRequest.source(searchSourceBuilder);
@@ -178,32 +175,95 @@ public class ESearchWorker {
         SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
         Suggest suggest = searchResponse.getSuggest();
 
-        //		 System.out.println("\n\n\n\n\n\n"+suggest+"\n\n\n\n\n\n");
-
         CompletionSuggestion termSuggestion = suggest.getSuggestion("suggest_user");
 
-        ArrayList<SuggestionEntity> ans = new ArrayList<>();
+        ArrayList<EmploymentSuggestionEntity> ans = new ArrayList<>();
 
         for (CompletionSuggestion.Entry entry : termSuggestion.getEntries()) {
             for (CompletionSuggestion.Entry.Option option : entry) {
                 Map<String, Object> val = option.getHit().getSourceAsMap();
 
-                //		        	Employment emp  =(Employment)val.get("employments");
-
-                //		        	System.out.println("\n\n\n\n\n"+val.get("employments")+"\n\n\n\n\n");
-                SuggestionEntity val1 = new SuggestionEntity();
+                EmploymentSuggestionEntity val1 = new EmploymentSuggestionEntity();
 
                 val1.setId(option.getHit().getId());
-                //		        	val1.setDesignation(emp.getJobTitle());
-                //		        	val1.setId(option.getHit().getId());
+
                 val1.setDesignation(option.getText().string());
-                //
-                //		        	val1.setSubCategory((String)val.get("subCategory"));
-                //		        	val1.setSuggest((ArrayList<String>)val.get("suggest"));
+
                 ans.add(val1);
             }
         }
 
         return ans;
+    }
+
+    @GetMapping("/skillsSuggestions/{prefix}")
+    public ArrayList<SkillsSuggestionEntity> skillsgetSuggestions(@PathVariable("prefix") String prefix) throws IOException {
+        CompletionSuggestionBuilder completionSuggestionFuzzyBuilder = SuggestBuilders
+            .completionSuggestion("SkillName")
+            .prefix(prefix, Fuzziness.ZERO)
+            .size(10)
+            .skipDuplicates(true);
+
+        SuggestBuilder suggestBuilder = new SuggestBuilder();
+        suggestBuilder.addSuggestion("suggest_skills_user", completionSuggestionFuzzyBuilder);
+
+        SearchRequest searchRequest = new SearchRequest();
+        searchRequest.indices("skillsuggestion");
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        searchSourceBuilder.suggest(suggestBuilder);
+        searchRequest.source(searchSourceBuilder);
+
+        SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+        Suggest suggest = searchResponse.getSuggest();
+
+        CompletionSuggestion termSuggestion = suggest.getSuggestion("suggest_skills_user");
+
+        ArrayList<SkillsSuggestionEntity> ans = new ArrayList<>();
+
+        for (CompletionSuggestion.Entry entry : termSuggestion.getEntries()) {
+            for (CompletionSuggestion.Entry.Option option : entry) {
+                Map<String, Object> val = option.getHit().getSourceAsMap();
+
+                SkillsSuggestionEntity val1 = new SkillsSuggestionEntity();
+
+                val1.setId(option.getHit().getId());
+
+                val1.setSkillSuggestion(option.getText().string());
+
+                ans.add(val1);
+            }
+        }
+
+        return ans;
+    }
+
+    @PostMapping("/searchByDesignationLocationAndCategorySubAndSkill")
+    public ArrayList<ElasticWorker> searchByDesignationLocationAndCategorySubAndSkill(@RequestBody Map<String, String> filters) {
+        return workerRepo.searchByDesignationLocationAndCategorySubAndSkill(
+            filters.get("designation"),
+            filters.get("location"),
+            filters.get("category"),
+            filters.get("subcategory"),
+            filters.get("skill")
+        );
+    }
+
+    @GetMapping("/searchByDesignationLocationAndSkill/{designation}/{location}/{skill}")
+    public ArrayList<ElasticWorker> searchByDesignationLocationAndSkill(
+        @PathVariable("designation") String designation,
+        @PathVariable("location") String location,
+        @PathVariable("skill") String skill
+    ) {
+        return workerRepo.searchByDesignationLocationAndSkill(designation, location, skill);
+    }
+
+    @GetMapping("/searchByDesignationLocationAndCategoryAndSkill/{designation}/{location}/{Category}/{skill}")
+    public ArrayList<ElasticWorker> searchByDesignationLocationAndCategoryAndSkill(
+        @PathVariable("designation") String designation,
+        @PathVariable("location") String location,
+        @PathVariable("skill") String skill,
+        @PathVariable("Category") String Category
+    ) {
+        return workerRepo.searchByDesignationLocationAndCategoryAndSkill(designation, location, Category, skill);
     }
 }

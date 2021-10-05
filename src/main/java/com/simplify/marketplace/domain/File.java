@@ -80,7 +80,7 @@ public class File implements Serializable {
     @org.springframework.data.elasticsearch.annotations.Field(type = FieldType.Date, format = DateFormat.date)
     @Column(name = "updated_at")
     private LocalDate updatedAt;
-    
+
     @ManyToOne
     @JsonIgnoreProperties(
         value = { "user", "files", "educations", "certificates", "employments", "portfolios", "refereces", "jobPreferences", "skills" },

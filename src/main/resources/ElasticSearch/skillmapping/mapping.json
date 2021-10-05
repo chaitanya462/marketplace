@@ -1,6 +1,6 @@
 {
   "properties": {
-    "Name": {
+    "SkillName": {
       "type": "completion"
     }
   }

@@ -3,14 +3,14 @@ package com.simplify.marketplace.web.rest;
 import com.simplify.marketplace.domain.*;
 import com.simplify.marketplace.domain.Certificate;
 import com.simplify.marketplace.domain.Employment;
+import com.simplify.marketplace.domain.File;
 import com.simplify.marketplace.domain.LocationPrefrence;
+import com.simplify.marketplace.domain.Photo;
 import com.simplify.marketplace.domain.Portfolio;
 import com.simplify.marketplace.domain.SkillsMaster;
-import com.simplify.marketplace.domain.Photo;
-import com.simplify.marketplace.domain.File;
 import com.simplify.marketplace.repository.*;
-import com.simplify.marketplace.repository.LocationPrefrenceRepository;
 import com.simplify.marketplace.repository.FileRepository;
+import com.simplify.marketplace.repository.LocationPrefrenceRepository;
 import com.simplify.marketplace.repository.PhotoRepository;
 import com.simplify.marketplace.repository.PortfolioRepository;
 import com.simplify.marketplace.service.CertificateService;
@@ -44,6 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,7 +80,13 @@ public class WorkerResource {
     private EducationService educationService;
 
     @Autowired
+    ESearchWorkerRepository elasticrepo;
+
+    @Autowired
     RabbitTemplate rabbit_msg;
+
+    @Autowired
+    SkillsSuggestionRepo skillsuggestionrepo;
 
     @Autowired
     WorkerRepository workerRepo;
@@ -183,6 +190,15 @@ public class WorkerResource {
         ew.setStatus(arr.getStatus());
         ew.setLanguage(arr.getLanguage());
         ew.setWorkerLocation(arr.getWorkerLocation());
+
+        //        SkillSuggestionDomain skillsuggestion;
+        //        for(SkillsMaster skill : arr.getSkills())
+        //        {
+        //        	skillsuggestion = new SkillSuggestionDomain();
+        //        	skillsuggestion.setSkillName(skill.getSkillName());
+        //        	skillsuggestionrepo.save(skillsuggestion);
+        //        }
+
         rabbit_msg.convertAndSend("topicExchange1", "routingKey", ew);
 
         //        IndexRequest request = new IndexRequest("elasticsearchworkerindex");
@@ -368,9 +384,9 @@ public class WorkerResource {
                 fileArray.add(temp);
             }
         }
-        obj.put("files",fileArray);
+        obj.put("files", fileArray);
         Photo photo = photoRepository.findByWorkerId(id);
-        obj.put("photo",photo);
+        obj.put("photo", photo);
         JSONArray EmpArray = new JSONArray();
         if (employmentService.findOneWorker(id) != null) {
             for (Employment temp : employmentService.findOneWorker(id)) EmpArray.add(temp);
@@ -457,8 +473,15 @@ public class WorkerResource {
         System.out.print("\n\n\n" + workerDTO + "\n\n\n");
         workerDTO.setUpdatedAt(LocalDate.now());
         workerDTO.setUpdatedBy(userService.getUserWithAuthorities().get().getId() + "");
+
+        ElasticWorker elasticworker = elasticrepo.findById(workerDTO.getId().toString()).get();
+
+        Set<SkillsMaster> skillset = worker.getSkills();
+        elasticworker.setSkills(skillset);
+
         // skillsMasterService.save(skillsMasterMapper.toDto(skillsMaster));
         Optional<WorkerDTO> result = workerService.partialUpdate(workerDTO);
+        rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
 
         return ResponseUtil.wrapOrNotFound(
             result,

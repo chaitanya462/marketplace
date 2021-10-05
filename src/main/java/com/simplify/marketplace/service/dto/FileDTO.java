@@ -3,11 +3,11 @@ package com.simplify.marketplace.service.dto;
 import com.simplify.marketplace.domain.enumeration.FileFormat;
 import com.simplify.marketplace.domain.enumeration.FileType;
 import java.io.Serializable;
-import java.util.Objects;
 import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Objects;
 import javax.persistence.Lob;
 import lombok.Data;
-import java.util.Objects;
 
 /**
  * A DTO for the {@link com.simplify.marketplace.domain.File} entity.

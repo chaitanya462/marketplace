@@ -3,6 +3,7 @@ package com.simplify.marketplace.web.rest;
 import com.simplify.marketplace.domain.*;
 import com.simplify.marketplace.repository.ESearchWorkerRepository;
 import com.simplify.marketplace.repository.EmploymentRepository;
+import com.simplify.marketplace.repository.EmploymentSuggestionRepository;
 import com.simplify.marketplace.repository.WorkerRepository;
 import com.simplify.marketplace.service.EmploymentService;
 import com.simplify.marketplace.service.UserService;
@@ -44,6 +45,9 @@ public class EmploymentResource {
 
     @Autowired
     RabbitTemplate rabbit_msg;
+
+    @Autowired
+    EmploymentSuggestionRepository employmentSuggetionrepo;
 
     @Autowired
     WorkerRepository wrepo;
@@ -91,6 +95,10 @@ public class EmploymentResource {
             Long workerid = employment.getWorker().getId();
             ElasticWorker elasticworker = rep1.findById(workerid.toString()).get();
             elasticworker.addEmployment(employment);
+            EmploymentSuggestIndexDomain employmentsug = new EmploymentSuggestIndexDomain();
+            employmentsug.setName(employmentDTO.getJobTitle());
+
+            employmentSuggetionrepo.save(employmentsug);
 
             rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
         }
