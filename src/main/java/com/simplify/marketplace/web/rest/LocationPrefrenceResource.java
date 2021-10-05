@@ -103,6 +103,7 @@ public class LocationPrefrenceResource {
         Long workerId = locationPrefrenceDTO.getWorker().getWorker().getId();
         ElasticWorker elasticworker = elasticsearchRepo.findById(workerId.toString()).get();
         Set<JobPreference> jobPreferenceSet = elasticworker.getJobPreferences();
+        System.out.println("\n\n\n\n\n" + jobPreferenceSet + "\n\n\n\n\n");
         for (JobPreference jobpreference : jobPreferenceSet) {
             if (jobpreference.getId() == jobPreferenceId) {
                 elasticworker.removeJobPreference(jobpreference);
@@ -111,6 +112,7 @@ public class LocationPrefrenceResource {
                 jobPreferenceSet.add(jobpreference);
                 elasticworker.setJobPreferences(jobPreferenceSet);
                 rabbit_msg.convertAndSend("topicExchange1", "routingKey", elasticworker);
+                break;
             }
         }
 

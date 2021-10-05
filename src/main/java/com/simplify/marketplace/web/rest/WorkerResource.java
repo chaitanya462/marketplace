@@ -365,6 +365,7 @@ public class WorkerResource {
         }
         obj.put("jobPreference", job);
         obj.put("category", categArray);
+
         obj.put("locationpreference", locationprefs);
         JSONArray portArray = new JSONArray();
         if (portfolioRepository.findByWorkerId(id) != null) {
