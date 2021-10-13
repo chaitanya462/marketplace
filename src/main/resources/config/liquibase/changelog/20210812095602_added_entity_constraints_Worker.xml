@@ -25,5 +25,29 @@
                                  constraintName="fk_rel_worker__skill__skill_id"
                                  referencedColumnNames="id"
                                  referencedTableName="skills_master"/>
+                                 
+        <addForeignKeyConstraint baseColumnNames="worker_id"
+                                 baseTableName="rel_worker__vmsjobsave"
+                                 constraintName="fk_rel_worker__vmsjobsave__worker_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="worker"/>
+
+        <addForeignKeyConstraint baseColumnNames="vmsjobsave_id"
+                                 baseTableName="rel_worker__vmsjobsave"
+                                 constraintName="fk_rel_worker__vmsjobsave__vmsjobsave_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="vmsjob_save"/>
+
+        <addForeignKeyConstraint baseColumnNames="worker_id"
+                                 baseTableName="rel_worker__vmsjobsubmit"
+                                 constraintName="fk_rel_worker__vmsjobsubmit__worker_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="worker"/>
+
+        <addForeignKeyConstraint baseColumnNames="vmsjobsubmit_id"
+                                 baseTableName="rel_worker__vmsjobsubmit"
+                                 constraintName="fk_rel_worker__vmsjobsubmit__vmsjobsubmit_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="vmsjob_submit"/>
     </changeSet>
 </databaseChangeLog>

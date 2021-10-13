@@ -163,6 +163,27 @@ public class Worker implements Serializable {
     @JsonIgnoreProperties(value = { "workers" }, allowSetters = true)
     private Set<SkillsMaster> skills = new HashSet<>();
 
+    @ManyToMany
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JoinTable(
+        name = "rel_worker__vmsjobsave",
+        joinColumns = @JoinColumn(name = "worker_id"),
+        inverseJoinColumns = @JoinColumn(name = "vmsjobsave_id")
+    )
+    @JsonIgnoreProperties(value = { "workers" }, allowSetters = true)
+    private Set<VmsjobSave> vmsjobsaves = new HashSet<>();
+
+    @ManyToMany
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JoinTable(
+        name = "rel_worker__vmsjobsubmit",
+        joinColumns = @JoinColumn(name = "worker_id"),
+        inverseJoinColumns = @JoinColumn(name = "vmsjobsubmit_id")
+    )
+    @JsonIgnoreProperties(value = { "workers" }, allowSetters = true)
+    private Set<VmsjobSubmit> vmsjobsubmits = new HashSet<>();
+
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -453,6 +474,57 @@ public class Worker implements Serializable {
     public void setSkills(Set<SkillsMaster> skillsMasters) {
         this.skills = skillsMasters;
     }
+
+    public Set<VmsjobSave> getVmsjobsaves() {
+        return this.vmsjobsaves;
+    }
+
+    public Worker vmsjobsaves(Set<VmsjobSave> vmsjobSaves) {
+        this.setVmsjobsaves(vmsjobSaves);
+        return this;
+    }
+
+    public Worker addVmsjobsave(VmsjobSave vmsjobSave) {
+        this.vmsjobsaves.add(vmsjobSave);
+        vmsjobSave.getWorkers().add(this);
+        return this;
+    }
+
+    public Worker removeVmsjobsave(VmsjobSave vmsjobSave) {
+        this.vmsjobsaves.remove(vmsjobSave);
+        vmsjobSave.getWorkers().remove(this);
+        return this;
+    }
+
+    public void setVmsjobsaves(Set<VmsjobSave> vmsjobSaves) {
+        this.vmsjobsaves = vmsjobSaves;
+    }
+
+    public Set<VmsjobSubmit> getVmsjobsubmits() {
+        return this.vmsjobsubmits;
+    }
+
+    public Worker vmsjobsubmits(Set<VmsjobSubmit> vmsjobSubmits) {
+        this.setVmsjobsubmits(vmsjobSubmits);
+        return this;
+    }
+
+    public Worker addVmsjobsubmit(VmsjobSubmit vmsjobSubmit) {
+        this.vmsjobsubmits.add(vmsjobSubmit);
+        vmsjobSubmit.getWorkers().add(this);
+        return this;
+    }
+
+    public Worker removeVmsjobsubmit(VmsjobSubmit vmsjobSubmit) {
+        this.vmsjobsubmits.remove(vmsjobSubmit);
+        vmsjobSubmit.getWorkers().remove(this);
+        return this;
+    }
+
+    public void setVmsjobsubmits(Set<VmsjobSubmit> vmsjobSubmits) {
+        this.vmsjobsubmits = vmsjobSubmits;
+    }
+
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 

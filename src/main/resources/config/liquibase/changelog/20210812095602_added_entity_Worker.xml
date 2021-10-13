@@ -97,6 +97,29 @@
         </createTable>
 
         <addPrimaryKey columnNames="worker_id, skill_id" tableName="rel_worker__skill"/>
+
+         <createTable tableName="rel_worker__vmsjobsave">
+            <column name="vmsjobsave_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="worker_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="worker_id, vmsjobsave_id" tableName="rel_worker__vmsjobsave"/>
+
+        <createTable tableName="rel_worker__vmsjobsubmit">
+            <column name="vmsjobsubmit_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="worker_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="worker_id, vmsjobsubmit_id" tableName="rel_worker__vmsjobsubmit"/>
+ 
     </changeSet>
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
