@@ -68,11 +68,11 @@ management:
 spring:
   application:
     name: SimplifyMarketplace
-  rabbitmq:
-    port: 5673
-    host: localhost
-    username: guest
-    password: guest
+  # rabbitmq:
+  #   port: 5673
+  #   host: localhost
+  #   username: guest
+  #   password: guest
 
   profiles:
     # The commented value for `active` can be replaced with valid Spring profiles to load.
