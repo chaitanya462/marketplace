@@ -26,6 +26,12 @@
              <column name="filename" type="longblob">
                 <constraints nullable="true" />
             </column>
+             <column name="audioresume" type="longblob">
+                <constraints nullable="true" />
+            </column>
+             <column name="videoresume" type="longblob">
+                <constraints nullable="true" />
+            </column>
              <column name="filename_content_type" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
@@ -80,6 +86,8 @@
             <column name="fileformat" type="string"/>
             <column name="filetype" type="string"/>
             <column name="filename" type="blob"/>
+            <column name="audioresume" type="blob"/>
+            <column name="videoresume" type="blob"/>
             <column name="filename_content_type" type="string"/>
             <column name="tag" type="string"/>
             <column name="is_default" type="boolean"/>

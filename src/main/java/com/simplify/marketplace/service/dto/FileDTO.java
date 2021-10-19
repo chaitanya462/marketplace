@@ -26,6 +26,12 @@ public class FileDTO implements Serializable {
     @Lob
     private byte[] filename;
 
+    @Lob
+    private byte[] audioresume;
+
+    @Lob
+    private byte[] videoresume;
+
     private String filenameContentType;
     private String tag;
 

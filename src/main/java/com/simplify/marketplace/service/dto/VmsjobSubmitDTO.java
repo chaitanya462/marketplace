@@ -2,15 +2,19 @@ package com.simplify.marketplace.service.dto;
 
 import java.io.Serializable;
 import java.util.Objects;
+import lombok.Data;
 
 /**
  * A DTO for the {@link com.simplify.marketplace.domain.VmsjobSubmit} entity.
  */
+@Data
 public class VmsjobSubmitDTO implements Serializable {
 
     private Long id;
 
     private String vmsjobsubmitName;
+
+    private String submissionId;
 
     public Long getId() {
         return id;
