@@ -69,4 +69,6 @@ public class WorkerDTO implements Serializable {
 
     private Set<VmsjobSubmitDTO> vmsjobsubmits = new HashSet<>();
 
+    private String candidate_id;
+
 }

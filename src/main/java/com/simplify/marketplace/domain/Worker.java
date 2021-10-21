@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import javax.transaction.Transactional;
 import lombok.Data;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -163,7 +164,7 @@ public class Worker implements Serializable {
     @JsonIgnoreProperties(value = { "workers" }, allowSetters = true)
     private Set<SkillsMaster> skills = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JoinTable(
         name = "rel_worker__vmsjobsave",
@@ -183,6 +184,8 @@ public class Worker implements Serializable {
     @JsonIgnoreProperties(value = { "workers" }, allowSetters = true)
     private Set<VmsjobSubmit> vmsjobsubmits = new HashSet<>();
 
+    @Column(name = "candidate_id")
+    private String candidate_id;
 
     public void setId(Long id) {
         this.id = id;
@@ -475,6 +478,7 @@ public class Worker implements Serializable {
         this.skills = skillsMasters;
     }
 
+    @Transactional
     public Set<VmsjobSave> getVmsjobsaves() {
         return this.vmsjobsaves;
     }
@@ -490,6 +494,7 @@ public class Worker implements Serializable {
         return this;
     }
 
+    @Transactional
     public Worker removeVmsjobsave(VmsjobSave vmsjobSave) {
         this.vmsjobsaves.remove(vmsjobSave);
         vmsjobSave.getWorkers().remove(this);
@@ -509,6 +514,7 @@ public class Worker implements Serializable {
         return this;
     }
 
+    @Transactional
     public Worker addVmsjobsubmit(VmsjobSubmit vmsjobSubmit) {
         this.vmsjobsubmits.add(vmsjobSubmit);
         vmsjobSubmit.getWorkers().add(this);

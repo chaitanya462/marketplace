@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import javax.transaction.Transactional;
 import javax.persistence.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -25,7 +26,7 @@ public class VmsjobSave implements Serializable {
     @Column(name = "vmsjobsave_name")
     private String vmsjobsaveName;
 
-    @ManyToMany(mappedBy = "vmsjobsaves")
+    @ManyToMany(mappedBy = "vmsjobsaves",fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(
         value = {
@@ -72,6 +73,7 @@ public class VmsjobSave implements Serializable {
         this.vmsjobsaveName = vmsjobsaveName;
     }
 
+    @Transactional
     public Set<Worker> getWorkers() {
         return this.workers;
     }

@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface VmsjobSaveRepository extends JpaRepository<VmsjobSave, Long> {}
+public interface VmsjobSaveRepository extends JpaRepository<VmsjobSave, Long> {
+    VmsjobSave findByVmsjobsaveName(String vmsjobsaveName);
+}

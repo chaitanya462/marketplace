@@ -81,6 +81,9 @@
             <column name="page3" type="boolean">
                 <constraints nullable="true" />
             </column>
+            <column name="candidate_id" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
     </changeSet>
@@ -152,6 +155,7 @@
             <column name="page1" type="boolean"/>
             <column name="page2" type="boolean"/>
             <column name="page3" type="boolean"/>
+            <column name="candidate_id" type="string"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>
