@@ -32,6 +32,8 @@
     <include file="config/liquibase/changelog/20210812100002_added_entity_Certificate.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210812100102_added_entity_Employment.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210812100202_added_entity_SkillsMaster.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20211013114939_added_entity_VmsjobSave.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20211013115039_added_entity_VmsjobSubmit.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210812100302_added_entity_Portfolio.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210812100402_added_entity_Refereces.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210812100502_added_entity_JobPreference.xml" relativeToChangelogFile="false"/>

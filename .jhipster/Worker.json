@@ -103,6 +103,20 @@
       "otherEntityRelationshipName": "worker",
       "relationshipName": "skill",
       "ownerSide": true
+    },
+    {
+      "relationshipType": "many-to-many",
+      "otherEntityName": "vmsjobSave",
+      "otherEntityRelationshipName": "worker",
+      "relationshipName": "vmsjobsave",
+      "ownerSide": true
+    },
+    {
+      "relationshipType": "many-to-many",
+      "otherEntityName": "vmsjobSubmit",
+      "otherEntityRelationshipName": "worker",
+      "relationshipName": "vmsjobsubmit",
+      "ownerSide": true
     }
   ],
   "entityTableName": "worker",

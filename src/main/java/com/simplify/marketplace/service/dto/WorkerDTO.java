@@ -64,4 +64,9 @@ public class WorkerDTO implements Serializable {
     private Boolean page3;
 
     private Set<SkillsMasterDTO> skills = new HashSet<>();
+
+    private Set<VmsjobSaveDTO> vmsjobsaves = new HashSet<>();
+
+    private Set<VmsjobSubmitDTO> vmsjobsubmits = new HashSet<>();
+
 }
