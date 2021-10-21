@@ -23,6 +23,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @Entity
 @Table(name = "file")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Data
 public class File implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -45,6 +46,14 @@ public class File implements Serializable {
     @Lob
     @Column(name = "filename")
     private byte[] filename;
+
+    @Lob
+    @Column(name = "audioresume")
+    private byte[] audioresume;
+
+    @Lob
+    @Column(name = "videoresume")
+    private byte[] videoresume;
 
     @Column(name = "filename_content_type")
     private String filenameContentType;

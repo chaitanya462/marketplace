@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -14,6 +15,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "vmsjob_submit")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Data
 public class VmsjobSubmit implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -24,6 +26,9 @@ public class VmsjobSubmit implements Serializable {
 
     @Column(name = "vmsjobsubmit_name")
     private String vmsjobsubmitName;
+
+    @Column(name = "submission_id")
+    private String submissionId;
 
     @ManyToMany(mappedBy = "vmsjobsubmits")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
