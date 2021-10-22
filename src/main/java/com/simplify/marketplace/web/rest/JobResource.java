@@ -26,6 +26,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 //import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +35,9 @@ import org.springframework.web.bind.annotation.*;
 public class JobResource {
     @Autowired
     JobPreferenceService jobPreferenceService;
+
+    @Autowired
+    Environment env;
 
     @Autowired
     WorkerService workerService;
@@ -52,11 +56,12 @@ public class JobResource {
 
     @GetMapping("/jobs")
     public JSONObject Getjoblist() throws Exception {
-        HttpPost post = new HttpPost("https://qa-services.simplifysandbox.net/authenticate");
+        // System.out.println("\n\n\n\n\n\n"+env.getProperty("spring.application.name1")+"\n\n\n\n\n\n");
+        HttpPost post = new HttpPost(env.getProperty("spring.application.vmsdomain")+"authenticate");
         // add request parameter, form parameters
         JSONObject json = new JSONObject();
-        json.put("username", "Gauravj@simplifyvms.com");
-        json.put("password", "Gaurav@17");
+        json.put("username", ""+env.getProperty("spring.application.vmsUsername"));
+        json.put("password", ""+env.getProperty("spring.application.vmsPassword"));
 
         StringEntity params = new StringEntity(json.toString());
         post.addHeader("content-type", "application/json");
@@ -88,11 +93,11 @@ public class JobResource {
 
     @GetMapping("/jobs/{id}")
     public JSONObject Getjob(@PathVariable String id) throws Exception {
-        HttpPost post = new HttpPost("https://qa-services.simplifysandbox.net/authenticate");
+        HttpPost post = new HttpPost(env.getProperty("spring.application.vmsdomain")+"authenticate");
         // add request parameter, form parameters
         JSONObject json = new JSONObject();
-        json.put("username", "Gauravj@simplifyvms.com");
-        json.put("password", "Gaurav@17");
+        json.put("username", ""+env.getProperty("spring.application.vmsUsername"));
+        json.put("password", ""+env.getProperty("spring.application.vmsPassword"));
 
         StringEntity params = new StringEntity(json.toString());
         post.addHeader("content-type", "application/json");
@@ -112,7 +117,7 @@ public class JobResource {
         // System.out.println("\n\n\n\n---------------------------\n\n\n\n");
 
         HttpGet get = new HttpGet(
-            "https://qa-services.simplifysandbox.net/job-manager/programs/99e3e918-3f69-4938-8ccb-46a86b45bc7a/jobs/" + id
+            env.getProperty("spring.application.vmsdomain")+"job-manager/programs/99e3e918-3f69-4938-8ccb-46a86b45bc7a/jobs/" + id
         );
 
         // add request headers
@@ -127,11 +132,11 @@ public class JobResource {
     @SuppressWarnings("unchecked")
     @PostMapping("/createVMSCandidate")
     public JSONObject postsubmisstionRecord() throws Exception {
-        HttpPost post = new HttpPost("https://qa-services.simplifysandbox.net/authenticate");
+        HttpPost post = new HttpPost(env.getProperty("spring.application.vmsdomain")+"authenticate");
 
         JSONObject json = new JSONObject();
-        json.put("username", "Gauravj@simplifyvms.com");
-        json.put("password", "Gaurav@17");
+        json.put("username", ""+env.getProperty("spring.application.vmsUsername"));
+        json.put("password", ""+env.getProperty("spring.application.vmsPassword"));
 
         StringEntity params = new StringEntity(json.toString());
         post.addHeader("content-type", "application/json");
@@ -148,7 +153,7 @@ public class JobResource {
         String jwt = jsn.get("token").toString();
 
         //post request
-        HttpPost postmap = new HttpPost("https://qa-services.simplifysandbox.net/configurator/candidates");
+        HttpPost postmap = new HttpPost(env.getProperty("spring.application.vmsdomain")+"configurator/candidates");
 
         //headers
         postmap.addHeader("Authorization", "Bearer " + jwt);
@@ -186,11 +191,11 @@ public class JobResource {
         JSONObject finalbody = new JSONObject();
         JSONArray cadidateArray = new JSONArray();
         JSONObject payload = new JSONObject();
-        HttpPost post = new HttpPost("https://qa-services.simplifysandbox.net/authenticate");
+        HttpPost post = new HttpPost(env.getProperty("spring.application.vmsdomain")+"authenticate");
 
         JSONObject json = new JSONObject();
-        json.put("username", "Gauravj@simplifyvms.com");
-        json.put("password", "Gaurav@17");
+        json.put("username", ""+env.getProperty("spring.application.vmsUsername"));
+        json.put("password", ""+env.getProperty("spring.application.vmsPassword"));
 
         StringEntity params = new StringEntity(json.toString());
         post.addHeader("content-type", "application/json");
@@ -212,7 +217,7 @@ public class JobResource {
             payload.put("candidate_id", worker_candidate_id);
         } else {
             //post request
-            HttpPost postmap = new HttpPost("https://qa-services.simplifysandbox.net/configurator/candidates");
+            HttpPost postmap = new HttpPost(env.getProperty("spring.application.vmsdomain")+"configurator/candidates");
 
             //headers
             postmap.addHeader("Authorization", "Bearer " + jwt);
@@ -270,7 +275,7 @@ public class JobResource {
         //cadidate submission api
 
         HttpPost submissionMapping = new HttpPost(
-            "https://qa-services.simplifysandbox.net/configurator/programs/99e3e918-3f69-4938-8ccb-46a86b45bc7a/jobs/" +
+            env.getProperty("spring.application.vmsdomain")+"configurator/programs/99e3e918-3f69-4938-8ccb-46a86b45bc7a/jobs/" +
             job_id +
             "/candidates/submit"
         );
