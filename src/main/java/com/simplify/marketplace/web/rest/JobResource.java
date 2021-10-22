@@ -186,7 +186,6 @@ public class JobResource {
         JSONObject finalbody = new JSONObject();
         JSONArray cadidateArray = new JSONArray();
         JSONObject payload = new JSONObject();
-
         HttpPost post = new HttpPost("https://qa-services.simplifysandbox.net/authenticate");
 
         JSONObject json = new JSONObject();
@@ -295,9 +294,10 @@ public class JobResource {
         vmsjobSubmit.setSubmissionId((String) submissionRecordRes.get("id"));
         // System.out.println("\n\n\n\n\n" + submissionRecordRes + "\n\n\n\n\n");
         VmsjobSubmit vmsres = vmsjobsubmitrepo.save(vmsjobSubmit);
-
         workerpatch.setVmsjobsubmits(workerService.getworkervmsjobsubmits(workerId));
         workerpatch.addVmsjobsubmit(vmsres);
+        workerpatch.setSkills(workerService.getworkerskills(workerId));
+        workerpatch.setVmsjobsaves(workerService.getworkervmsjobSave(workerId));
         System.out.println("\n\n\n\n......296.....\n\n\n");
         WorkerDTO s = workermapper.toDto(workerpatch);
 
@@ -312,31 +312,37 @@ public class JobResource {
         @PathVariable("worker_id") Long worker_id,
         @PathVariable("job_id") String job_id
     ) {
-        Worker worker = workerRepo.findById(worker_id).get();
+        Worker worker = workerService.findByWorkerId(worker_id);
         Worker workerpatch = new Worker();
-        boolean check=false;
-        VmsjobSave temp=new VmsjobSave();
-        for(VmsjobSave x: worker.getVmsjobsaves()){
-            if((x.getVmsjobsaveName()).equals(job_id)){
-                check=true;
-                temp=x;
-                break;
-            }
-        }
         workerpatch.setId(worker_id);
-        if (!check) {
-            VmsjobSave vmsjobsave = vmsjobsaverepo.findByVmsjobsaveName(job_id);
-            if(vmsjobsave == null){
-                vmsjobsave = new VmsjobSave();
-                vmsjobsave.setVmsjobsaveName(job_id);
-                vmsjobsave = vmsjobsaverepo.save(vmsjobsave);
-            }
+        VmsjobSave vmsjobsave = vmsjobsaverepo.findByVmsjobsaveName(job_id);
+        //not present in repo
+        if(vmsjobsave == null){
+            vmsjobsave = new VmsjobSave();
+            vmsjobsave.setVmsjobsaveName(job_id);
+            vmsjobsave = vmsjobsaverepo.save(vmsjobsave);
+            workerpatch.setVmsjobsaves(workerService.getworkervmsjobSave(worker_id));
             workerpatch=workerpatch.addVmsjobsave(vmsjobsave);
         }
+        //present in repo
         else{
-            workerpatch= workerpatch.removeVmsjobsave(temp);
+            Set<VmsjobSave> setjobsaves = worker.getVmsjobsaves();
+            //already mapped to worker
+            if(setjobsaves.contains(vmsjobsave)){
+                workerpatch.setVmsjobsaves(workerService.getworkervmsjobSave(worker_id));
+                workerpatch= workerpatch.removeVmsjobsave(vmsjobsave);
+            }
+            //not mapped to worker
+            else{
+                workerpatch.setVmsjobsaves(workerService.getworkervmsjobSave(worker_id));
+                workerpatch=workerpatch.addVmsjobsave(vmsjobsave);
+            }
         }
+        workerpatch.setVmsjobsubmits(workerService.getworkervmsjobsubmits(worker_id));
+        workerpatch.setSkills(workerService.getworkerskills(worker_id));
+        // System.out.println("\n\n\n\n...."+worker.getVmsjobsubmits()+"\n\n\n\n....");
         WorkerDTO s = workermapper.toDto(workerpatch);
+        // System.out.println("\n\n\n\n...."+s+"\n\n\n\n....");    
         return workerService.partialUpdate(s).get();
     }
 }
