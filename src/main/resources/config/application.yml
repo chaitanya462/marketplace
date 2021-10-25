@@ -68,6 +68,9 @@ management:
 spring:
   application:
     name: SimplifyMarketplace
+    vmsdomain: https://qa-services.simplifysandbox.net/
+    vmsUsername: Gauravj@simplifyvms.com
+    vmsPassword: Gaurav@17
   # rabbitmq:
   #   port: 5673
   #   host: localhost

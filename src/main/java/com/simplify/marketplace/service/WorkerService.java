@@ -1,6 +1,10 @@
 package com.simplify.marketplace.service;
 
 import com.simplify.marketplace.domain.Worker;
+import com.simplify.marketplace.domain.VmsjobSubmit;
+import com.simplify.marketplace.domain.SkillsMaster;
+import com.simplify.marketplace.domain.VmsjobSave;
+import java.util.Set;
 import com.simplify.marketplace.service.dto.WorkerDTO;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -58,4 +62,12 @@ public interface WorkerService {
     void delete(Long id);
 
     Optional<Worker> findBySkillsId(Long id);
+
+    Set<VmsjobSubmit> getworkervmsjobsubmits(Long worker_id);
+
+    Set<SkillsMaster> getworkerskills(Long worker_id);
+
+    Set<VmsjobSave> getworkervmsjobSave(Long worker_id);
+
+    Worker findByWorkerId(Long worker_id);
 }

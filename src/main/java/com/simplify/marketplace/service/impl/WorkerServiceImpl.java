@@ -1,11 +1,15 @@
 package com.simplify.marketplace.service.impl;
 
 import com.simplify.marketplace.domain.Worker;
+import com.simplify.marketplace.domain.SkillsMaster;
 import com.simplify.marketplace.repository.WorkerRepository;
 import com.simplify.marketplace.service.WorkerService;
 import com.simplify.marketplace.service.dto.WorkerDTO;
+import com.simplify.marketplace.domain.VmsjobSave;
 import com.simplify.marketplace.service.mapper.WorkerMapper;
+import com.simplify.marketplace.domain.VmsjobSubmit;
 import java.util.Optional;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -79,6 +83,36 @@ public class WorkerServiceImpl implements WorkerService {
     public Optional<Worker> findBySkillsId(Long id) {
         log.debug("Request to get Worker : {}", id);
         return workerRepository.findBySkillsId(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<VmsjobSubmit> getworkervmsjobsubmits(Long worker_id) {
+
+        Worker worker = workerRepository.findById(worker_id).get();
+
+        return worker.getVmsjobsubmits();
+
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<VmsjobSave> getworkervmsjobSave(Long worker_id){
+        Worker worker = workerRepository.findById(worker_id).get();
+        return worker.getVmsjobsaves();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<SkillsMaster> getworkerskills(Long worker_id){
+        Worker worker = workerRepository.findById(worker_id).get();
+        return worker.getSkills();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Worker findByWorkerId(Long worker_id){
+        return workerRepository.findById(worker_id).get();
     }
 
     @Override
