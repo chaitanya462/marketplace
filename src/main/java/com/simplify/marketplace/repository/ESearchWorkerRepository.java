@@ -13,39 +13,45 @@ public interface ESearchWorkerRepository extends ElasticsearchRepository<Elastic
     public ArrayList<ElasticWorker> matchAll();
 
     @Query(
-        "{\"bool\": {\n" +
-        "      \"should\": [\n" +
-        "        \n" +
-        "            {\n" +
-        "           \n" +
-        "          \"query_string\": {\n" +
-        "            \"query\": \"?0\",\n" +
-        "            \"boost\": 1, \n" +
-        "            \"default_operator\": \"OR\"\n" +
-        "             \n" +
-        "          }\n" +
-        "            }, {\n" +
-        "          \n" +
-        "            \"query_string\": {\n" +
-        "            \"query\": \"?0\",\n" +
-        "            \"boost\": 10, \n" +
-        "            \"default_operator\": \"AND\"\n" +
-        "             \n" +
-        "          }},\n" +
-        "          {\"multi_match\": {\n" +
-        "            \"query\": \"?0\",\n" +
-        "            \"type\": \"phrase\",\n" +
-        "            \"boost\": 100, \n" +
-        "            \"fields\": [\"name\",\"description\"]\n" +
-        "          }}\n" +
-        "            \n" +
-        "          \n" +
-        "          \n" +
-        "            \n" +
-        "          \n" +
-        "        \n" +
-        "      ]\n" +
-        "    }}"
+        "{\r\n" +
+        "    \"bool\": {\r\n" +
+        "      \"should\": [\r\n" +
+        "        {\r\n" +
+        "          \"multi_match\": {\r\n" +
+        "            \"query\": \"?0\",\r\n" +
+        "            \"type\": \"phrase\",\r\n" +
+        "            \"boost\": 100, \r\n" +
+        "            \"fields\": [\"*\"]\r\n" +
+        "          }}\r\n" +
+        "          ,\r\n" +
+        "          {\r\n" +
+        "          \r\n" +
+        "            \"query_string\": {\r\n" +
+        "            \"query\": \"?0\",\r\n" +
+        "            \"boost\": 10, \r\n" +
+        "            \"default_operator\": \"AND\"\r\n" +
+        "             \r\n" +
+        "          }\r\n" +
+        "            \r\n" +
+        "          \r\n" +
+        "          \r\n" +
+        "            } ,\r\n" +
+        "        \r\n" +
+        "            {\r\n" +
+        "           \r\n" +
+        "          \"query_string\": {\r\n" +
+        "            \"query\": \"?0\",\r\n" +
+        "            \"boost\": 1, \r\n" +
+        "            \"default_operator\": \"OR\"\r\n" +
+        "             \r\n" +
+        "          }\r\n" +
+        "            }\r\n" +
+        "          \r\n" +
+        "          \r\n" +
+        "        \r\n" +
+        "      ]\r\n" +
+        "    }\r\n" +
+        "  }"
     )
     public ArrayList<ElasticWorker> searchQuery(@Param("str") String parameter);
 

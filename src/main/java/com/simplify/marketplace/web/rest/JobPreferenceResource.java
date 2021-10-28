@@ -106,10 +106,13 @@ public class JobPreferenceResource {
 
             ElasticWorker elasticworker = rep1.findById(Workerid).get();
 
-            Category subCategory = categoryMapper.toEntity(jobPreferenceDTO.getSubCategory());
-            //            System.out.println("\n\n\n\n\n\n\n" + subCategory + "\n\n\n\n\n");
-            Category ParentCategory = categoryRepository.findById(subCategory.getParent().getId()).get();
-            elasticworker.setCategory(ParentCategory.getName());
+            if (jobPreferenceDTO.getSubCategory() != null) {
+                Category subCategory = categoryMapper.toEntity(jobPreferenceDTO.getSubCategory());
+                //            System.out.println("\n\n\n\n\n\n\n" + subCategory + "\n\n\n\n\n");
+                Category ParentCategory = categoryRepository.findById(subCategory.getParent().getId()).get();
+                elasticworker.setCategory(ParentCategory.getName());
+            }
+
             jobPreferenceDTO.setId(result.getId());
             elasticworker.addJobPreference(jobpreferencesMapper.toEntity(jobPreferenceDTO));
 

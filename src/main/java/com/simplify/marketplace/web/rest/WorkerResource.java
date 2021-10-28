@@ -15,8 +15,10 @@ import com.simplify.marketplace.repository.PhotoRepository;
 import com.simplify.marketplace.repository.PortfolioRepository;
 import com.simplify.marketplace.service.CertificateService;
 import com.simplify.marketplace.service.EducationService;
+import com.simplify.marketplace.service.EmailNotificationService;
 import com.simplify.marketplace.service.EmploymentService;
 import com.simplify.marketplace.service.JobPreferenceService;
+import com.simplify.marketplace.service.MailService;
 import com.simplify.marketplace.service.SkillsMasterService;
 import com.simplify.marketplace.service.UserService;
 import com.simplify.marketplace.service.WorkerService;
@@ -78,6 +80,9 @@ public class WorkerResource {
     private JobPreferenceService jobPreferenceService;
     private EmploymentService employmentService;
     private EducationService educationService;
+
+    @Autowired
+    MailService mailservice;
 
     @Autowired
     ESearchWorkerRepository elasticrepo;
@@ -211,6 +216,47 @@ public class WorkerResource {
         //
         //
         //		System.out.println("\n\n\n\n\n\n\n\n\n\n"+indexResponse+"\n\n\n\n\n\n\n\n\n");
+
+        //        EmailNotificationService createProfileNotification = new EmailNotificationService();
+        //        createProfileNotification.sendMail();
+
+        System.out.println("\n\n\n\n\n" + ew.getEmail() + "\n\n\n\n\n\n");
+
+        String htmlView =
+            "<html>" +
+            "<head>" +
+            "<style>\r\n" +
+            "      .main{\r\n" +
+            "        font-size: 15px;\r\n" +
+            "        color:black\r\n" +
+            "      }\r\n" +
+            ".main a{\r\n" +
+            "        text-decoration: none;\r\n" +
+            "        color:black\r\n" +
+            "      }" +
+            "    </style>" +
+            "</head>" +
+            "<body>" +
+            "<div class=main>" +
+            "<p>Hi " +
+            ew.getFirstName() +
+            ",</p>" +
+            "<p>Thank you so much for choosing Simplify Marketplace as your employment solution.</p>" +
+            "<p>We are building a candidate centric job search solution, committed to take care of your Job hunting and interviewing chores.</p>" +
+            "" +
+            "<p>We are trying to make job search experience pleasurable.</p>" +
+            "" +
+            "<button><a href=http://localhost:3000>SignIn</a></button>" +
+            "<br></br>" +
+            "<p>Sincerely,</p>" +
+            "<p>Simplify Marketplace Team.</p>" +
+            "</div>" +
+            "</body>" +
+            "</html>";
+
+        mailservice.sendEmail(ew.getEmail(), "Welcome to Simplify Marketplace", htmlView, false, true);
+
+        System.out.println("\n\n\n\n\n\n\n\n mail sent \n\n\n\n\n\n\n");
 
         return ResponseEntity
             .created(new URI("/api/workers/" + result.getId()))
