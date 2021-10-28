@@ -340,32 +340,32 @@ public class JobResource {
             return submissionRecordRes;
         }
 
-        String htmlView =
-            "<html>" +
-            "<head>" +
-            "<style>\r\n" +
-            "      .main{\r\n" +
-            "        font-size: 15px;\r\n" +
-            "        color:black\r\n" +
-            "      }\r\n" +
-            "    </style>" +
-            "</head>" +
-            "<body style=color:black>" +
-            "<div class = main>" +
-            "<p>Hi " +
-            worker.getFirstName() +
-            ",</p>" +
-            "<p>This is to confirm that we have received your job application for the post of {job title} at {employer_name}.</p>" +
-            "<p>{employer_name}’s hiring team is currently reviewing all applications and they are planning to schedule interviews in some time. </p>" +
-            "" +
-            "<p>If you are among qualified candidates, you will receive an email or call from one of their recruiters.</p>" +
-            "<p>Warm Regards,</p>" +
-            "<p>Simplify Marketplace.</p>" +
-            "</div>" +
-            "</body>" +
-            "</html>";
-
-        mailservice.sendEmail(worker.getEmail(), "Welcome to Simplify Marketplace", htmlView, false, true);
+        //        String htmlView =
+        //            "<html>" +
+        //            "<head>" +
+        //            "<style>\r\n" +
+        //            "      .main{\r\n" +
+        //            "        font-size: 15px;\r\n" +
+        //            "        color:black\r\n" +
+        //            "      }\r\n" +
+        //            "    </style>" +
+        //            "</head>" +
+        //            "<body style=color:black>" +
+        //            "<div class = main>" +
+        //            "<p>Hi " +
+        //            worker.getFirstName() +
+        //            ",</p>" +
+        //            "<p>This is to confirm that we have received your job application for the post of {job title} at {employer_name}.</p>" +
+        //            "<p>{employer_name}’s hiring team is currently reviewing all applications and they are planning to schedule interviews in some time. </p>" +
+        //            "" +
+        //            "<p>If you are among qualified candidates, you will receive an email or call from one of their recruiters.</p>" +
+        //            "<p>Warm Regards,</p>" +
+        //            "<p>Simplify Marketplace.</p>" +
+        //            "</div>" +
+        //            "</body>" +
+        //            "</html>";
+        //
+        //        mailservice.sendEmail(worker.getEmail(), "Welcome to Simplify Marketplace", htmlView, false, true);
 
         //
         //        System.out.println("\n\n\n\n......"+worker.getEmail()+".....\n\n\n");
